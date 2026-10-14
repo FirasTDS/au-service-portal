@@ -90,6 +90,10 @@
         "name": "مكتبة ومركز تصوير الأندلس الجامعية",
         "phone": "0944882110",
         "note": "طباعة سلايدات ومحاضرات طبية وتجليد"
+      },
+      {
+        "name": "مكتبة الفيصل",
+        "phone": "0949071072"
       }
     ],
     "maintenance": [
@@ -532,6 +536,7 @@
     "d14d366485a9fc733eeb246b16f895a51998cf21d1cbb41a0b825f8add49a1ba": "approved",
     "f30faa7f04df54753540a74a9b193763329527e1c91cd3feee1bc9a53e6b7271": "approved",
     "8e599c1dda4b2c4859131b41b34766e0e1a76b420e286b7c299137218f097e74": "approved",
-    "9a95593066e564288367466e462e4656edfb234ee4645f8aa40ec4228862a437": "approved"
+    "9a95593066e564288367466e462e4656edfb234ee4645f8aa40ec4228862a437": "approved",
+    "85aa110bcc53bbffadb3c390cb4f3a30d45815103e6d982b57ea54cdf3730141": "approved"
   }
 }
