@@ -64,6 +64,50 @@ function whatsappUrl(phone) {
     return /^09\d{8}$/.test(phone) ? `https://wa.me/963${phone.slice(1)}` : '';
 }
 
+// --- STRUCTURED OPENING HOURS (explicit per-entry data only, never inferred) ---
+// Schema: hours = { open: "HH:MM", close: "HH:MM", days?: [0-6, Sun-Sat] } or { allday: true, days? }
+const AR_DAY_NAMES = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+
+function isValidTime(value) {
+    return typeof value === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
+}
+
+function damascusNow() {
+    const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Damascus', weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(new Date());
+    const get = type => parts.find(p => p.type === type).value;
+    const dayMap = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+    return { day: dayMap[get('weekday')], minutes: (parseInt(get('hour'), 10) % 24) * 60 + parseInt(get('minute'), 10) };
+}
+
+function hoursLabel(hours) {
+    if (!hours || typeof hours !== 'object') return '';
+    const days = Array.isArray(hours.days) && hours.days.length && hours.days.length < 7
+        ? ' (' + hours.days.map(d => AR_DAY_NAMES[d]).filter(Boolean).join('، ') + ')' : '';
+    if (hours.allday) return 'مفتوح 24 ساعة' + days;
+    if (!isValidTime(hours.open) || !isValidTime(hours.close)) return '';
+    return `${hours.open} - ${hours.close}${days}`;
+}
+
+function getOpenStatusBadge(item) {
+    const hours = item && item.hours;
+    if (!hours || typeof hours !== 'object') return '';
+    const now = damascusNow();
+    if (Array.isArray(hours.days) && hours.days.length && !hours.days.includes(now.day)) {
+        return '<span class="status-badge status-badge-closed"><span class="status-dot"></span>مغلق اليوم</span>';
+    }
+    if (hours.allday) {
+        return '<span class="status-badge status-badge-open"><span class="status-dot"></span>مفتوح 24 ساعة</span>';
+    }
+    if (!isValidTime(hours.open) || !isValidTime(hours.close)) return '';
+    const toMin = t => parseInt(t.slice(0, 2), 10) * 60 + parseInt(t.slice(3), 10);
+    const open = toMin(hours.open), close = toMin(hours.close), t = now.minutes;
+    const isOpen = close > open ? (t >= open && t < close) : (t >= open || t < close);
+    const label = hoursLabel(hours);
+    return isOpen
+        ? `<span class="status-badge status-badge-open" title="${label}"><span class="status-dot"></span>مفتوح الآن</span>`
+        : `<span class="status-badge status-badge-closed" title="${label}"><span class="status-dot"></span>مغلق حالياً</span>`;
+}
+
 function validatePortalData(data) {
     const validItem = item => item && typeof item.name === 'string' && item.name.trim() &&
         (typeof item.phone === 'string' || typeof item.link === 'string');

@@ -6,7 +6,7 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=12"></script>
+    <script src="shared.js?v=13"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -205,6 +205,24 @@
                         <input type="text" id="newNote" class="form-input" placeholder="مثال: يفتح 11 ص - 1 ليلاً / توصيل للسكن">
                     </div>
 
+                    <div class="form-group">
+                        <label class="form-label">أوقات الدوام (اختياري — تظهر شارة مفتوح/مغلق)</label>
+                        <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+                            <label style="font-size:0.75rem;">من <input type="time" id="newHoursOpen" class="form-input" style="width:auto; display:inline-block;" dir="ltr"></label>
+                            <label style="font-size:0.75rem;">إلى <input type="time" id="newHoursClose" class="form-input" style="width:auto; display:inline-block;" dir="ltr"></label>
+                            <label style="font-size:0.75rem; display:flex; align-items:center; gap:0.25rem;"><input type="checkbox" id="newHoursAllDay"> 24 ساعة</label>
+                        </div>
+                        <div id="newHoursDays" style="display:flex; gap:0.35rem; flex-wrap:wrap; margin-top:0.4rem; font-size:0.72rem;">
+                            <label><input type="checkbox" value="6"> سبت</label>
+                            <label><input type="checkbox" value="0"> أحد</label>
+                            <label><input type="checkbox" value="1"> اثنين</label>
+                            <label><input type="checkbox" value="2"> ثلاثاء</label>
+                            <label><input type="checkbox" value="3"> أربعاء</label>
+                            <label><input type="checkbox" value="4"> خميس</label>
+                            <label><input type="checkbox" value="5"> جمعة</label>
+                        </div>
+                    </div>
+
                     <div class="form-group" id="adminScheduleGroup" style="display: none;">
                         <label for="newSchedule" class="form-label">موعد الرحلة / الانطلاق (للمواصلات فقط)</label>
                         <input type="text" id="newSchedule" class="form-input" placeholder="مثال: كل جمعة ظهراً / يومياً صباحاً ومساءً">
@@ -272,6 +290,23 @@
                     <div class="form-group">
                         <label class="form-label" for="editNote">ملاحظة إضافية / ساعات ومواعيد العمل</label>
                         <input type="text" id="editNote" class="form-input" placeholder="مثال: يفتح من 11 صباحاً حتى 1 ليلاً / توصيل للسكن">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">أوقات الدوام (اختياري)</label>
+                        <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+                            <label style="font-size:0.75rem;">من <input type="time" id="editHoursOpen" class="form-input" style="width:auto; display:inline-block;" dir="ltr"></label>
+                            <label style="font-size:0.75rem;">إلى <input type="time" id="editHoursClose" class="form-input" style="width:auto; display:inline-block;" dir="ltr"></label>
+                            <label style="font-size:0.75rem; display:flex; align-items:center; gap:0.25rem;"><input type="checkbox" id="editHoursAllDay"> 24 ساعة</label>
+                        </div>
+                        <div id="editHoursDays" style="display:flex; gap:0.35rem; flex-wrap:wrap; margin-top:0.4rem; font-size:0.72rem;">
+                            <label><input type="checkbox" value="6"> سبت</label>
+                            <label><input type="checkbox" value="0"> أحد</label>
+                            <label><input type="checkbox" value="1"> اثنين</label>
+                            <label><input type="checkbox" value="2"> ثلاثاء</label>
+                            <label><input type="checkbox" value="3"> أربعاء</label>
+                            <label><input type="checkbox" value="4"> خميس</label>
+                            <label><input type="checkbox" value="5"> جمعة</label>
+                        </div>
                     </div>
                     <div class="form-group" id="editScheduleGroup" style="display:none;">
                         <label class="form-label" for="editSchedule">موعد الرحلة / الانطلاق (للمواصلات فقط)</label>
@@ -489,6 +524,7 @@
                                                 ${isLink ? '<span class="admin-badge admin-badge-amber">رابط صفحة</span>' : ''}
                                             </div>
                                             ${item.note ? `<div style="font-size: 0.75rem; color: var(--color-slate-500); margin-top: 0.2rem;">🕒 ${escapeHtml(item.note)}</div>` : ''}
+                                            ${item.hours ? `<div style="font-size: 0.75rem; color: var(--color-slate-500); margin-top: 0.2rem;">⏰ ${escapeHtml(hoursLabel(item.hours))}</div>` : ''}
                                         </div>
                                         <div style="display:flex; align-items:center; gap:0.25rem;">
                                             <button type="button" class="btn-icon" data-action="edit-service" data-cat="${escapeHtml(key)}" data-idx="${idx}" title="تعديل بيانات الجهة ومواعيد العمل" aria-label="تعديل">
@@ -539,6 +575,7 @@
                                                         ${item.schedule ? `<span class="admin-badge admin-badge-teal" style="font-size:0.7rem;">🕒 ${escapeHtml(item.schedule)}</span>` : ''}
                                                     </div>
                                                     ${item.note ? `<div style="font-size: 0.75rem; color: var(--color-slate-500); margin-top: 0.2rem;">📝 ${escapeHtml(item.note)}</div>` : ''}
+                                                    ${item.hours ? `<div style="font-size: 0.75rem; color: var(--color-slate-500); margin-top: 0.2rem;">⏰ ${escapeHtml(hoursLabel(item.hours))}</div>` : ''}
                                                 </div>
                                                 <div style="display:flex; align-items:center; gap:0.25rem;">
                                                     <button type="button" class="btn-icon" data-action="edit-transport" data-gidx="${gIdx}" data-iidx="${iIdx}" title="تعديل بيانات السرفيس وموعد الرحلة" aria-label="تعديل">
@@ -694,6 +731,7 @@
                 editName.value = item.name || '';
                 editPhone.value = item.phone || item.link || '';
                 editNote.value = item.note || '';
+                fillHours('edit', item.hours);
                 editScheduleGroup.style.display = 'none';
                 editSchedule.value = '';
             } else if (type === 'transport') {
@@ -707,6 +745,7 @@
                 editName.value = item.name || '';
                 editPhone.value = item.phone || item.link || '';
                 editNote.value = item.note || '';
+                fillHours('edit', item.hours);
                 editScheduleGroup.style.display = 'block';
                 editSchedule.value = item.schedule || '';
             }
@@ -729,6 +768,8 @@
             const val = contact.value;
             const note = document.getElementById('editNote').value.trim();
             const schedule = document.getElementById('editSchedule').value.trim();
+            const hours = collectHours('edit');
+            if (hours === 'ERROR') return;
 
             if (!name || !val) {
                 alert('يرجى ملء الاسم والرقم/الرابط.');
@@ -755,6 +796,11 @@
                     } else {
                         delete target.note;
                     }
+                    if (hours) {
+                        target.hours = hours;
+                    } else {
+                        delete target.hours;
+                    }
                 }
             } else if (type === 'transport') {
                 const gIdx = parseInt(document.getElementById('editGIdx').value, 10);
@@ -779,12 +825,42 @@
                     } else {
                         delete target.schedule;
                     }
+                    if (hours) {
+                        target.hours = hours;
+                    } else {
+                        delete target.hours;
+                    }
                 }
             }
 
             closeAdminEditModal();
             renderAdminLists();
             showToast('✅ تم تعديل البيانات بنجاح (اضغط "حفظ ونشر" لاعتماد التعديل).');
+        }
+
+        // --- STRUCTURED HOURS FORM HELPERS (prefix: 'new' or 'edit') ---
+        // Returns undefined (empty), object (valid), or 'ERROR' (invalid, toast shown).
+        function collectHours(prefix) {
+            const open = document.getElementById(`${prefix}HoursOpen`).value;
+            const close = document.getElementById(`${prefix}HoursClose`).value;
+            const allday = document.getElementById(`${prefix}HoursAllDay`).checked;
+            const days = [...document.querySelectorAll(`#${prefix}HoursDays input:checked`)].map(el => parseInt(el.value, 10));
+            if (!open && !close && !allday) return undefined;
+            if (!allday && (!isValidTime(open) || !isValidTime(close))) {
+                showToast('أوقات الدوام غير مكتملة — حدد وقت الفتح والإغلاق أو اختر 24 ساعة.', 'error');
+                return 'ERROR';
+            }
+            const hours = allday ? { allday: true } : { open, close };
+            if (days.length && days.length < 7) hours.days = days.sort();
+            return hours;
+        }
+
+        function fillHours(prefix, hours) {
+            document.getElementById(`${prefix}HoursOpen`).value = (hours && hours.open) || '';
+            document.getElementById(`${prefix}HoursClose`).value = (hours && hours.close) || '';
+            document.getElementById(`${prefix}HoursAllDay`).checked = Boolean(hours && hours.allday);
+            const days = (hours && hours.days) || [0, 1, 2, 3, 4, 5, 6];
+            document.querySelectorAll(`#${prefix}HoursDays input`).forEach(el => { el.checked = days.includes(parseInt(el.value, 10)); });
         }
 
         // --- ADD NEW ITEM ---
@@ -809,6 +885,9 @@
             const isUrl = /^https?:\/\//i.test(val);
             const newItem = isUrl ? { name, link: val } : { name, phone: val };
             if (note) newItem.note = note;
+            const hours = collectHours('new');
+            if (hours === 'ERROR') return;
+            if (hours) newItem.hours = hours;
 
             if (cat === 'transport') {
                 if (!city) {
@@ -831,6 +910,7 @@
             document.getElementById('newPhone').value = '';
             if (noteInput) noteInput.value = '';
             if (schedInput) schedInput.value = '';
+            fillHours('new', null);
             renderAdminLists();
             showToast('✅ تمت الإضافة بنجاح إلى القائمة المؤقتة!');
         }
@@ -1052,10 +1132,81 @@
             const statusMap = {};
             for (const id of ids) {
                 const item = liveSuggestions.find(s => s.id === id);
-                if (item && adminData.suggestion_reviews?.[item.reviewKey] !== 'approved') statusMap[item.reviewKey] = 'ignored';
+                if (item && !['approved', 'resolved'].includes(adminData.suggestion_reviews?.[item.reviewKey])) statusMap[item.reviewKey] = 'ignored';
             }
             if (!Object.keys(statusMap).length) return;
             await persistSuggestionDecisions(statusMap, previousData);
+        }
+
+        // --- REPORT RESOLUTION LOOP ---
+        // Finds a directory entry matching the reported contact (contact match first, name fallback only if phone is unusable).
+        function findAndDeleteEntry(name, phone) {
+            const contact = normalizeContactInput(phone);
+            const contactMatch = item => {
+                if (contact.error || contact.link) return false;
+                const c = normalizeContactInput(item.phone || item.link);
+                return !c.error && !c.link && contact.phones.every(p => c.phones.includes(p));
+            };
+            const nameMatch = item => contact.error && item.name.trim() === String(name || '').trim();
+            for (const cat of Object.keys(adminData.services || {})) {
+                const list = adminData.services[cat] || [];
+                const idx = list.findIndex(contactMatch);
+                if (idx > -1) { list.splice(idx, 1); return true; }
+                const nameIdx = list.findIndex(nameMatch);
+                if (nameIdx > -1) { list.splice(nameIdx, 1); return true; }
+            }
+            for (const group of (adminData.transport || [])) {
+                const idx = group.items.findIndex(contactMatch);
+                if (idx > -1) {
+                    group.items.splice(idx, 1);
+                    if (!group.items.length) adminData.transport.splice(adminData.transport.indexOf(group), 1);
+                    return true;
+                }
+                const nameIdx = group.items.findIndex(nameMatch);
+                if (nameIdx > -1) {
+                    group.items.splice(nameIdx, 1);
+                    if (!group.items.length) adminData.transport.splice(adminData.transport.indexOf(group), 1);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        async function resolveReport(id) {
+            if (!sessionToken || document.getElementById('btnPushGitHub').disabled) return;
+            const item = liveSuggestions.find(s => s.id === id);
+            if (!item) return;
+            const previousData = structuredClone(adminData);
+            const ok = await persistSuggestionDecisions({ [item.reviewKey]: 'resolved' }, previousData);
+            if (ok) showToast(`تم وضع علامة "تم الحل" على بلاغ (${item.name}).`);
+        }
+
+        async function deleteReportedEntry(id) {
+            if (!sessionToken || document.getElementById('btnPushGitHub').disabled) return;
+            const item = liveSuggestions.find(s => s.id === id);
+            if (!item) return;
+            if (!confirm(`حذف (${item.name} — ${item.phone}) من الدليل نهائياً ووضع البلاغ كمحلول؟`)) return;
+            const previousData = structuredClone(adminData);
+            if (!findAndDeleteEntry(item.name, item.phone)) {
+                showToast('تعذر العثور على هذا الرقم في الدليل — ربما حُذف مسبقاً.', 'error');
+                return;
+            }
+            const ok = await persistSuggestionDecisions({ [item.reviewKey]: 'resolved' }, previousData);
+            if (ok) showToast('تم حذف الرقم من الدليل ونشر التعديل.');
+        }
+
+        async function reopenReport(id) {
+            if (!sessionToken || document.getElementById('btnPushGitHub').disabled) return;
+            const item = liveSuggestions.find(s => s.id === id);
+            if (!item) return;
+            const previousData = structuredClone(adminData);
+            const reviews = { ...adminData.suggestion_reviews };
+            delete reviews[item.reviewKey];
+            adminData.suggestion_reviews = reviews;
+            const saved = await saveAndPushToGitHub();
+            if (!saved) adminData = previousData;
+            renderAdminLists();
+            await fetchLiveSuggestions();
         }
 
         async function ignoreSuggestion(id) {
@@ -1092,6 +1243,7 @@
                 for (let i = 1; i < rows.length; i++) {
                     const r = rows[i];
                     if (!r || r.length < 5 || !r[4]) continue; // Skip empty rows
+                    if ((r[1] || '').trim() === 'بحث بدون نتائج') continue; // Search analytics stay in the Sheet only
 
                     liveSuggestions.push({
                         id: i,
@@ -1150,7 +1302,13 @@
                                 ${escapeHtml(item.notes || '—')}
                             </td>
                             <td style="padding: 0.65rem 0.75rem; text-align: center;">
-                                ${decision === 'ignored' ? '<span class="admin-badge admin-badge-amber">تم التجاهل</span>' : decision === 'approved' ? '<span class="admin-badge admin-badge-teal">تم الاعتماد والنشر ✓</span>' : isReport || isRating ? '<span>للمراجعة</span>' : alreadyExists ? `
+                                ${decision === 'ignored' ? '<span class="admin-badge admin-badge-amber">تم التجاهل</span>' : decision === 'approved' ? '<span class="admin-badge admin-badge-teal">تم الاعتماد والنشر ✓</span>' : decision === 'resolved' ? '<span class="admin-badge admin-badge-teal">تم الحل ✓</span>' : isReport ? `
+                                    <button type="button" onclick="resolveReport(${item.id})" class="btn-primary" style="font-size: 0.725rem; padding: 0.35rem 0.65rem;">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                        <span>تم الحل</span>
+                                    </button>
+                                    <button type="button" onclick="deleteReportedEntry(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem; color:var(--color-red);">حذف الرقم من الدليل</button>
+                                ` : isRating ? '<span>للمراجعة</span>' : alreadyExists ? `
                                     <span class="admin-badge admin-badge-teal" style="font-size: 0.7rem;">موجود بالفعل ✓</span>
                                 ` : `
                                     <button type="button" onclick="approveSuggestion(${item.id})" class="btn-primary" style="font-size: 0.725rem; padding: 0.35rem 0.65rem;" ${contact.error ? 'disabled' : ''}>
@@ -1158,7 +1316,7 @@
                                         <span>اعتماد ونشر</span>
                                     </button>
                                 `}
-                                ${decision !== 'approved' ? `<button type="button" onclick="ignoreSuggestion(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">${decision === 'ignored' ? 'إلغاء التجاهل' : 'تجاهل'}</button>` : ''}
+                                ${decision === 'resolved' ? `<button type="button" onclick="reopenReport(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">إعادة فتح</button>` : decision === 'ignored' ? `<button type="button" onclick="ignoreSuggestion(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">إلغاء التجاهل</button>` : !decision ? `<button type="button" onclick="ignoreSuggestion(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">تجاهل</button>` : ''}
                             </td>
                         </tr>
                     `;

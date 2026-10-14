@@ -19,7 +19,7 @@
     <meta name="theme-color" content="#0f4c42">
     <link rel="icon" type="image/png" href="Asset%201.png">
     <link rel="apple-touch-icon" href="Asset%201.png">
-    <script src="shared.js?v=12"></script>
+    <script src="shared.js?v=13"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -915,8 +915,8 @@
 
         const noteEscaped = escapeHtml(item.note || '');
         const scheduleEscaped = escapeHtml(item.schedule || '');
-        // Only display hours explicitly supplied with the entry, never inferred from its category.
-        const openStatusHtml = '';
+        const hoursEscaped = escapeHtml(hoursLabel(item.hours));
+        const openStatusHtml = getOpenStatusBadge(item);
 
         const favKey = item.phone || item.link || item.name;
         const userFavs = getLocalFavorites();
@@ -937,6 +937,7 @@
                     ${openStatusHtml}
                 </div>
                 ${noteEscaped ? `<div class="contact-note">${noteEscaped}</div>` : ''}
+                ${hoursEscaped ? `<div class="contact-note">🕒 ${hoursEscaped}</div>` : ''}
                 ${scheduleEscaped ? `
                     <div class="schedule-badge">
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -1336,6 +1337,23 @@
         secTransport.style.display = showTransport && [...secTransport.querySelectorAll('.category-card')].some(card => card.style.display !== 'none') ? 'block' : 'none';
         const emptyState = document.getElementById('emptyState');
         emptyState.style.display = totalVisibleInActiveTab === 0 ? 'block' : 'none';
+        if (totalVisibleInActiveTab === 0 && normalizedQuery && normalizedQuery.length >= 2) logEmptySearch(rawQuery);
+    }
+
+    // --- EMPTY-SEARCH ANALYTICS (one log per distinct query per session, silent) ---
+    const loggedEmptySearches = new Set();
+    async function logEmptySearch(query) {
+        const q = String(query || '').trim();
+        if (!q || loggedEmptySearches.has(q)) return;
+        loggedEmptySearches.add(q);
+        try {
+            const fd = new FormData();
+            fd.append(ENTRIES.type, 'بحث بدون نتائج');
+            fd.append(ENTRIES.category, 'تحليلات البحث');
+            fd.append(ENTRIES.city, currentTab);
+            fd.append(ENTRIES.name, q);
+            await fetch(GOOGLE_FORM_URL, { method: 'POST', mode: 'no-cors', body: fd });
+        } catch (e) {}
     }
 
     // --- EVENT DELEGATION (Copy, Rate, Report) ---

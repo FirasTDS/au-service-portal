@@ -1,5 +1,5 @@
 // Cache only this application's public assets, never API calls or credentials.
-const CACHE_NAME = 'au-portal-v12';
+const CACHE_NAME = 'au-portal-v13';
 const ASSETS_TO_CACHE = ['index.html', 'style.css', 'shared.js', 'data.json', 'manifest.json', 'Asset%201.png', 'Vertical%20Trans.png', 'Horiszontal.png', 'app-logo-192.png', 'app-logo-512.png'];
 const assetURLs = new Set(ASSETS_TO_CACHE.map(path => new URL(path, self.registration.scope).href));
 
