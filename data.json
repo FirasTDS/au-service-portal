@@ -109,7 +109,13 @@
         "note": "اعتمادي و يؤتمن ل ارسال حوالة له ل الدفع في الصندوق و جاهز لتلبية اي شيء في القدموس"
       }
     ],
-    "taxis": [],
+    "taxis": [
+      {
+        "name": "شاهين",
+        "phone": "0933574279",
+        "note": "متور داخل القدموس"
+      }
+    ],
     "sweets": [
       {
         "name": "مرعي",
@@ -519,6 +525,7 @@
     "eec3915b884fa64d5454c356d7f106e0dfb592ef142e80ea75ad9aea64054f75": "ignored",
     "81c80a9eadefc58316c7963ac67a57b5aa2de85a9f1a11604003430a8d3907f0": "approved",
     "d14d366485a9fc733eeb246b16f895a51998cf21d1cbb41a0b825f8add49a1ba": "approved",
-    "f30faa7f04df54753540a74a9b193763329527e1c91cd3feee1bc9a53e6b7271": "approved"
+    "f30faa7f04df54753540a74a9b193763329527e1c91cd3feee1bc9a53e6b7271": "approved",
+    "8e599c1dda4b2c4859131b41b34766e0e1a76b420e286b7c299137218f097e74": "approved"
   }
 }
