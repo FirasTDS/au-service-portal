@@ -6,7 +6,7 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=11"></script>
+    <script src="shared.js?v=12"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -134,9 +134,19 @@
                 </div>
 
                 <div id="suggestionsTableContainer" style="display: none; overflow-x: auto;">
+                    <div id="bulkBar" style="display:flex; flex-wrap:wrap; align-items:center; gap:0.5rem; padding:0.6rem 0.25rem;">
+                        <label style="display:flex; align-items:center; gap:0.35rem; font-size:0.78rem; font-weight:800; cursor:pointer;">
+                            <input type="checkbox" id="bulkSelectAll" onchange="toggleBulkSelectAll(this.checked)"> تحديد الكل
+                        </label>
+                        <button type="button" onclick="bulkApprove()" id="btnBulkApprove" class="btn-primary" style="font-size:0.75rem; padding:0.4rem 0.8rem;">اعتماد المحدد ونشر</button>
+                        <button type="button" onclick="bulkIgnore()" id="btnBulkIgnore" class="btn-secondary" style="font-size:0.75rem; padding:0.4rem 0.8rem;">تجاهل المحدد</button>
+                        <button type="button" onclick="reloadAdminFromGitHub()" id="btnSyncGitHub" class="btn-secondary" style="font-size:0.75rem; padding:0.4rem 0.8rem;">مزامنة من GitHub</button>
+                        <span id="bulkCount" style="font-size:0.75rem; color:var(--color-slate-500);"></span>
+                    </div>
                     <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: right;">
                         <thead>
                             <tr style="background-color: var(--color-slate-100); border-bottom: 2px solid var(--color-slate-200); color: var(--color-slate-700);">
+                                <th style="padding: 0.65rem 0.75rem; text-align:center;">✓</th>
                                 <th style="padding: 0.65rem 0.75rem;">النوع</th>
                                 <th style="padding: 0.65rem 0.75rem;">التصنيف</th>
                                 <th style="padding: 0.65rem 0.75rem;">المحافظة</th>
@@ -918,12 +928,134 @@
         }
 
         async function persistSuggestionDecision(item, status, previousData) {
-            adminData.suggestion_reviews = { ...adminData.suggestion_reviews, [item.reviewKey]: status };
+            return persistSuggestionDecisions({ [item.reviewKey]: status }, previousData);
+        }
+
+        // Single PUT for one or many decisions — avoids a commit per approval.
+        async function persistSuggestionDecisions(statusMap, previousData) {
+            adminData.suggestion_reviews = { ...adminData.suggestion_reviews, ...statusMap };
             const saved = await saveAndPushToGitHub();
             if (!saved) adminData = previousData;
             renderAdminLists();
             await fetchLiveSuggestions();
             return saved;
+        }
+
+        function bulkSelectedIds() {
+            return [...document.querySelectorAll('input[data-bulk]:checked')].map(el => parseInt(el.getAttribute('data-bulk'), 10));
+        }
+
+        function toggleBulkSelectAll(checked) {
+            document.querySelectorAll('input[data-bulk]').forEach(el => { el.checked = checked; });
+            updateBulkCount();
+        }
+
+        function updateBulkCount() {
+            const n = bulkSelectedIds().length;
+            document.getElementById('bulkCount').textContent = n ? `تم تحديد ${n}` : '';
+        }
+
+        // Re-pull data.json from GitHub (GitHub is source of truth after direct edits).
+        async function reloadAdminFromGitHub() {
+            if (!sessionToken) return;
+            const btn = document.getElementById('btnSyncGitHub');
+            btn.disabled = true;
+            try {
+                const fileRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FILE_PATH}?t=${Date.now()}`, {
+                    headers: { 'Authorization': `Bearer ${sessionToken}`, 'Accept': 'application/vnd.github.v3+json' }
+                });
+                if (!fileRes.ok) throw new Error(`كود ${fileRes.status}`);
+                const fileJson = await fileRes.json();
+                const binaryStr = atob(fileJson.content.replace(/\s/g, ''));
+                const bytes = new Uint8Array(binaryStr.length);
+                for (let i = 0; i < binaryStr.length; i++) bytes[i] = binaryStr.charCodeAt(i);
+                const parsed = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+                if (!validatePortalData(parsed)) throw new Error('بنية ملف البيانات غير صالحة.');
+                remoteSha = fileJson.sha;
+                adminData = parsed;
+                renderAdminLists();
+                await fetchLiveSuggestions();
+                showToast('تمت المزامنة من GitHub بنجاح.');
+            } catch (err) {
+                showToast(`تعذرت المزامنة: ${err.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // Shared insert logic (no save) so single + bulk approvals behave identically.
+        function buildApprovedItem(item) {
+            if (item.type.includes('تقييم') || item.category.includes('إبلاغ') || item.notes.includes('[بلاغ')) return null;
+            if (!item.name.trim() || !item.phone.trim() || checkItemExists(item.name, item.phone)) return null;
+            let cat = 'restaurants';
+            if (/تكاسي|تاكسي|تكسي|موتور/.test(item.category)) {
+                cat = 'taxis';
+            } else if (item.category.includes('طوارئ') || item.category.includes('صيدلية') || item.category.includes('إسعاف') || item.category.includes('مشفى') || item.category.includes('صحي')) {
+                cat = 'emergency';
+            } else if (item.category.includes('سوبر') || item.category.includes('ماركت')) {
+                cat = 'supermarkets';
+            } else if (item.category.includes('مي') || item.category.includes('مياه') || item.category.includes('صهريج')) {
+                cat = 'water';
+            } else if (item.category.includes('حوال') || item.category.includes('شحن') || item.category.includes('طرد') || item.category.includes('الهرم') || item.category.includes('الفؤاد')) {
+                cat = 'transfers';
+            } else if (item.category.includes('مكتب') || item.category.includes('طباعة') || item.category.includes('قرطاسية')) {
+                cat = 'printing';
+            } else if (item.category.includes('صيانة') || item.category.includes('كهرباء') || item.category.includes('نت') || item.category.includes('سكن')) {
+                cat = 'maintenance';
+            } else if (item.category.includes('حلو') || item.category.includes('كافيه')) {
+                cat = 'sweets';
+            } else if (item.category.includes('مواصلات') || item.category.includes('سرفيس') || item.category.includes('بولمان')) {
+                cat = 'transport';
+            }
+            const contact = normalizeContactInput(item.phone);
+            if (contact.error) { showToast(contact.error, 'error'); return null; }
+            const val = contact.value;
+            const newItem = /^https?:\/\//i.test(val) ? { name: item.name.trim(), link: val } : { name: item.name.trim(), phone: val };
+            if (item.notes.trim()) newItem.note = item.notes.trim();
+            return { cat, newItem, city: item.city.trim() };
+        }
+
+        async function bulkApprove() {
+            if (!sessionToken || document.getElementById('btnPushGitHub').disabled) return;
+            const ids = bulkSelectedIds();
+            if (!ids.length) return showToast('حدد اقتراحاً واحداً على الأقل.', 'error');
+            const previousData = structuredClone(adminData);
+            const statusMap = {};
+            let added = 0;
+            for (const id of ids) {
+                const item = liveSuggestions.find(s => s.id === id);
+                if (!item || ['approved', 'ignored'].includes(adminData.suggestion_reviews?.[item.reviewKey])) continue;
+                const built = buildApprovedItem(item);
+                if (!built) continue;
+                if (built.cat === 'transport') {
+                    if (!built.city) { showToast('يرجى تحديد المحافظة قبل اعتماد الاقتراح.', 'error'); continue; }
+                    let group = adminData.transport.find(g => g.city.trim() === built.city);
+                    if (!group) { group = { city: built.city, items: [] }; adminData.transport.push(group); }
+                    group.items.push(built.newItem);
+                } else {
+                    if (!adminData.services[built.cat]) adminData.services[built.cat] = [];
+                    adminData.services[built.cat].push(built.newItem);
+                }
+                statusMap[item.reviewKey] = 'approved';
+                added++;
+            }
+            if (!added) return showToast('لا عناصر صالحة للاعتماد.', 'error');
+            const ok = await persistSuggestionDecisions(statusMap, previousData);
+            if (ok) showToast(`تم اعتماد ونشر ${added} بنجاح — تظهر على الموقع خلال 1-3 دقائق (حدّث الصفحة).`);
+        }
+
+        async function bulkIgnore() {
+            if (!sessionToken || document.getElementById('btnPushGitHub').disabled) return;
+            const ids = bulkSelectedIds();
+            if (!ids.length) return showToast('حدد اقتراحاً واحداً على الأقل.', 'error');
+            const previousData = structuredClone(adminData);
+            const statusMap = {};
+            for (const id of ids) {
+                const item = liveSuggestions.find(s => s.id === id);
+                if (item && adminData.suggestion_reviews?.[item.reviewKey] !== 'approved') statusMap[item.reviewKey] = 'ignored';
+            }
+            if (!Object.keys(statusMap).length) return;
+            await persistSuggestionDecisions(statusMap, previousData);
         }
 
         async function ignoreSuggestion(id) {
@@ -995,6 +1127,9 @@
 
                     return `
                         <tr style="border-bottom: 1px solid var(--color-slate-200); background-color: ${isReport ? 'var(--color-red-soft)' : 'var(--surface)'};">
+                            <td style="padding: 0.65rem 0.5rem; text-align:center;">
+                                ${!decision && !isReport && !isRating && !alreadyExists && !contact.error ? `<input type="checkbox" data-bulk="${item.id}" onchange="updateBulkCount()" aria-label="تحديد ${escapeHtml(item.name)}">` : ''}
+                            </td>
                             <td style="padding: 0.65rem 0.75rem;">
                                 <span class="admin-badge ${badgeClass}">${badgeText}</span>
                             </td>
@@ -1062,53 +1197,25 @@
             const item = liveSuggestions.find(s => s.id === id);
             if (!item) return;
             if (['approved', 'ignored'].includes(adminData.suggestion_reviews?.[item.reviewKey])) return;
-            if (item.type.includes('تقييم') || item.category.includes('إبلاغ') || item.notes.includes('[بلاغ')) return;
-            if (!item.name.trim() || !item.phone.trim() || checkItemExists(item.name, item.phone)) return;
-
-            let cat = 'restaurants';
-            if (/تكاسي|تاكسي|تكسي|موتور/.test(item.category)) {
-                cat = 'taxis';
-            } else if (item.category.includes('طوارئ') || item.category.includes('صيدلية') || item.category.includes('إسعاف') || item.category.includes('مشفى') || item.category.includes('صحي')) {
-                cat = 'emergency';
-            } else if (item.category.includes('سوبر') || item.category.includes('ماركت')) {
-                cat = 'supermarkets';
-            } else if (item.category.includes('مي') || item.category.includes('مياه') || item.category.includes('صهريج')) {
-                cat = 'water';
-            } else if (item.category.includes('حوال') || item.category.includes('شحن') || item.category.includes('طرد') || item.category.includes('الهرم') || item.category.includes('الفؤاد')) {
-                cat = 'transfers';
-            } else if (item.category.includes('مكتب') || item.category.includes('طباعة') || item.category.includes('قرطاسية')) {
-                cat = 'printing';
-            } else if (item.category.includes('صيانة') || item.category.includes('كهرباء') || item.category.includes('نت') || item.category.includes('سكن')) {
-                cat = 'maintenance';
-            } else if (item.category.includes('حلو') || item.category.includes('كافيه')) {
-                cat = 'sweets';
-            } else if (item.category.includes('مواصلات') || item.category.includes('سرفيس') || item.category.includes('بولمان')) {
-                cat = 'transport';
-            }
-
-            const contact = normalizeContactInput(item.phone);
-            if (contact.error) return showToast(contact.error, 'error');
-            const val = contact.value;
-            const isUrl = /^https?:\/\//i.test(val);
-            const newItem = isUrl ? { name: item.name.trim(), link: val } : { name: item.name.trim(), phone: val };
-            if (item.notes.trim()) newItem.note = item.notes.trim();
+            const built = buildApprovedItem(item);
+            if (!built) return;
             const previousData = structuredClone(adminData);
 
-            if (cat === 'transport') {
-                const city = item.city.trim();
-                if (!city) return showToast('يرجى تحديد المحافظة قبل اعتماد الاقتراح.', 'error');
-                let group = adminData.transport.find(g => g.city.trim() === city);
+            if (built.cat === 'transport') {
+                if (!built.city) return showToast('يرجى تحديد المحافظة قبل اعتماد الاقتراح.', 'error');
+                let group = adminData.transport.find(g => g.city.trim() === built.city);
                 if (!group) {
-                    group = { city, items: [] };
+                    group = { city: built.city, items: [] };
                     adminData.transport.push(group);
                 }
-                group.items.push(newItem);
+                group.items.push(built.newItem);
             } else {
-                if (!adminData.services[cat]) adminData.services[cat] = [];
-                adminData.services[cat].push(newItem);
+                if (!adminData.services[built.cat]) adminData.services[built.cat] = [];
+                adminData.services[built.cat].push(built.newItem);
             }
 
-            await persistSuggestionDecision(item, 'approved', previousData);
+            const ok = await persistSuggestionDecision(item, 'approved', previousData);
+            if (ok) showToast(`تم اعتماد ونشر (${item.name}) — يظهر على الموقع خلال 1-3 دقائق (حدّث الصفحة).`);
         }
 
         // Robust CSV Parser handling quotes, commas and newlines
