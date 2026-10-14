@@ -45,7 +45,7 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         <span>اقترح رقم</span>
       </button>
-      <a href="https://t.me/AU_Volunteer_Team" target="_blank" rel="noopener noreferrer" class="btn-primary" aria-label="قناة الفريق على تلغرام">
+      <a href="https://t.me/studentandalus" target="_blank" rel="noopener noreferrer" class="btn-primary" aria-label="قناة الفريق على تلغرام">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
         <span class="sr-only sm-show">قناة الفريق</span>
       </a>
@@ -275,6 +275,17 @@
         </div>
         <div class="category-items-list" id="list-maintenance" role="list" aria-label="قائمة خدمات الصيانة والاتصالات"></div>
       </div>
+      <!-- Local taxis and motorcycles (separate from intercity transport) -->
+      <div class="category-card" data-section="services">
+        <div class="category-header">
+          <div class="category-title-wrap">
+            <svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 17H3V9l2-5h14l2 5v8h-2M5 17h14M3 10h18M9 4V2h6v2"/><circle cx="6" cy="17" r="2"/><circle cx="18" cy="17" r="2"/><path d="M6 13h2m8 0h2"/></svg>
+            <h3 class="category-title">تكاسي وموتورات داخل القدموس</h3>
+          </div>
+          <span class="category-count" id="count-taxis">0</span>
+        </div>
+        <div class="category-items-list" id="list-taxis" role="list" aria-label="قائمة التكاسي والموتورات داخل القدموس"></div>
+      </div>
       <!-- Sweets Card -->
       <div class="category-card" data-section="services">
         <div class="category-header">
@@ -348,7 +359,7 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         <span>اقترح إضافة مكان أو رقم</span>
       </button>
-      <a href="https://t.me/AU_Volunteer_Team" target="_blank" rel="noopener noreferrer" class="btn-primary">
+      <a href="https://t.me/studentandalus" target="_blank" rel="noopener noreferrer" class="btn-primary">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
         <span>القناة الرسمية على تلغرام</span>
       </a>
@@ -394,6 +405,7 @@
             <option value="خدمات وصيانة سكنات">خدمات وصيانة سكنات (كهرباء، صحية، نت)</option>
             <option value="حلويات وكافيه">محل حلويات / كافيه</option>
             <option value="طوارئ ومراكز صحية">طوارئ وصيدليات ومراكز صحية</option>
+            <option value="تكاسي وموتورات داخل القدموس">تكاسي وموتورات داخل القدموس</option>
             <option value="شركات المواصلات سرفيس او بولمان">شركة مواصلات / سرفيس</option>
           </select>
         </div>
@@ -535,6 +547,7 @@
             maintenance: [
                 { name: "صيانة كهرباء وتمديدات صحية ونت (سكن الطلاب)", phone: "0940254845", note: "صيانة فورية للغرف والسكنات بالقدموس" }
             ],
+            taxis: [],
             sweets: [
                 { name: "مرعي", phone: "0930267864" },
                 { name: "الخير", phone: "0966656200" },
@@ -1173,6 +1186,9 @@
         const printing = portalData.services.printing || [];
         const maintenance = portalData.services.maintenance || [];
         const sweets = portalData.services.sweets || [];
+        const taxis = portalData.services.taxis || [];
+        document.getElementById('list-taxis').innerHTML = sortArray(taxis).map(i => createContactRow(i, 'تكاسي تاكسي تكسي موتورات موتور دراجة نقل محلي داخل القدموس')).join('');
+        document.getElementById('count-taxis').textContent = taxis.length;
 
         const emergEl = document.getElementById('list-emergency');
         if (emergEl) {

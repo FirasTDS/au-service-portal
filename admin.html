@@ -98,8 +98,7 @@
                         <span>الروابط المرجعية على قناة الفريق (تلغرام):</span>
                     </div>
                     <div style="display: flex; gap: 0.5rem;">
-                        <a href="https://t.me/AU_Volunteer_Team/13" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">منشور الخدمات (#13)</a>
-                        <a href="https://t.me/AU_Volunteer_Team/12" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">منشور المواصلات (#12)</a>
+                        <a href="https://t.me/studentandalus" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">قناة الطلاب — الخدمات والمواصلات</a>
                     </div>
                 </div>
 
@@ -171,7 +170,8 @@
                             <option value="printing">مكتبات وطباعة وقرطاسية</option>
                             <option value="maintenance">خدمات وصيانة (كهرباء، صحية، اتصالات)</option>
                             <option value="sweets">حلويات وكافيه (القدموس)</option>
-                            <option value="transport">شركات النقل والمواصلات</option>
+                            <option value="taxis">تكاسي وموتورات داخل القدموس</option>
+                            <option value="transport">شركات النقل والمواصلات بين المحافظات</option>
                         </select>
                     </div>
 
@@ -452,6 +452,7 @@
                 transfers: 'حوالات مالية وشحن طرود',
                 printing: 'مكتبات وطباعة وقرطاسية',
                 maintenance: 'خدمات وصيانة (كهرباء، صحية، اتصالات)',
+                taxis: 'تكاسي وموتورات داخل القدموس',
                 sweets: 'حلويات وكافيه (القدموس)'
             };
 
@@ -887,13 +888,15 @@
                 statusBox.className = 'status-box show status-box-success';
                 statusBox.innerHTML = `
                     <span>🎉 تم الحفظ والنشر بنجاح على GitHub!</span>
-                    <br><small>Commit: <code>${result.commit.sha.substring(0, 7)}</code> — ستظهر التعديلات مباشرة على الموقع.</small>
+                    <br><small>Commit: <code>${result.commit.sha.substring(0, 7)}</code> — ستظهر التعديلات بعد اكتمال نشر GitHub Pages وتحديث الصفحة.</small>
                 `;
                 showToast('🎉 تم النشر بنجاح على الموقع!');
+                return true;
             } catch (err) {
                 statusBox.className = 'status-box show status-box-error';
                 statusBox.textContent = `❌ فشل النشر: ${err.message}`;
                 showToast('تعذر النشر، تفقد الرسالة في الأسفل.', 'error');
+                return false;
             } finally {
                 btn.disabled = false;
                 document.getElementById('dashboardSection').inert = false;
@@ -903,6 +906,30 @@
         // --- GOOGLE SHEETS LIVE SUGGESTIONS & INBOX ---
         const SHEET_ID = '1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI';
         let liveSuggestions = [];
+
+        async function suggestionKey(item) {
+            const content = JSON.stringify([item.timestamp, item.type, item.category, item.city, item.name, item.phone, item.rating, item.notes]);
+            const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(content));
+            return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function persistSuggestionDecision(item, status, previousData) {
+            adminData.suggestion_reviews = { ...adminData.suggestion_reviews, [item.reviewKey]: status };
+            const saved = await saveAndPushToGitHub();
+            if (!saved) adminData = previousData;
+            renderAdminLists();
+            await fetchLiveSuggestions();
+            return saved;
+        }
+
+        async function ignoreSuggestion(id) {
+            if (!sessionToken || document.getElementById('btnPushGitHub').disabled) return;
+            const item = liveSuggestions.find(s => s.id === id);
+            if (!item) return;
+            const previousData = structuredClone(adminData);
+            const status = adminData.suggestion_reviews?.[item.reviewKey] === 'ignored' ? 'pending' : 'ignored';
+            await persistSuggestionDecision(item, status, previousData);
+        }
 
         async function fetchLiveSuggestions() {
             const loadingEl = document.getElementById('suggestionsLoading');
@@ -949,7 +976,8 @@
                     return;
                 }
 
-                // Render suggestions table
+                await Promise.all(liveSuggestions.map(async item => { item.reviewKey = await suggestionKey(item); }));
+                // Decisions are stored in data.json, so they survive logout and work across devices.
                 tbody.innerHTML = liveSuggestions.slice().reverse().map(item => {
                     const isReport = item.category.includes('إبلاغ') || item.notes.includes('[بلاغ');
                     const isRating = !isReport && item.type.includes('تقييم');
@@ -958,6 +986,7 @@
 
                     // Check if already in adminData
                     const alreadyExists = checkItemExists(item.name, item.phone);
+                    const decision = adminData.suggestion_reviews?.[item.reviewKey];
 
                     return `
                         <tr style="border-bottom: 1px solid var(--color-slate-200); background-color: ${isReport ? 'var(--color-red-soft)' : 'var(--surface)'};">
@@ -980,14 +1009,15 @@
                                 ${escapeHtml(item.notes || '—')}
                             </td>
                             <td style="padding: 0.65rem 0.75rem; text-align: center;">
-                                ${isReport || isRating ? '<span>للمراجعة</span>' : alreadyExists ? `
+                                ${decision === 'ignored' ? '<span class="admin-badge admin-badge-amber">تم التجاهل</span>' : decision === 'approved' ? '<span class="admin-badge admin-badge-teal">تم الاعتماد والنشر ✓</span>' : isReport || isRating ? '<span>للمراجعة</span>' : alreadyExists ? `
                                     <span class="admin-badge admin-badge-teal" style="font-size: 0.7rem;">موجود بالفعل ✓</span>
                                 ` : `
                                     <button type="button" onclick="approveSuggestion(${item.id})" class="btn-primary" style="font-size: 0.725rem; padding: 0.35rem 0.65rem;">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                        <span>اعتماد وإدراج</span>
+                                        <span>اعتماد ونشر</span>
                                     </button>
                                 `}
+                                ${decision !== 'approved' ? `<button type="button" onclick="ignoreSuggestion(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">${decision === 'ignored' ? 'إلغاء التجاهل' : 'تجاهل'}</button>` : ''}
                             </td>
                         </tr>
                     `;
@@ -1008,7 +1038,7 @@
             const normalizeContact = value => /^https?:\/\//i.test(value || '') ? value.trim().replace(/\/$/, '') : (value || '').replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\D/g, '').replace(/^(00963|963)/, '0');
             const contact = normalizeContact(phone);
             const matches = item => contact ? normalizeContact(item.phone || item.link) === contact : item.name.trim() === name.trim();
-            for (const cat of ['emergency', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'sweets']) {
+            for (const cat of ['emergency', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'taxis', 'sweets']) {
                 const list = adminData.services[cat] || [];
                 if (list.some(matches)) {
                     return true;
@@ -1023,14 +1053,18 @@
         }
 
         // Approve and automatically insert a student suggestion
-        function approveSuggestion(id) {
+        async function approveSuggestion(id) {
+            if (!sessionToken || document.getElementById('btnPushGitHub').disabled) return;
             const item = liveSuggestions.find(s => s.id === id);
             if (!item) return;
+            if (['approved', 'ignored'].includes(adminData.suggestion_reviews?.[item.reviewKey])) return;
             if (item.type.includes('تقييم') || item.category.includes('إبلاغ') || item.notes.includes('[بلاغ')) return;
             if (!item.name.trim() || !item.phone.trim() || checkItemExists(item.name, item.phone)) return;
 
             let cat = 'restaurants';
-            if (item.category.includes('طوارئ') || item.category.includes('صيدلية') || item.category.includes('إسعاف') || item.category.includes('مشفى') || item.category.includes('صحي')) {
+            if (/تكاسي|تاكسي|تكسي|موتور/.test(item.category)) {
+                cat = 'taxis';
+            } else if (item.category.includes('طوارئ') || item.category.includes('صيدلية') || item.category.includes('إسعاف') || item.category.includes('مشفى') || item.category.includes('صحي')) {
                 cat = 'emergency';
             } else if (item.category.includes('سوبر') || item.category.includes('ماركت')) {
                 cat = 'supermarkets';
@@ -1052,6 +1086,7 @@
             const isUrl = /^https?:\/\//i.test(val);
             const newItem = isUrl ? { name: item.name.trim(), link: val } : { name: item.name.trim(), phone: val };
             if (item.notes.trim()) newItem.note = item.notes.trim();
+            const previousData = structuredClone(adminData);
 
             if (cat === 'transport') {
                 const city = item.city.trim();
@@ -1067,9 +1102,7 @@
                 adminData.services[cat].push(newItem);
             }
 
-            renderAdminLists();
-            fetchLiveSuggestions(); // Re-render table with "موجود بالفعل" status
-            showToast(`✅ تم اعتماد وإدراج (${item.name}) في القائمة! اضغط "حفظ ونشر" لنشره على الموقع.`);
+            await persistSuggestionDecision(item, 'approved', previousData);
         }
 
         // Robust CSV Parser handling quotes, commas and newlines
