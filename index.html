@@ -10,19 +10,20 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="دليل خدمات جامعة الأندلس">
     <meta property="og:locale" content="ar_SY">
-    <meta property="og:image" content="icon.svg">
+    <meta property="og:image" content="Vertical%20Trans.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="نافذة خدمية | اتحاد طلبة سوريا — جامعة الأندلس">
     <meta name="twitter:description" content="دليل تفاعلي شامل لطلاب جامعة الأندلس في القدموس.">
-    <meta name="twitter:image" content="icon.svg">
+    <meta name="twitter:image" content="Vertical%20Trans.png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f4c42">
-    <link rel="icon" type="image/svg+xml" href="icon.svg">
-    <script src="shared.js"></script>
+    <link rel="icon" type="image/png" href="Asset%201.png">
+    <link rel="apple-touch-icon" href="Asset%201.png">
+    <script src="shared.js?v=10"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=10">
 </head>
 <body>
 
@@ -30,7 +31,7 @@
 <nav class="site-nav" role="navigation" aria-label="التنقل الرئيسي">
   <div class="container site-nav-inner">
     <div class="brand-wrapper">
-      <img src="icon.svg" alt="دليل الطالب" class="brand-logo-img">
+      <img src="Asset%201.png" alt="شعار اتحاد طلبة سوريا" class="brand-logo-img">
       <div>
         <div class="brand-title">اتحاد طلبة سوريا</div>
         <div class="brand-subtitle">فرع جامعة الأندلس — الفريق التطوعي</div>
@@ -55,7 +56,7 @@
 <!-- HERO -->
 <header class="hero-section">
   <div class="container hero-content">
-    <img src="icon.svg" alt="دليل الطالب" class="hero-banner-img">
+    <img src="Vertical%20Trans.png" alt="اتحاد طلبة سوريا - فرع جامعة الأندلس" class="hero-banner-img">
     <div class="hero-badge">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       دليل الطالب الخدمي التفاعلي
@@ -199,7 +200,7 @@
     <div class="services-grid" id="services-grid">
       <!-- Emergency Card -->
       <div class="category-card" data-section="services">
-        <div class="category-header" style="background:var(--color-red);">
+        <div class="category-header emergency-header">
           <div class="category-title-wrap">
             <svg class="category-icon" style="color:#ffffff;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
             <h3 class="category-title">طوارئ وصيدليات</h3>
@@ -339,7 +340,7 @@
 <!-- FOOTER -->
 <footer class="site-footer">
   <div class="container">
-    <img src="icon.svg" alt="دليل الطالب" class="footer-logo" id="footerLogo">
+    <img src="Horiszontal.png" alt="اتحاد طلبة سوريا - فرع جامعة الأندلس" class="footer-logo" id="footerLogo">
     <p class="footer-team-title">الفريق التطوعي في جامعة الأندلس للعلوم الطبية</p>
     <p class="footer-team-subtitle">نافذة خدمية لطلاب الجامعة في منطقة القدموس</p>
     <div class="footer-buttons">
@@ -782,12 +783,13 @@
         }
     }
 
-    // --- RATINGS SYSTEM (Honest, Unfabricated, Anti-Spam) ---
+    // --- RATINGS SYSTEM (One editable local rating per service) ---
     async function rateItem(key, stars, itemName) {
         if (!Number.isInteger(stars) || stars < 1 || stars > 5) return;
         const userRatings = getLocalUserRatings();
-        if (Object.hasOwn(userRatings, key)) {
-            showToast(`لقد قمت بتقييم هذه الخدمة مسبقاً بـ (${getStarLabel(userRatings[key])}) ⭐`, 'success');
+        const previousStars = Object.hasOwn(userRatings, key) ? userRatings[key] : null;
+        if (previousStars === stars) {
+            showToast(`تقييمك الحالي (${getStarLabel(stars)}) ⭐ — اضغط نجمة أخرى لتعديله`);
             return;
         }
 
@@ -797,9 +799,14 @@
                 showToast('تعذر حفظ التقييم في هذا المتصفح', 'error');
                 return;
             }
-        } catch (e) {}
+        } catch (e) {
+            showToast('تعذر حفظ التقييم في هذا المتصفح', 'error');
+            return;
+        }
 
-        showToast(`شكراً لك! تم تسجيل تقييمك (${getStarLabel(stars)}) ⭐`);
+        showToast(previousStars
+            ? `تم تعديل تقييمك من ${previousStars} إلى ${stars} نجوم ⭐`
+            : `شكراً لك! تم تسجيل تقييمك (${getStarLabel(stars)}) ⭐`);
         renderAll();
 
         // Submit to Google Form with real entries
@@ -810,6 +817,9 @@
             fd.append(ENTRIES.name, itemName);
             fd.append(ENTRIES.phone, key);
             fd.append(ENTRIES.rating, stars.toString());
+            if (previousStars) {
+                fd.append(ENTRIES.notes, `[تعديل تقييم]: من ${previousStars} إلى ${stars} نجوم — تحديث لتقييم سابق وليس تقييماً مستقلاً`);
+            }
 
             await fetch(GOOGLE_FORM_URL, {
                 method: "POST",
@@ -832,7 +842,7 @@
             const starClass = isFilled ? 'star-btn star-filled' : 'star-btn';
             const label = getStarLabel(s);
             starsBtns += `
-                <button type="button" class="${starClass}" data-action="rate" data-key="${escapeHtml(key)}" data-stars="${s}" data-name="${escapeHtml(item.name)}" title="قيّم بـ ${label}" aria-label="تقييم بـ ${label}">
+                <button type="button" class="${starClass}" data-action="rate" data-key="${escapeHtml(key)}" data-stars="${s}" data-name="${escapeHtml(item.name)}" title="${userStars ? 'تعديل التقييم إلى' : 'قيّم بـ'} ${label}" aria-label="${userStars ? 'تعديل التقييم إلى' : 'تقييم بـ'} ${label}" aria-pressed="${userStars === s}">
                     <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                 </button>
             `;
@@ -843,6 +853,7 @@
                 <div class="rating-bar">
                     <div class="stars-list">${starsBtns}</div>
                     <span class="rating-score">تقييمك: ${userStars}/5</span>
+                    <span class="rating-unrated">اضغط نجمة أخرى للتعديل</span>
                 </div>
             `;
         }

@@ -1,6 +1,6 @@
 // Cache only this application's public assets, never API calls or credentials.
-const CACHE_NAME = 'au-portal-v8';
-const ASSETS_TO_CACHE = ['index.html', 'style.css', 'shared.js', 'data.json', 'manifest.json', 'icon.svg'];
+const CACHE_NAME = 'au-portal-v10';
+const ASSETS_TO_CACHE = ['index.html', 'style.css', 'shared.js', 'data.json', 'manifest.json', 'Asset%201.png', 'Vertical%20Trans.png', 'Horiszontal.png', 'app-logo-192.png', 'app-logo-512.png'];
 const assetURLs = new Set(ASSETS_TO_CACHE.map(path => new URL(path, self.registration.scope).href));
 
 self.addEventListener('install', event => {
@@ -25,7 +25,7 @@ self.addEventListener('fetch', event => {
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
     try {
-      const response = await fetch(request);
+      const response = await fetch(request, { cache: 'no-cache' });
       if (!response.ok) throw new Error('Asset unavailable');
       await cache.put(url.href, response.clone());
       return response;
