@@ -105,6 +105,52 @@
                 <div id="publishStatus" class="status-box"></div>
             </div>
 
+            <!-- LIVE STUDENT SUGGESTIONS & REPORTS INBOX -->
+            <div class="admin-card">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 1rem; border-bottom: 1px solid var(--color-slate-200); padding-bottom: 0.75rem;">
+                    <div>
+                        <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--color-teal-dark); display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="width: 4px; height: 18px; background-color: var(--color-teal); border-radius: 99px;"></span>
+                            <span>اقتراحات وبلاغات الطلاب الواردة</span>
+                        </h3>
+                        <p style="font-size: 0.75rem; color: var(--color-slate-500); margin-top: 0.2rem;">
+                            مزامنة مباشرة مع Google Sheet — يمكنك مراجعة اقتراحات الطلاب واعتمادها بضغطة زر
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <button type="button" onclick="fetchLiveSuggestions()" id="btnRefreshSheet" class="btn-secondary" style="font-size: 0.75rem; padding: 0.4rem 0.75rem;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                            <span>تحديث الردود</span>
+                        </button>
+                        <a href="https://docs.google.com/spreadsheets/d/1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="font-size: 0.75rem; padding: 0.4rem 0.75rem;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                            <span>فتح جدول البيانات</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="suggestionsLoading" style="text-align: center; padding: 1.5rem; font-size: 0.85rem; color: var(--color-slate-500);">
+                    جاري فحص الاقتراحات الواردة...
+                </div>
+
+                <div id="suggestionsTableContainer" style="display: none; overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: right;">
+                        <thead>
+                            <tr style="background-color: var(--color-slate-100); border-bottom: 2px solid var(--color-slate-200); color: var(--color-slate-700);">
+                                <th style="padding: 0.65rem 0.75rem;">النوع</th>
+                                <th style="padding: 0.65rem 0.75rem;">التصنيف</th>
+                                <th style="padding: 0.65rem 0.75rem;">المحافظة</th>
+                                <th style="padding: 0.65rem 0.75rem;">الاسم</th>
+                                <th style="padding: 0.65rem 0.75rem;">الرقم / الرابط</th>
+                                <th style="padding: 0.65rem 0.75rem;">ملاحظات / بلاغ</th>
+                                <th style="padding: 0.65rem 0.75rem; text-align: center;">إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="suggestionsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- ADD NEW ENTRY FORM -->
             <div class="admin-card">
                 <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--color-teal-dark); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
@@ -118,6 +164,7 @@
                         <select id="newCategory" class="form-select" onchange="toggleAdminCityInput()" required>
                             <option value="restaurants">المطاعم (القدموس)</option>
                             <option value="supermarkets">سوبر ماركت (القدموس)</option>
+                            <option value="maintenance">خدمات وصيانة (كهرباء، صحية، اتصالات)</option>
                             <option value="sweets">حلويات وكافيه (القدموس)</option>
                             <option value="transport">شركات النقل والمواصلات</option>
                         </select>
@@ -283,6 +330,7 @@
                 tokenInput.value = '';
 
                 renderAdminLists();
+                fetchLiveSuggestions();
                 showToast('✅ تم تسجيل الدخول وتحميل أحدث البيانات من GitHub بنجاح.');
             } catch (err) {
                 errEl.textContent = `❌ ${err.message}`;
@@ -324,6 +372,7 @@
             const serviceLabels = {
                 restaurants: 'المطاعم (القدموس)',
                 supermarkets: 'سوبر ماركت (القدموس)',
+                maintenance: 'خدمات وصيانة (كهرباء، صحية، اتصالات)',
                 sweets: 'حلويات وكافيه (القدموس)'
             };
 
@@ -542,6 +591,181 @@
             } finally {
                 btn.disabled = false;
             }
+        }
+
+        // --- GOOGLE SHEETS LIVE SUGGESTIONS & INBOX ---
+        const SHEET_ID = '1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI';
+        let liveSuggestions = [];
+
+        async function fetchLiveSuggestions() {
+            const loadingEl = document.getElementById('suggestionsLoading');
+            const tableContainer = document.getElementById('suggestionsTableContainer');
+            const tbody = document.getElementById('suggestionsTableBody');
+            const btnRefresh = document.getElementById('btnRefreshSheet');
+
+            loadingEl.style.display = 'block';
+            loadingEl.textContent = 'جاري جلب أحدث الاقتراحات من Google Sheet...';
+            tableContainer.style.display = 'none';
+            if (btnRefresh) btnRefresh.disabled = true;
+
+            try {
+                // Fetch public sheet CSV via Google visualization API
+                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&t=${Date.now()}`;
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(`كود الاستجابة: ${res.status}`);
+
+                const csvText = await res.text();
+                const rows = parseCSV(csvText);
+
+                // Row 0 is header: ['Timestamp', 'نوع المشاركة', 'التصنيف', 'اسم المحافظة...', 'اسم المكان...', 'رقم الهاتف...', 'التقييم...', 'ملاحظات...']
+                liveSuggestions = [];
+                for (let i = 1; i < rows.length; i++) {
+                    const r = rows[i];
+                    if (!r || r.length < 5 || !r[4]) continue; // Skip empty rows
+
+                    liveSuggestions.push({
+                        id: i,
+                        timestamp: r[0] || '',
+                        type: r[1] || 'اقتراح إضافة رقم أو خدمة جديدة',
+                        category: r[2] || '',
+                        city: r[3] || '',
+                        name: r[4] || '',
+                        phone: r[5] || '',
+                        rating: r[6] || '',
+                        notes: r[7] || ''
+                    });
+                }
+
+                if (liveSuggestions.length === 0) {
+                    loadingEl.textContent = 'لا توجد أي اقتراحات أو بلاغات جديدة في الجدول حالياً.';
+                    loadingEl.style.display = 'block';
+                    return;
+                }
+
+                // Render suggestions table
+                tbody.innerHTML = liveSuggestions.slice().reverse().map(item => {
+                    const isReport = item.type.includes('تقييم') || item.category.includes('إبلاغ') || item.notes.includes('[بلاغ');
+                    const badgeClass = isReport ? 'admin-badge-red' : 'admin-badge-teal';
+                    const badgeText = isReport ? 'بلاغ مشكلة' : 'اقتراح جديد';
+
+                    // Check if already in adminData
+                    const alreadyExists = checkItemExists(item.name, item.phone);
+
+                    return `
+                        <tr style="border-bottom: 1px solid var(--color-slate-200); background-color: ${isReport ? '#fff5f5' : '#ffffff'};">
+                            <td style="padding: 0.65rem 0.75rem;">
+                                <span class="admin-badge ${badgeClass}">${badgeText}</span>
+                            </td>
+                            <td style="padding: 0.65rem 0.75rem; font-weight: 700; color: var(--color-slate-700);">
+                                ${escapeHtml(item.category || '—')}
+                            </td>
+                            <td style="padding: 0.65rem 0.75rem; color: var(--color-slate-600);">
+                                ${escapeHtml(item.city || 'القدموس')}
+                            </td>
+                            <td style="padding: 0.65rem 0.75rem; font-weight: 800; color: var(--color-slate-900);">
+                                ${escapeHtml(item.name)}
+                            </td>
+                            <td style="padding: 0.65rem 0.75rem; font-family: monospace;" dir="ltr">
+                                ${escapeHtml(item.phone)}
+                            </td>
+                            <td style="padding: 0.65rem 0.75rem; font-size: 0.75rem; color: var(--color-slate-600); max-width: 220px;">
+                                ${escapeHtml(item.notes || '—')}
+                            </td>
+                            <td style="padding: 0.65rem 0.75rem; text-align: center;">
+                                ${alreadyExists ? `
+                                    <span class="admin-badge admin-badge-teal" style="font-size: 0.7rem;">موجود بالفعل ✓</span>
+                                ` : `
+                                    <button type="button" onclick="approveSuggestion(${item.id})" class="btn-primary" style="font-size: 0.725rem; padding: 0.35rem 0.65rem;">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                        <span>اعتماد وإدراج</span>
+                                    </button>
+                                `}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                loadingEl.style.display = 'none';
+                tableContainer.style.display = 'block';
+            } catch (err) {
+                loadingEl.textContent = `تعذر قراءة الردود من الجدول تلقائياً (${err.message}). تأكد أن إعدادات المشاركة: Anyone with the link can view.`;
+                loadingEl.style.display = 'block';
+            } finally {
+                if (btnRefresh) btnRefresh.disabled = false;
+            }
+        }
+
+        // Check if an item already exists in portal data
+        function checkItemExists(name, phone) {
+            const cleanPhone = (phone || '').replace(/\D/g, '');
+            for (const cat of ['restaurants', 'supermarkets', 'maintenance', 'sweets']) {
+                const list = adminData.services[cat] || [];
+                if (list.some(i => i.name === name || (cleanPhone && (i.phone || '').includes(cleanPhone)))) {
+                    return true;
+                }
+            }
+            for (const group of (adminData.transport || [])) {
+                if (group.items.some(i => i.name === name || (cleanPhone && (i.phone || '').includes(cleanPhone)))) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Approve and automatically insert a student suggestion
+        function approveSuggestion(id) {
+            const item = liveSuggestions.find(s => s.id === id);
+            if (!item) return;
+
+            let cat = 'restaurants';
+            if (item.category.includes('سوبر') || item.category.includes('ماركت')) {
+                cat = 'supermarkets';
+            } else if (item.category.includes('صيانة') || item.category.includes('كهرباء') || item.category.includes('نت')) {
+                cat = 'maintenance';
+            } else if (item.category.includes('حلو') || item.category.includes('كافيه')) {
+                cat = 'sweets';
+            } else if (item.category.includes('مواصلات') || item.category.includes('سرفيس') || item.category.includes('بولمان')) {
+                cat = 'transport';
+            }
+
+            const val = item.phone.trim();
+            const isUrl = /^https?:\/\//i.test(val);
+            const newItem = isUrl ? { name: item.name.trim(), link: val } : { name: item.name.trim(), phone: val };
+
+            if (cat === 'transport') {
+                const city = item.city.trim() || 'دمشق';
+                let group = adminData.transport.find(g => g.city.trim() === city);
+                if (!group) {
+                    group = { city, items: [] };
+                    adminData.transport.push(group);
+                }
+                group.items.push(newItem);
+            } else {
+                if (!adminData.services[cat]) adminData.services[cat] = [];
+                adminData.services[cat].push(newItem);
+            }
+
+            renderAdminLists();
+            fetchLiveSuggestions(); // Re-render table with "موجود بالفعل" status
+            showToast(`✅ تم اعتماد وإدراج (${item.name}) في القائمة! اضغط "حفظ ونشر" لنشره على الموقع.`);
+        }
+
+        // Robust CSV Parser handling quotes and commas
+        function parseCSV(text) {
+            const p = '', row = [''], ret = [row];
+            let i = 0, r = 0, s = !0, l;
+            for (l of text) {
+                if ('"' === l) {
+                    if (s && l === p) row[i] += l;
+                    s = !s;
+                } else if (',' === l && s) l = row[++i] = '';
+                else if ('\n' === l && s) {
+                    if ('\r' === p) row[i] = row[i].slice(0, -1);
+                    row = ret[++r] = [l = '']; i = 0;
+                } else row[i] += l;
+                p = l;
+            }
+            return ret;
         }
     </script>
 </body>

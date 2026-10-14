@@ -131,6 +131,17 @@
         </div>
         <div class="category-items-list" id="list-supermarkets" role="list" aria-label="قائمة السوبر ماركت"></div>
       </div>
+      <!-- Maintenance & Services Card -->
+      <div class="category-card" data-section="services">
+        <div class="category-header">
+          <div class="category-title-wrap">
+            <svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            <h3 class="category-title">خدمات وصيانة</h3>
+          </div>
+          <span class="category-count" id="count-maintenance">0</span>
+        </div>
+        <div class="category-items-list" id="list-maintenance" role="list" aria-label="قائمة خدمات الصيانة والاتصالات"></div>
+      </div>
       <!-- Sweets Card -->
       <div class="category-card" data-section="services">
         <div class="category-header">
@@ -312,13 +323,22 @@
                 { name: "شيكن هاوس", phone: "0982899566" },
                 { name: "مطعم الملك", phone: "0940447761" },
                 { name: "مطعم الليث", phone: "0982365746" },
-                { name: "مطعم عبدو", phone: "0945987118" }
+                { name: "مطعم عبدو", phone: "0945987118" },
+                { name: "مطعم مدماك", phone: "0991028556" },
+                { name: "مطعم كريم", phone: "0939394107" },
+                { name: "مطعم معجنات وفرايز", phone: "0959876806" },
+                { name: "معجنات محمود", phone: "0992614648" },
+                { name: "مطعم انوش", phone: "0934081982" }
             ],
             supermarkets: [
                 { name: "وديع", phone: "0983370760" },
                 { name: "بيت المونة", phone: "0991974444" },
                 { name: "ميني ماركت ابو علي", phone: "0935660586" },
-                { name: "الخير", phone: "0939635250" }
+                { name: "الخير", phone: "0939635250" },
+                { name: "بيدونات مي شرب", phone: "0988968328" }
+            ],
+            maintenance: [
+                { name: "علي الزير (اتصالات، كهرباء، صحية، نت)", phone: "0940254845" }
             ],
             sweets: [
                 { name: "مرعي", phone: "0930267864" },
@@ -632,13 +652,20 @@
         // Services Lists
         const rests = portalData.services.restaurants || [];
         const supers = portalData.services.supermarkets || [];
+        const maintenance = portalData.services.maintenance || [];
         const sweets = portalData.services.sweets || [];
 
         document.getElementById('list-restaurants').innerHTML = sortArray(rests).map(i => createContactRow(i, "مطاعم مطعم")).join('');
         document.getElementById('count-restaurants').textContent = rests.length;
 
-        document.getElementById('list-supermarkets').innerHTML = sortArray(supers).map(i => createContactRow(i, "سوبر ماركت ماركت دكان")).join('');
+        document.getElementById('list-supermarkets').innerHTML = sortArray(supers).map(i => createContactRow(i, "سوبر ماركت ماركت دكان مياه مي")).join('');
         document.getElementById('count-supermarkets').textContent = supers.length;
+
+        const maintEl = document.getElementById('list-maintenance');
+        if (maintEl) {
+            maintEl.innerHTML = sortArray(maintenance).map(i => createContactRow(i, "صيانة كهرباء اتصالات صحية نت")).join('');
+            document.getElementById('count-maintenance').textContent = maintenance.length;
+        }
 
         document.getElementById('list-sweets').innerHTML = sortArray(sweets).map(i => createContactRow(i, "حلويات حلو كافيه")).join('');
         document.getElementById('count-sweets').textContent = sweets.length;
@@ -921,6 +948,9 @@
                 Array.isArray(json.services.sweets) &&
                 Array.isArray(json.transport)
             ) {
+                if (!Array.isArray(json.services.maintenance)) {
+                    json.services.maintenance = [];
+                }
                 portalData = json;
                 renderAll();
             }
