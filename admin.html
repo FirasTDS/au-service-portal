@@ -543,6 +543,34 @@
                 </div>
             `;
 
+            // Duty Pharmacies Section in Admin
+            const duty = adminData.pharmacies_duty;
+            if (duty && duty.schedule && duty.schedule.length > 0) {
+                total += duty.schedule.length;
+                html += `
+                    <div style="background-color: var(--color-slate-50); border: 1.5px solid #6ee7b7; border-radius: var(--radius-lg); padding: 1rem;">
+                        <div style="font-weight: 800; font-size: 0.95rem; color: #065f46; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span>💊 جدول الصيدليات المناوبة (${escapeHtml(duty.month_name || 'الشهر الحالي')})</span>
+                            <span class="admin-badge admin-badge-teal">${duty.schedule.length} يوم مناوبة</span>
+                        </div>
+                        <div style="max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.35rem; padding-left: 0.25rem;">
+                            ${duty.schedule.map((item, idx) => `
+                                <div class="admin-item-row" style="background-color: #ffffff; padding: 0.45rem 0.65rem;">
+                                    <div class="admin-item-meta" style="flex: 1 1 200px;">
+                                        <div>
+                                            <span style="font-weight: 800; color: var(--color-teal); font-size: 0.8rem;">${escapeHtml(item.date.substring(5))} (${escapeHtml(item.day)})</span>:
+                                            <strong>${escapeHtml(item.pharmacy)}</strong>
+                                            <span style="color: var(--color-slate-500); font-family: monospace; margin-right: 0.35rem;" dir="ltr">${escapeHtml(item.display_phone || item.phone)}</span>
+                                        </div>
+                                        <div style="font-size: 0.75rem; color: var(--color-slate-500); margin-top: 0.15rem;">📍 ${escapeHtml(item.address)}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
             container.innerHTML = html;
             document.getElementById('totalItemsCount').textContent = `${total} عنصر متاح`;
         }

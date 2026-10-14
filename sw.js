@@ -1,5 +1,5 @@
 // Service Worker for Offline Directory Access
-const CACHE_NAME = 'au-portal-v5';
+const CACHE_NAME = 'au-portal-v6';
 const ASSETS_TO_CACHE = [
   './',
   'index.html',
