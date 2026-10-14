@@ -41,6 +41,11 @@
       {
         "name": "مطعم عبدو",
         "phone": "0945987118"
+      },
+      {
+        "name": "بيتزا و فطائر ابو علي",
+        "phone": "0995787906 / 0990351968",
+        "note": "يوجد خدمة ديلفري للجامعة و بكل القدموس"
       }
     ],
     "supermarkets": [
@@ -501,6 +506,7 @@
     ]
   },
   "suggestion_reviews": {
-    "eec3915b884fa64d5454c356d7f106e0dfb592ef142e80ea75ad9aea64054f75": "ignored"
+    "eec3915b884fa64d5454c356d7f106e0dfb592ef142e80ea75ad9aea64054f75": "ignored",
+    "81c80a9eadefc58316c7963ac67a57b5aa2de85a9f1a11604003430a8d3907f0": "approved"
   }
 }
