@@ -84,7 +84,6 @@
         <!-- Search and Filter Bar -->
         <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 sticky top-3 z-20">
             <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
-                <!-- Tabs -->
                 <div class="flex w-full md:w-auto bg-slate-100 p-1.5 rounded-xl gap-1">
                     <button onclick="switchTab('all')" id="tab-all" class="tab-btn tab-active flex-1 md:flex-initial px-5 py-2 rounded-lg font-bold text-sm transition-all">
                         الكل
@@ -97,7 +96,6 @@
                     </button>
                 </div>
 
-                <!-- Search Input -->
                 <div class="relative w-full md:w-80">
                     <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
                     <input 
@@ -132,7 +130,6 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Restaurants -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden category-card">
                     <div class="bg-susa-teal text-white px-5 py-3.5 flex items-center justify-between">
                         <div class="flex items-center gap-2.5">
@@ -143,7 +140,6 @@
                     <div class="divide-y divide-slate-100 p-2" id="list-restaurants"></div>
                 </div>
 
-                <!-- Supermarkets -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden category-card">
                     <div class="bg-susa-teal text-white px-5 py-3.5 flex items-center justify-between">
                         <div class="flex items-center gap-2.5">
@@ -154,7 +150,6 @@
                     <div class="divide-y divide-slate-100 p-2" id="list-supermarkets"></div>
                 </div>
 
-                <!-- Sweets -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden category-card">
                     <div class="bg-susa-teal text-white px-5 py-3.5 flex items-center justify-between">
                         <div class="flex items-center gap-2.5">
@@ -197,65 +192,74 @@
         <span id="toastMsg">تم نسخ الرقم بنجاح</span>
     </div>
 
-    <!-- Footer -->
+    <!-- Footer (No visible lock icon! Triple-click logo or visit #admin to open login gate) -->
     <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
         <div class="max-w-5xl mx-auto px-4 flex flex-col items-center text-center">
-            <img src="Horiszontal.png" alt="اتحاد طلبة سوريا - فرع جامعة الأندلس" class="h-16 md:h-20 object-contain mb-3" onerror="this.style.display='none'">
+            <img id="footerLogo" src="Horiszontal.png" alt="اتحاد طلبة سوريا - فرع جامعة الأندلس" class="h-16 md:h-20 object-contain mb-3 select-none cursor-pointer" onerror="this.style.display='none'">
             <p class="font-bold text-susa-tealDark text-sm">الفريق التطوعي في جامعة الأندلس للعلوم الطبية</p>
             <p class="text-xs text-slate-500 mt-1 mb-4">نافذة خدمية لطلاب الجامعة في منطقة القدموس</p>
-            <div class="flex items-center gap-3">
-                <a href="https://t.me/AU_Volunteer_Team" target="_blank" rel="noopener noreferrer" 
-                   class="inline-flex items-center gap-2 bg-susa-teal hover:bg-susa-tealLight text-white px-4 py-2 rounded-xl text-xs font-bold transition-all">
-                    <i class="fa-brands fa-telegram text-sm"></i>
-                    <span>القناة الرسمية على تلغرام</span>
-                </a>
-                <!-- Subtle Admin Portal Button -->
-                <button onclick="openAdminModal()" title="لوحة تحكم المشرف" 
-                        class="p-2 text-slate-300 hover:text-susa-red transition-colors rounded-lg">
-                    <i class="fa-solid fa-lock text-xs"></i>
-                </button>
-            </div>
+            <a href="https://t.me/AU_Volunteer_Team" target="_blank" rel="noopener noreferrer" 
+               class="inline-flex items-center gap-2 bg-susa-teal hover:bg-susa-tealLight text-white px-4 py-2 rounded-xl text-xs font-bold transition-all">
+                <i class="fa-brands fa-telegram text-sm"></i>
+                <span>القناة الرسمية على تلغرام</span>
+            </a>
         </div>
     </footer>
 
     <!-- ========================================== -->
-    <!-- ADMIN PORTAL MODAL                         -->
+    <!-- STEP 1: ADMIN AUTHENTICATION GATE MODAL    -->
+    <!-- ========================================== -->
+    <div id="authModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 text-center">
+            <div class="w-12 h-12 rounded-2xl bg-susa-teal/10 text-susa-teal flex items-center justify-center mx-auto mb-3 text-xl">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h3 class="font-extrabold text-lg text-susa-tealDark">تسجيل دخول المشرف</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-4">
+                يتم التحقق من صلاحية المشرف مباشرة عبر خوادم GitHub قبل فتح لوحة التحكم.
+            </p>
+            <input type="password" id="authTokenInput" placeholder="أدخل GitHub Personal Access Token (ghp_...)" dir="ltr"
+                   class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono mb-3 focus:outline-none focus:ring-2 focus:ring-susa-teal">
+            <div id="authError" class="text-xs font-bold text-red-600 mb-3 hidden"></div>
+            <div class="flex gap-2">
+                <button onclick="verifyAdminAccess()" id="btnVerify" class="flex-1 bg-susa-teal hover:bg-susa-tealLight text-white py-2.5 rounded-xl text-xs font-bold transition-all">
+                    تحقق ودخول
+                </button>
+                <button onclick="closeAuthModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold">
+                    إلغاء
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- STEP 2: PROTECTED ADMIN DASHBOARD MODAL    -->
     <!-- ========================================== -->
     <div id="adminModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
             
-            <!-- Modal Header -->
             <div class="bg-susa-tealDark text-white px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <img src="Asset%201.png" alt="Logo" class="w-8 h-8 bg-white rounded-lg p-1" onerror="this.style.display='none'">
                     <div>
-                        <h3 class="font-extrabold text-lg">لوحة تحكم المشرف — تحديث البيانات</h3>
-                        <p class="text-xs text-emerald-200">إضافة أو تعديل أو حذف الأرقام ونشرها مباشرة على الموقع</p>
+                        <h3 class="font-extrabold text-lg">لوحة تحكم المشرف الموثقة</h3>
+                        <p class="text-xs text-emerald-200">متصل بمستودع FirasTDS/au-service-portal</p>
                     </div>
                 </div>
-                <button onclick="closeAdminModal()" class="text-slate-300 hover:text-white text-xl px-2">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="logoutAdmin()" class="text-xs bg-red-600/80 hover:bg-red-600 px-3 py-1.5 rounded-lg font-bold">
+                        تسجيل خروج
+                    </button>
+                    <button onclick="closeAdminModal()" class="text-slate-300 hover:text-white text-xl px-2">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
             </div>
 
-            <!-- Modal Body -->
             <div class="p-6 overflow-y-auto space-y-6 flex-grow">
                 
-                <!-- Private Reference Links (Hidden from Public) -->
-                <div class="bg-slate-100 p-4 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-3">
-                    <div class="text-xs font-bold text-slate-700 flex items-center gap-2">
-                        <i class="fa-brands fa-telegram text-sky-600 text-base"></i>
-                        <span>روابط رسائل التلغرام المرجعية (تظهر للمشرف فقط):</span>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <a href="https://t.me/AU_Volunteer_Team/13" target="_blank" class="text-xs bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 px-3 py-1.5 rounded-lg font-bold">
-                            منشور خدمات القدموس (#13) <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
-                        </a>
-                        <a href="https://t.me/AU_Volunteer_Team/12" target="_blank" class="text-xs bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 px-3 py-1.5 rounded-lg font-bold">
-                            منشور شركات المواصلات (#12) <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
-                        </a>
-                    </div>
-                </div>
+                <!-- Private Reference Links (Rendered dynamically ONLY after GitHub auth succeeds) -->
+                <div id="adminSecretLinks" class="bg-slate-100 p-4 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-3"></div>
 
                 <!-- Add New Item Form -->
                 <div class="bg-susa-tealSoft border border-susa-teal/20 p-4 rounded-xl">
@@ -275,47 +279,25 @@
                         <input type="text" id="adminPhone" placeholder="الرقم أو الرابط" class="bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm" dir="ltr">
                     </div>
                     <button onclick="adminAddItem()" class="mt-3 bg-susa-teal hover:bg-susa-tealLight text-white px-5 py-2 rounded-xl text-xs font-bold transition-all">
-                        <i class="fa-solid fa-plus ml-1"></i> مدرج في القائمة
+                        <i class="fa-solid fa-plus ml-1"></i> إدراج في القائمة
                     </button>
                 </div>
 
                 <!-- Current Items Editor -->
                 <div>
-                    <h4 class="font-extrabold text-sm text-slate-800 mb-2">القائمة الحالية (يمكنك الحذف أو التعديل مباشرة):</h4>
+                    <h4 class="font-extrabold text-sm text-slate-800 mb-2">القائمة الحالية (احذف أو أضف ثم اضغط حفظ ونشر بالأسفل):</h4>
                     <div id="adminListContainer" class="space-y-4 max-h-72 overflow-y-auto pr-1"></div>
                 </div>
 
-                <!-- GitHub Direct Sync Configuration -->
-                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
-                    <div class="flex items-center justify-between">
-                        <h4 class="font-extrabold text-sm text-slate-800 flex items-center gap-2">
-                            <i class="fa-brands fa-github text-lg"></i>
-                            <span>النشر المباشر على GitHub (اختياري)</span>
-                        </h4>
-                        <span class="text-[11px] text-slate-500">المستودع: <code dir="ltr">FirasTDS/au-service-portal</code></span>
-                    </div>
-                    <p class="text-xs text-slate-500">
-                        أدخل رمز الوصول الشخصي (GitHub Personal Access Token بصلاحية <code>repo</code> أو <code>contents:write</code>) لحفظ التعديلات مباشرة على الموقع بضغطة زر:
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" dir="ltr"
-                               class="flex-grow bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono">
-                        <button onclick="pushToGitHub()" id="btnPushGH"
-                                class="bg-susa-red hover:bg-susa-redLight text-white px-5 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                            <span>حفظ ونشر على الموقع الآن</span>
-                        </button>
-                    </div>
-                    <div id="ghStatus" class="text-xs font-bold hidden"></div>
-                </div>
-
+                <div id="ghStatus" class="text-xs font-bold hidden p-3 rounded-xl"></div>
             </div>
 
             <!-- Modal Footer -->
             <div class="bg-slate-100 px-6 py-3.5 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
-                <button onclick="downloadDataJson()" class="bg-white hover:bg-slate-200 text-slate-700 border border-slate-300 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-download"></i>
-                    <span>تحميل ملف data.json يدوياً</span>
+                <button onclick="pushToGitHub()" id="btnPushGH"
+                        class="bg-susa-red hover:bg-susa-redLight text-white px-6 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span>حفظ ونشر التعديلات على الموقع الآن</span>
                 </button>
                 <button onclick="closeAdminModal()" class="bg-slate-700 hover:bg-slate-800 text-white px-5 py-2 rounded-xl text-xs font-bold">
                     إغلاق
@@ -324,13 +306,12 @@
         </div>
     </div>
 
-    <!-- Application Script -->
     <script>
         const GITHUB_OWNER = "FirasTDS";
         const GITHUB_REPO = "au-service-portal";
         const DATA_FILE_PATH = "data.json";
+        let verifiedToken = null;
 
-        // Default fallback data (used if data.json isn't loaded yet)
         let portalData = {
             services: {
                 restaurants: [
@@ -423,12 +404,8 @@
         async function loadData() {
             try {
                 const res = await fetch(`${DATA_FILE_PATH}?t=${Date.now()}`);
-                if (res.ok) {
-                    portalData = await res.json();
-                }
-            } catch (e) {
-                console.log("Using embedded default data.");
-            }
+                if (res.ok) portalData = await res.json();
+            } catch (e) {}
             renderAll();
         }
 
@@ -543,34 +520,125 @@
         }
 
         // ==========================================
-        // ADMIN PORTAL FUNCTIONS
+        // SECURE GITHUB-VERIFIED ADMIN GATE
         // ==========================================
-        function openAdminModal() {
+        function triggerAdminGate() {
+            if (verifiedToken) {
+                openUnlockedDashboard();
+                return;
+            }
             const savedToken = localStorage.getItem('susa_gh_token');
-            if (savedToken) document.getElementById('ghToken').value = savedToken;
+            if (savedToken) {
+                document.getElementById('authTokenInput').value = savedToken;
+            }
+            document.getElementById('authError').classList.add('hidden');
+            const authModal = document.getElementById('authModal');
+            authModal.classList.remove('hidden');
+            authModal.classList.add('flex');
+        }
+
+        function closeAuthModal() {
+            const authModal = document.getElementById('authModal');
+            authModal.classList.add('hidden');
+            authModal.classList.remove('flex');
+            if (window.location.hash === '#admin') {
+                history.replaceState(null, null, ' ');
+            }
+        }
+
+        async function verifyAdminAccess() {
+            const token = document.getElementById('authTokenInput').value.trim();
+            const errEl = document.getElementById('authError');
+            const btn = document.getElementById('btnVerify');
+
+            if (!token) {
+                errEl.innerText = "يرجى إدخال رمز الوصول أولاً";
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "جاري التحقق من الصلاحيات...";
+            errEl.classList.add('hidden');
+
+            try {
+                // Verify with GitHub API that this token has push/admin permission on FirasTDS/au-service-portal
+                const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Accept": "application/vnd.github.v3+json"
+                    }
+                });
+
+                if (!res.ok) throw new Error("رمز غير صالح");
+                const repoData = await res.json();
+
+                if (!repoData.permissions || !repoData.permissions.push) {
+                    throw new Error("هذا الحساب لا يملك صلاحية التعديل على المستودع");
+                }
+
+                // Auth succeeded!
+                verifiedToken = token;
+                localStorage.setItem('susa_gh_token', token);
+                closeAuthModal();
+                openUnlockedDashboard();
+            } catch (e) {
+                errEl.innerText = "❌ فشل التحقق: الرمز غير صحيح أو لا يملك صلاحية التعديل (push).";
+                errEl.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "تحقق ودخول";
+            }
+        }
+
+        function openUnlockedDashboard() {
+            // Decode reference links only after verification
+            const baseTg = atob("aHR0cHM6Ly90Lm1lL0FVX1ZvbHVudGVlcl9UZWFtLw==");
+            document.getElementById('adminSecretLinks').innerHTML = `
+                <div class="text-xs font-bold text-slate-700 flex items-center gap-2">
+                    <i class="fa-brands fa-telegram text-sky-600 text-base"></i>
+                    <span>روابط رسائل التلغرام المرجعية (للمشرف فقط):</span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <a href="${baseTg}13" target="_blank" class="text-xs bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 px-3 py-1.5 rounded-lg font-bold">
+                        منشور خدمات القدموس (#13) <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
+                    </a>
+                    <a href="${baseTg}12" target="_blank" class="text-xs bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 px-3 py-1.5 rounded-lg font-bold">
+                        منشور شركات المواصلات (#12) <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
+                    </a>
+                </div>
+            `;
             renderAdminList();
             const modal = document.getElementById('adminModal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
         }
 
+        function logoutAdmin() {
+            verifiedToken = null;
+            localStorage.removeItem('susa_gh_token');
+            closeAdminModal();
+        }
+
         function closeAdminModal() {
             const modal = document.getElementById('adminModal');
             modal.classList.add('hidden');
             modal.classList.remove('flex');
+            if (window.location.hash === '#admin') {
+                history.replaceState(null, null, ' ');
+            }
         }
 
         function toggleCityInput() {
             const cat = document.getElementById('adminCategory').value;
-            const cityInput = document.getElementById('adminCity');
-            cityInput.classList.toggle('hidden', cat !== 'transport');
+            document.getElementById('adminCity').classList.toggle('hidden', cat !== 'transport');
         }
 
         function renderAdminList() {
             const container = document.getElementById('adminListContainer');
             let html = '';
-
             const catNames = { restaurants: 'المطاعم', supermarkets: 'سوبر ماركت', sweets: 'حلويات' };
+
             for (const [key, label] of Object.entries(catNames)) {
                 html += `<div class="bg-white border border-slate-200 rounded-xl p-3">
                     <div class="font-bold text-xs text-susa-teal mb-2">${label}</div>
@@ -613,7 +681,6 @@
             const val = document.getElementById('adminPhone').value.trim();
 
             if (!name || !val) return alert('يرجى إدخال الاسم والرقم');
-
             const newObj = val.startsWith('http') ? { name, link: val } : { name, phone: val };
 
             if (cat === 'transport') {
@@ -649,46 +716,27 @@
             renderAll();
         }
 
-        function downloadDataJson() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(portalData, null, 2));
-            const a = document.createElement('a');
-            a.setAttribute("href", dataStr);
-            a.setAttribute("download", "data.json");
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-        }
-
         async function pushToGitHub() {
-            const token = document.getElementById('ghToken').value.trim();
+            if (!verifiedToken) return alert("انتهت الجلسة، يرجى تسجيل الدخول مجدداً.");
             const statusEl = document.getElementById('ghStatus');
             const btn = document.getElementById('btnPushGH');
 
-            if (!token) {
-                alert("يرجى إدخال رمز GitHub Personal Access Token أولاً، أو استخدم زر تحميل data.json يدوياً.");
-                return;
-            }
-
-            localStorage.setItem('susa_gh_token', token);
             statusEl.classList.remove('hidden');
-            statusEl.className = "text-xs font-bold text-amber-600";
+            statusEl.className = "text-xs font-bold bg-amber-50 text-amber-700 p-3 rounded-xl";
             statusEl.innerText = "جاري الاتصال بـ GitHub وتحديث البيانات...";
             btn.disabled = true;
 
             try {
                 const apiUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FILE_PATH}`;
-                
-                // Get current file SHA if it exists
                 let sha = null;
                 const getRes = await fetch(apiUrl, {
-                    headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
+                    headers: { "Authorization": `Bearer ${verifiedToken}`, "Accept": "application/vnd.github.v3+json" }
                 });
                 if (getRes.ok) {
                     const fileInfo = await getRes.json();
                     sha = fileInfo.sha;
                 }
 
-                // Encode UTF-8 JSON to Base64
                 const jsonString = JSON.stringify(portalData, null, 2);
                 const contentBase64 = btoa(unescape(encodeURIComponent(jsonString)));
 
@@ -701,7 +749,7 @@
                 const putRes = await fetch(apiUrl, {
                     method: "PUT",
                     headers: {
-                        "Authorization": `Bearer ${token}`,
+                        "Authorization": `Bearer ${verifiedToken}`,
                         "Accept": "application/vnd.github.v3+json",
                         "Content-Type": "application/json"
                     },
@@ -709,26 +757,41 @@
                 });
 
                 if (putRes.ok) {
-                    statusEl.className = "text-xs font-bold text-emerald-600";
+                    statusEl.className = "text-xs font-bold bg-emerald-50 text-emerald-700 p-3 rounded-xl";
                     statusEl.innerText = "✅ تم حفظ التعديلات ونشرها على GitHub بنجاح! ستظهر لجميع الزوار خلال دقيقة.";
                 } else {
                     const err = await putRes.json();
                     throw new Error(err.message || "فشل التحديث");
                 }
             } catch (err) {
-                statusEl.className = "text-xs font-bold text-red-600";
+                statusEl.className = "text-xs font-bold bg-red-50 text-red-700 p-3 rounded-xl";
                 statusEl.innerText = `❌ خطأ: ${err.message}`;
             } finally {
                 btn.disabled = false;
             }
         }
 
-        // Open Admin automatically if URL ends with #admin
+        // Triple-click footer logo or visit #admin to open login gate
+        let logoClicks = 0;
+        let logoTimer = null;
+        document.getElementById('footerLogo').addEventListener('click', () => {
+            logoClicks++;
+            clearTimeout(logoTimer);
+            if (logoClicks === 3) {
+                logoClicks = 0;
+                triggerAdminGate();
+            } else {
+                logoTimer = setTimeout(() => { logoClicks = 0; }, 800);
+            }
+        });
+
+        window.addEventListener('hashchange', () => {
+            if (window.location.hash === '#admin') triggerAdminGate();
+        });
+
         window.addEventListener('DOMContentLoaded', () => {
             loadData();
-            if (window.location.hash === '#admin') {
-                openAdminModal();
-            }
+            if (window.location.hash === '#admin') triggerAdminGate();
         });
     </script>
 </body>
