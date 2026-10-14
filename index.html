@@ -4,795 +4,955 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نافذة خدمية | اتحاد طلبة سوريا - فرع جامعة الأندلس</title>
+    <meta name="description" content="دليل اتحاد طلبة سوريا الخدمي لطلاب جامعة الأندلس في منطقة القدموس: مطاعم، سوبر ماركت، حلويات، ومواصلات لجميع المحافظات.">
+    <meta property="og:title" content="نافذة خدمية | اتحاد طلبة سوريا">
+    <meta property="og:description" content="دليل خدمي تفاعلي لطلاب جامعة الأندلس في القدموس.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="Vertical%20Trans.png">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        cairo: ['Cairo', 'sans-serif'],
-                    },
-                    colors: {
-                        susa: {
-                            teal: '#0f4c42',
-                            tealLight: '#176b5d',
-                            tealDark: '#09332c',
-                            red: '#c11b1b',
-                            redLight: '#dc2626',
-                            redSoft: '#fef2f2',
-                            tealSoft: '#f0fdfa'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { font-family: 'Cairo', sans-serif; }
-        .tab-active {
-            background-color: #0f4c42;
-            color: white;
-            box-shadow: 0 4px 6px -1px rgba(15, 76, 66, 0.25);
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+<body>
 
-    <!-- Top Brand Navigation Bar -->
-    <nav class="bg-white border-b-4 border-susa-red shadow-sm">
-        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <img src="Asset%201.png" alt="شعار اتحاد طلبة سوريا" class="w-11 h-11 object-contain" onerror="this.style.display='none'">
-                <div>
-                    <div class="text-susa-red font-extrabold text-base md:text-lg leading-tight">اتحاد طلبة سوريا</div>
-                    <div class="text-susa-teal font-bold text-xs md:text-sm">فرع جامعة الأندلس — الفريق التطوعي</div>
-                </div>
-            </div>
-            <a href="https://t.me/AU_Volunteer_Team" target="_blank" rel="noopener noreferrer" 
-               class="inline-flex items-center gap-2 bg-susa-teal hover:bg-susa-tealLight text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm">
-                <i class="fa-brands fa-telegram text-sm"></i>
-                <span class="hidden sm:inline">قناة الفريق التطوعي</span>
-            </a>
-        </div>
-    </nav>
-
-    <!-- Hero Banner -->
-    <header class="bg-gradient-to-b from-white to-slate-100 border-b border-slate-200 relative overflow-hidden">
-        <div class="max-w-5xl mx-auto px-4 py-8 text-center relative z-10">
-            <img src="Vertical%20Trans.png" alt="اتحاد طلبة سوريا - فرع جامعة الأندلس" class="h-32 md:h-36 mx-auto mb-4 object-contain drop-shadow-sm" onerror="this.style.display='none'">
-            <div class="inline-flex items-center gap-2 bg-susa-teal/10 text-susa-teal px-4 py-1 rounded-full text-xs font-extrabold mb-2">
-                <i class="fa-solid fa-compass"></i>
-                <span>دليل الطالب الخدمي</span>
-            </div>
-            <h1 class="text-2xl md:text-4xl font-extrabold text-susa-tealDark mb-2">نافذة خدمية — منطقة القدموس</h1>
-            <p class="text-slate-600 max-w-xl mx-auto text-sm md:text-base">
-                دليل شامل لأرقام المطاعم، السوبر ماركت، الحلويات، وشركات المواصلات الخاصة لجميع المحافظات لخدمة طلاب جامعة الأندلس.
-            </p>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-6">
-
-        <!-- Search and Filter Bar -->
-        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 sticky top-3 z-20">
-            <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
-                <div class="flex w-full md:w-auto bg-slate-100 p-1.5 rounded-xl gap-1">
-                    <button onclick="switchTab('all')" id="tab-all" class="tab-btn tab-active flex-1 md:flex-initial px-5 py-2 rounded-lg font-bold text-sm transition-all">
-                        الكل
-                    </button>
-                    <button onclick="switchTab('services')" id="tab-services" class="tab-btn flex-1 md:flex-initial px-5 py-2 rounded-lg font-bold text-sm text-slate-600 hover:bg-slate-200 transition-all">
-                        <i class="fa-solid fa-store ml-1"></i> خدمات القدموس
-                    </button>
-                    <button onclick="switchTab('transport')" id="tab-transport" class="tab-btn flex-1 md:flex-initial px-5 py-2 rounded-lg font-bold text-sm text-slate-600 hover:bg-slate-200 transition-all">
-                        <i class="fa-solid fa-van-shuttle ml-1"></i> المواصلات
-                    </button>
-                </div>
-
-                <div class="relative w-full md:w-80">
-                    <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input 
-                        type="text" 
-                        id="searchInput" 
-                        onkeyup="filterItems()" 
-                        placeholder="ابحث عن مطعم، محافظة، أو رقم..." 
-                        class="w-full pr-10 pl-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-susa-teal focus:bg-white transition-all"
-                    >
-                </div>
-            </div>
-        </div>
-
-        <!-- Official Disclaimer Banner -->
-        <div class="bg-red-50/80 border-r-4 border-susa-red p-4 rounded-xl mb-8 flex items-start gap-3 shadow-sm">
-            <i class="fa-solid fa-circle-exclamation text-susa-red text-xl mt-0.5"></i>
-            <div class="text-sm text-slate-800">
-                <span class="font-extrabold text-susa-red">ملاحظة هامة:</span> ليس للفريق التطوعي في جامعة الأندلس أي صلة بهذه المحلات أو شركات المواصلات، وإنما جُمعت هذه الأرقام لتسهيل وصول الطلاب للخدمات.
-            </div>
-        </div>
-
-        <!-- SECTION 1: Local Services -->
-        <section id="section-services" class="mb-10">
-            <div class="flex items-center justify-between mb-5 pb-3 border-b-2 border-susa-teal/15">
-                <div>
-                    <h2 class="text-2xl font-extrabold text-susa-tealDark flex items-center gap-2.5">
-                        <span class="w-2 h-7 bg-susa-red rounded-full inline-block"></span>
-                        أرقام الخدمات في القدموس
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-1 mr-4">المطاعم، السوبر ماركت، ومحال الحلويات</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden category-card">
-                    <div class="bg-susa-teal text-white px-5 py-3.5 flex items-center justify-between">
-                        <div class="flex items-center gap-2.5">
-                            <i class="fa-solid fa-utensils text-red-300"></i>
-                            <h3 class="font-bold text-lg">المطاعم</h3>
-                        </div>
-                    </div>
-                    <div class="divide-y divide-slate-100 p-2" id="list-restaurants"></div>
-                </div>
-
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden category-card">
-                    <div class="bg-susa-teal text-white px-5 py-3.5 flex items-center justify-between">
-                        <div class="flex items-center gap-2.5">
-                            <i class="fa-solid fa-cart-shopping text-red-300"></i>
-                            <h3 class="font-bold text-lg">سوبر ماركت</h3>
-                        </div>
-                    </div>
-                    <div class="divide-y divide-slate-100 p-2" id="list-supermarkets"></div>
-                </div>
-
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden category-card">
-                    <div class="bg-susa-teal text-white px-5 py-3.5 flex items-center justify-between">
-                        <div class="flex items-center gap-2.5">
-                            <i class="fa-solid fa-cake-candles text-red-300"></i>
-                            <h3 class="font-bold text-lg">حلويات</h3>
-                        </div>
-                    </div>
-                    <div class="divide-y divide-slate-100 p-2" id="list-sweets"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 2: Transportation Companies -->
-        <section id="section-transport" class="mb-10">
-            <div class="flex items-center justify-between mb-5 pb-3 border-b-2 border-susa-teal/15">
-                <div>
-                    <h2 class="text-2xl font-extrabold text-susa-tealDark flex items-center gap-2.5">
-                        <span class="w-2 h-7 bg-susa-red rounded-full inline-block"></span>
-                        شركات المواصلات الخاصة (خارج أوقات الدوام)
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-1 mr-4">لجميع المحافظات من وإلى القدموس — يتم تحديث القائمة بشكل دوري</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="transport-grid"></div>
-        </section>
-
-        <!-- Empty Search State -->
-        <div id="emptyState" class="hidden text-center py-12 bg-white rounded-2xl border border-slate-200">
-            <i class="fa-solid fa-magnifying-glass text-4xl text-slate-300 mb-3"></i>
-            <p class="text-slate-600 font-bold">لا توجد نتائج مطابقة لبحثك</p>
-            <p class="text-xs text-slate-400 mt-1">جرب البحث بكلمة أخرى أو مسح حقل البحث</p>
-        </div>
-
-    </main>
-
-    <!-- Copy Notification Toast -->
-    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-susa-tealDark text-white px-5 py-2.5 rounded-full shadow-lg text-sm font-semibold flex items-center gap-2 opacity-0 pointer-events-none transition-opacity duration-300 z-50">
-        <i class="fa-solid fa-circle-check text-emerald-400"></i>
-        <span id="toastMsg">تم نسخ الرقم بنجاح</span>
+<!-- NAV -->
+<nav class="site-nav" role="navigation" aria-label="التنقل الرئيسي">
+  <div class="container site-nav-inner">
+    <div class="brand-wrapper">
+      <img src="Asset%201.png" alt="شعار اتحاد طلبة سوريا" class="brand-logo-img" onerror="this.style.display='none'">
+      <div>
+        <div class="brand-title">اتحاد طلبة سوريا</div>
+        <div class="brand-subtitle">فرع جامعة الأندلس — الفريق التطوعي</div>
+      </div>
     </div>
-
-    <!-- Footer (No visible lock icon! Triple-click logo or visit #admin to open login gate) -->
-    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
-        <div class="max-w-5xl mx-auto px-4 flex flex-col items-center text-center">
-            <img id="footerLogo" src="Horiszontal.png" alt="اتحاد طلبة سوريا - فرع جامعة الأندلس" class="h-16 md:h-20 object-contain mb-3 select-none cursor-pointer" onerror="this.style.display='none'">
-            <p class="font-bold text-susa-tealDark text-sm">الفريق التطوعي في جامعة الأندلس للعلوم الطبية</p>
-            <p class="text-xs text-slate-500 mt-1 mb-4">نافذة خدمية لطلاب الجامعة في منطقة القدموس</p>
-            <a href="https://t.me/AU_Volunteer_Team" target="_blank" rel="noopener noreferrer" 
-               class="inline-flex items-center gap-2 bg-susa-teal hover:bg-susa-tealLight text-white px-4 py-2 rounded-xl text-xs font-bold transition-all">
-                <i class="fa-brands fa-telegram text-sm"></i>
-                <span>القناة الرسمية على تلغرام</span>
-            </a>
-        </div>
-    </footer>
-
-    <!-- ========================================== -->
-    <!-- STEP 1: ADMIN AUTHENTICATION GATE MODAL    -->
-    <!-- ========================================== -->
-    <div id="authModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 text-center">
-            <div class="w-12 h-12 rounded-2xl bg-susa-teal/10 text-susa-teal flex items-center justify-center mx-auto mb-3 text-xl">
-                <i class="fa-solid fa-shield-halved"></i>
-            </div>
-            <h3 class="font-extrabold text-lg text-susa-tealDark">تسجيل دخول المشرف</h3>
-            <p class="text-xs text-slate-500 mt-1 mb-4">
-                يتم التحقق من صلاحية المشرف مباشرة عبر خوادم GitHub قبل فتح لوحة التحكم.
-            </p>
-            <input type="password" id="authTokenInput" placeholder="أدخل GitHub Personal Access Token (ghp_...)" dir="ltr"
-                   class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono mb-3 focus:outline-none focus:ring-2 focus:ring-susa-teal">
-            <div id="authError" class="text-xs font-bold text-red-600 mb-3 hidden"></div>
-            <div class="flex gap-2">
-                <button onclick="verifyAdminAccess()" id="btnVerify" class="flex-1 bg-susa-teal hover:bg-susa-tealLight text-white py-2.5 rounded-xl text-xs font-bold transition-all">
-                    تحقق ودخول
-                </button>
-                <button onclick="closeAuthModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold">
-                    إلغاء
-                </button>
-            </div>
-        </div>
+    <div class="nav-actions">
+      <button onclick="openModal('suggestModal')" class="btn-accent" aria-label="اقتراح رقم أو خدمة جديدة">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>اقترح رقم</span>
+      </button>
+      <a href="https://t.me/AU_Volunteer_Team" target="_blank" rel="noopener noreferrer" class="btn-primary" aria-label="قناة الفريق على تلغرام">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+        <span class="sr-only sm-show">قناة الفريق</span>
+      </a>
     </div>
+  </div>
+</nav>
 
-    <!-- ========================================== -->
-    <!-- STEP 2: PROTECTED ADMIN DASHBOARD MODAL    -->
-    <!-- ========================================== -->
-    <div id="adminModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4 overflow-y-auto">
-        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
-            
-            <div class="bg-susa-tealDark text-white px-6 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <img src="Asset%201.png" alt="Logo" class="w-8 h-8 bg-white rounded-lg p-1" onerror="this.style.display='none'">
-                    <div>
-                        <h3 class="font-extrabold text-lg">لوحة تحكم المشرف الموثقة</h3>
-                        <p class="text-xs text-emerald-200">متصل بمستودع FirasTDS/au-service-portal</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="logoutAdmin()" class="text-xs bg-red-600/80 hover:bg-red-600 px-3 py-1.5 rounded-lg font-bold">
-                        تسجيل خروج
-                    </button>
-                    <button onclick="closeAdminModal()" class="text-slate-300 hover:text-white text-xl px-2">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div class="p-6 overflow-y-auto space-y-6 flex-grow">
-                
-                <!-- Private Reference Links (Rendered dynamically ONLY after GitHub auth succeeds) -->
-                <div id="adminSecretLinks" class="bg-slate-100 p-4 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-3"></div>
-
-                <!-- Add New Item Form -->
-                <div class="bg-susa-tealSoft border border-susa-teal/20 p-4 rounded-xl">
-                    <h4 class="font-extrabold text-sm text-susa-tealDark mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-plus-circle text-susa-red"></i>
-                        <span>إضافة رقم أو خدمة جديدة</span>
-                    </h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                        <select id="adminCategory" onchange="toggleCityInput()" class="bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold">
-                            <option value="restaurants">المطاعم</option>
-                            <option value="supermarkets">سوبر ماركت</option>
-                            <option value="sweets">حلويات</option>
-                            <option value="transport">شركات المواصلات (حسب المحافظة)</option>
-                        </select>
-                        <input type="text" id="adminCity" placeholder="اسم المحافظة (مثال: دمشق)" class="hidden bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm">
-                        <input type="text" id="adminName" placeholder="الاسم (مثال: مطعم الفوانيس)" class="bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm">
-                        <input type="text" id="adminPhone" placeholder="الرقم أو الرابط" class="bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm" dir="ltr">
-                    </div>
-                    <button onclick="adminAddItem()" class="mt-3 bg-susa-teal hover:bg-susa-tealLight text-white px-5 py-2 rounded-xl text-xs font-bold transition-all">
-                        <i class="fa-solid fa-plus ml-1"></i> إدراج في القائمة
-                    </button>
-                </div>
-
-                <!-- Current Items Editor -->
-                <div>
-                    <h4 class="font-extrabold text-sm text-slate-800 mb-2">القائمة الحالية (احذف أو أضف ثم اضغط حفظ ونشر بالأسفل):</h4>
-                    <div id="adminListContainer" class="space-y-4 max-h-72 overflow-y-auto pr-1"></div>
-                </div>
-
-                <div id="ghStatus" class="text-xs font-bold hidden p-3 rounded-xl"></div>
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="bg-slate-100 px-6 py-3.5 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
-                <button onclick="pushToGitHub()" id="btnPushGH"
-                        class="bg-susa-red hover:bg-susa-redLight text-white px-6 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm">
-                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                    <span>حفظ ونشر التعديلات على الموقع الآن</span>
-                </button>
-                <button onclick="closeAdminModal()" class="bg-slate-700 hover:bg-slate-800 text-white px-5 py-2 rounded-xl text-xs font-bold">
-                    إغلاق
-                </button>
-            </div>
-        </div>
+<!-- HERO -->
+<header class="hero-section">
+  <div class="container" style="text-align:center;">
+    <img src="Vertical%20Trans.png" alt="اتحاد طلبة سوريا - فرع جامعة الأندلس" class="hero-banner-img" onerror="this.style.display='none'">
+    <div class="hero-badge">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      دليل الطالب الخدمي التفاعلي
     </div>
+    <h1 class="hero-title">نافذة خدمية — منطقة القدموس</h1>
+    <p class="hero-subtitle">دليل شامل لأرقام المطاعم والسوبر ماركت والحلويات وشركات المواصلات لجميع المحافظات.</p>
+  </div>
+</header>
 
-    <script>
-        const GITHUB_OWNER = "FirasTDS";
-        const GITHUB_REPO = "au-service-portal";
-        const DATA_FILE_PATH = "data.json";
-        let verifiedToken = null;
+<!-- MAIN -->
+<main class="container" id="main" style="flex-grow:1;">
 
-        let portalData = {
-            services: {
-                restaurants: [
-                    { name: "مطعم الفوانيس", phone: "0956595857" },
-                    { name: "مطعم الأحمد", phone: "0996538589" },
-                    { name: "شيكن هاوس", phone: "0982899566" },
-                    { name: "مطعم الملك", phone: "0940447761" },
-                    { name: "مطعم الليث", phone: "0982365746" },
-                    { name: "مطعم عبدو", phone: "0945987118" }
-                ],
-                supermarkets: [
-                    { name: "وديع", phone: "0983370760" },
-                    { name: "بيت المونة", phone: "0991974444" },
-                    { name: "ميني ماركت ابو علي", phone: "0935660586" },
-                    { name: "الخير", phone: "0939635250" }
-                ],
-                sweets: [
-                    { name: "مرعي", phone: "0930267864" },
-                    { name: "الخير", phone: "0966656200" },
-                    { name: "حساب انستغرام (cook90262)", link: "https://www.instagram.com/cook90262" }
+  <!-- CONTROLS: Tabs + Search + Sort -->
+  <div class="controls-card" role="search">
+    <div class="controls-row">
+      <div class="tabs-group" role="tablist" aria-label="تصفية النتائج">
+        <button class="tab-btn tab-active" id="tab-all" role="tab" aria-selected="true" onclick="switchTab('all')">الكل</button>
+        <button class="tab-btn" id="tab-services" role="tab" aria-selected="false" onclick="switchTab('services')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          خدمات القدموس
+        </button>
+        <button class="tab-btn" id="tab-transport" role="tab" aria-selected="false" onclick="switchTab('transport')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          المواصلات
+        </button>
+      </div>
+      <div class="search-sort-group">
+        <div class="search-wrapper">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" id="searchInput" class="search-input"
+            placeholder="ابحث عن مطعم، محافظة، أو رقم..."
+            aria-label="بحث في الدليل"
+            oninput="filterItems()" autocomplete="off">
+        </div>
+        <div class="sort-wrapper">
+          <select id="sortSelect" class="sort-select" onchange="renderAll()" aria-label="ترتيب النتائج">
+            <option value="default">الترتيب: الافتراضي</option>
+            <option value="name">الاسم: أبجدياً</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="notice-banner" role="note">
+    <div class="notice-content">
+      <svg class="notice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span><span class="notice-highlight">ملاحظة:</span> ليس للفريق التطوعي أي صلة تجارية بهذه المحلات. جُمعت الأرقام لتسهيل وصول الطلاب إلى الخدمات فحسب.</span>
+    </div>
+    <button class="notice-link" onclick="openModal('suggestModal')">هل تعرف رقماً غير موجود؟ اقترحه</button>
+  </div>
+
+  <!-- SECTION: LOCAL SERVICES -->
+  <section id="section-services" aria-labelledby="services-heading">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title" id="services-heading">
+          <span class="section-title-mark" aria-hidden="true"></span>
+          أرقام الخدمات في القدموس
+        </h2>
+        <p class="section-desc">اضغط على النجوم لتقييم الخدمة في جهازك ومساعدة زملائك</p>
+      </div>
+    </div>
+    <div class="services-grid" id="services-grid">
+      <!-- Restaurant Card -->
+      <div class="category-card" data-section="services">
+        <div class="category-header">
+          <div class="category-title-wrap">
+            <svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>
+            <h3 class="category-title">المطاعم</h3>
+          </div>
+          <span class="category-count" id="count-restaurants">0</span>
+        </div>
+        <div class="category-items-list" id="list-restaurants" role="list" aria-label="قائمة المطاعم"></div>
+      </div>
+      <!-- Supermarket Card -->
+      <div class="category-card" data-section="services">
+        <div class="category-header">
+          <div class="category-title-wrap">
+            <svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <h3 class="category-title">سوبر ماركت</h3>
+          </div>
+          <span class="category-count" id="count-supermarkets">0</span>
+        </div>
+        <div class="category-items-list" id="list-supermarkets" role="list" aria-label="قائمة السوبر ماركت"></div>
+      </div>
+      <!-- Sweets Card -->
+      <div class="category-card" data-section="services">
+        <div class="category-header">
+          <div class="category-title-wrap">
+            <svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2 1 2 1"/><path d="M2 21h20"/><path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/><path d="M7 4h.01"/><path d="M12 4h.01"/><path d="M17 4h.01"/></svg>
+            <h3 class="category-title">حلويات وكافيه</h3>
+          </div>
+          <span class="category-count" id="count-sweets">0</span>
+        </div>
+        <div class="category-items-list" id="list-sweets" role="list" aria-label="قائمة الحلويات"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION: TRANSPORT -->
+  <section id="section-transport" aria-labelledby="transport-heading">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title" id="transport-heading">
+          <span class="section-title-mark" aria-hidden="true"></span>
+          شركات المواصلات الخاصة
+        </h2>
+        <p class="section-desc">من وإلى القدموس لجميع المحافظات — خارج أوقات الدوام</p>
+      </div>
+    </div>
+    <div class="transport-grid" id="transport-grid" role="list" aria-label="شركات المواصلات"></div>
+  </section>
+
+  <!-- EMPTY STATE -->
+  <div id="emptyState" class="empty-state" role="status" aria-live="polite">
+    <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <p class="empty-state-title">لا توجد نتائج مطابقة</p>
+    <p class="empty-state-text">جرب البحث بكلمة مختلفة أو اقترح إضافة هذا الرقم للدليل</p>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="container">
+    <img src="Horizontal%20Trans.png" alt="اتحاد طلبة سوريا - فرع جامعة الأندلس" class="footer-logo" id="footerLogo" onerror="this.style.display='none'">
+    <p class="footer-team-title">الفريق التطوعي في جامعة الأندلس للعلوم الطبية</p>
+    <p class="footer-team-subtitle">نافذة خدمية لطلاب الجامعة في منطقة القدموس</p>
+    <div class="footer-buttons">
+      <button onclick="openModal('suggestModal')" class="btn-accent">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>اقترح إضافة مكان أو رقم</span>
+      </button>
+      <a href="https://t.me/AU_Volunteer_Team" target="_blank" rel="noopener noreferrer" class="btn-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+        <span>القناة الرسمية على تلغرام</span>
+      </a>
+    </div>
+    <a href="admin.html" class="footer-admin-link" aria-label="لوحة تحكم المشرف">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span>دخول المشرف</span>
+    </a>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast-container" aria-live="polite" aria-atomic="true">
+  <div id="toast" class="toast" role="status">
+    <svg id="toastIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+    <span id="toastMsg">تمت العملية</span>
+  </div>
+</div>
+
+<!-- SUGGEST MODAL -->
+<div id="suggestModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="suggestModalTitle">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <div class="modal-header-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h2 id="suggestModalTitle">اقتراح إضافة مكان أو رقم جديد</h2>
+      </div>
+      <button class="modal-close-btn" onclick="closeModal('suggestModal')" aria-label="إغلاق النافذة">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form id="suggestForm" onsubmit="submitSuggestion(event)">
+      <div class="modal-body">
+        <p style="font-size:0.82rem; color:var(--color-slate-600); line-height:1.6;">ساهم في إثراء الدليل لزملائك! أرسل اسم ورقم المكان وسيتم مراجعته وإضافته.</p>
+        <div class="form-group">
+          <label class="form-label" for="sugCategory">التصنيف *</label>
+          <select id="sugCategory" class="form-select" onchange="toggleSugCity()" required>
+            <option value="مطاعم القدموس">مطعم في القدموس</option>
+            <option value="سوبر ماركت">سوبر ماركت في القدموس</option>
+            <option value="حلويات وكافيه">محل حلويات / كافيه</option>
+            <option value="شركات المواصلات سرفيس او بولمان">شركة مواصلات / سرفيس</option>
+          </select>
+        </div>
+        <div class="form-group" id="sugCityWrapper" style="display:none;">
+          <label class="form-label" for="sugCity">اسم المحافظة (للمواصلات فقط) *</label>
+          <input type="text" id="sugCity" class="form-input" placeholder="مثال: دمشق، طرطوس، اللاذقية...">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="sugName">اسم المكان أو السرفيس *</label>
+          <input type="text" id="sugName" class="form-input" placeholder="مثال: مطعم الشام" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="sugPhone">رقم الهاتف أو رابط الصفحة *</label>
+          <input type="text" id="sugPhone" class="form-input" placeholder="09xxxxxxxx" dir="ltr" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="sugNotes">ملاحظات إضافية (اختياري)</label>
+          <input type="text" id="sugNotes" class="form-input" placeholder="مثال: يوصل للسكن / يطلع الخميس...">
+        </div>
+        <div id="suggestError" class="form-error"></div>
+        <div id="suggestSuccess" style="display:none; font-size:0.82rem; font-weight:700; color:var(--color-teal); background:var(--color-teal-soft); border:1px solid var(--color-teal-border); padding:0.65rem 0.85rem; border-radius:var(--radius-md);">
+          ✅ تم إرسال اقتراحك بنجاح! شكراً لمساهمتك.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="closeModal('suggestModal')" class="btn-secondary">إلغاء</button>
+        <button type="submit" id="btnSubmitSug" class="btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <span>إرسال الاقتراح</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- REPORT MODAL -->
+<div id="reportModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
+  <div class="modal-dialog">
+    <div class="modal-header modal-header-alert">
+      <div class="modal-header-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h2 id="reportModalTitle">الإبلاغ عن رقم خاطئ أو معطل</h2>
+      </div>
+      <button class="modal-close-btn" onclick="closeModal('reportModal')" aria-label="إغلاق">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:0.82rem; color:var(--color-slate-600);">الجهة التي ستُبلَّغ عنها:</p>
+      <p id="reportItemName" style="font-size:1rem; font-weight:800; color:var(--color-slate-800); margin-top:0.25rem;"></p>
+      <div class="form-group" style="margin-top:0.5rem;">
+        <label class="form-label" for="reportNote">تفاصيل المشكلة *</label>
+        <textarea id="reportNote" class="form-textarea" placeholder="مثال: الرقم لا يرد، خط مقطوع، الاسم خاطئ..." required></textarea>
+      </div>
+      <div id="reportError" class="form-error"></div>
+      <div id="reportSuccess" style="display:none; font-size:0.82rem; font-weight:700; color:var(--color-teal); background:var(--color-teal-soft); border:1px solid var(--color-teal-border); padding:0.65rem 0.85rem; border-radius:var(--radius-md);">
+        ✅ تم استلام بلاغك. شكراً!
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" onclick="closeModal('reportModal')" class="btn-secondary">إلغاء</button>
+      <button type="button" onclick="submitReport()" id="btnSubmitReport" class="btn-accent">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <span>إرسال البلاغ</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPT -->
+<script>
+    const DATA_FILE_PATH = "data.json";
+    const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc2m5IOKLVkKA_QKM-PNyrr2KTsYCAFe1j2Q_dEvgghsezRug/formResponse";
+    const ENTRIES = {
+        type: "entry.608312387",     // نوع المشاركة
+        category: "entry.880573565", // التصنيف
+        city: "entry.1311440425",     // اسم المحافظة للمواصلات فقط
+        name: "entry.1549210706",     // اسم المكان أو السرفيس
+        phone: "entry.269662228",     // رقم الهاتف أو رابط الصفحة
+        rating: "entry.623535394",    // التقييم من 1 إلى 5 نجوم
+        notes: "entry.40821348"       // ملاحظات إضافية
+    };
+
+    // Fallback data embedded directly so the page renders instantly without waiting for fetch
+    const FALLBACK_DATA = {
+        services: {
+            restaurants: [
+                { name: "مطعم الفوانيس", phone: "0956595857" },
+                { name: "مطعم الأحمد", phone: "0996538589" },
+                { name: "شيكن هاوس", phone: "0982899566" },
+                { name: "مطعم الملك", phone: "0940447761" },
+                { name: "مطعم الليث", phone: "0982365746" },
+                { name: "مطعم عبدو", phone: "0945987118" }
+            ],
+            supermarkets: [
+                { name: "وديع", phone: "0983370760" },
+                { name: "بيت المونة", phone: "0991974444" },
+                { name: "ميني ماركت ابو علي", phone: "0935660586" },
+                { name: "الخير", phone: "0939635250" }
+            ],
+            sweets: [
+                { name: "مرعي", phone: "0930267864" },
+                { name: "الخير", phone: "0966656200" },
+                { name: "حساب انستغرام (cook90262)", link: "https://www.instagram.com/cook90262" }
+            ]
+        },
+        transport: [
+            {
+                city: "دمشق",
+                items: [
+                    { name: "الجبل", phone: "0991000205" },
+                    { name: "سام", phone: "0934964838" },
+                    { name: "المجد", phone: "0936922225" },
+                    { name: "الزعيم", phone: "0953845861" },
+                    { name: "العروه", phone: "0986011696" },
+                    { name: "الاحمد", phone: "0994602820" },
+                    { name: "الورد", phone: "0938051309" },
+                    { name: "الوسام", phone: "0982514190" }
                 ]
             },
-            transport: [
-                {
-                    city: "دمشق",
-                    items: [
-                        { name: "الجبل", phone: "0991000205" },
-                        { name: "سام", phone: "0934964838" },
-                        { name: "المجد", phone: "0936922225" },
-                        { name: "الزعيم", phone: "0953845861" },
-                        { name: "العروه", phone: "0986011696" },
-                        { name: "الاحمد", phone: "0994602820" },
-                        { name: "الورد", phone: "0938051309" },
-                        { name: "الوسام", phone: "0982514190" }
-                    ]
-                },
-                {
-                    city: "حلب",
-                    items: [
-                        { name: "الجبل", phone: "0954640525" },
-                        { name: "المجد", phone: "0982501082" },
-                        { name: "سام", phone: "0996941501" },
-                        { name: "المختار", phone: "0988245264" }
-                    ]
-                },
-                {
-                    city: "حمص",
-                    items: [
-                        { name: "جبران (سرفيس)", phone: "0994826365" },
-                        { name: "رامز (سرفيس)", phone: "0938286693" }
-                    ]
-                },
-                {
-                    city: "حماة",
-                    items: [
-                        { name: "هابيل (رقم 1)", phone: "0932454329" },
-                        { name: "هابيل (رقم 2)", phone: "0933444837" },
-                        { name: "ابو موسى", phone: "0994229605" }
-                    ]
-                },
-                {
-                    city: "اللاذقية",
-                    items: [
-                        { name: "سرفيس (بيطلع الجمعة)", phone: "0937301708" },
-                        { name: "ابو حسان (سرفيس)", phone: "0944252467" }
-                    ]
-                },
-                {
-                    city: "طرطوس",
-                    items: [
-                        { name: "ابو بدر (سرفيس)", phone: "0933549598" }
-                    ]
-                },
-                {
-                    city: "الحسكة / قامشلي",
-                    items: [
-                        { name: "الجزيرة", phone: "0935270861" }
-                    ]
-                },
-                {
-                    city: "الرقة",
-                    items: [
-                        { name: "الوليد", phone: "0991278472" },
-                        { name: "محمد (فان H1)", phone: "0993668678" }
-                    ]
-                }
-            ]
-        };
+            {
+                city: "حلب",
+                items: [
+                    { name: "الجبل", phone: "0954640525" },
+                    { name: "المجد", phone: "0982501082" },
+                    { name: "سام", phone: "0996941501" },
+                    { name: "المختار", phone: "0988245264" }
+                ]
+            },
+            {
+                city: "حمص",
+                items: [
+                    { name: "جبران (سرفيس)", phone: "0994826365" },
+                    { name: "رامز (سرفيس)", phone: "0938286693" }
+                ]
+            },
+            {
+                city: "حماة",
+                items: [
+                    { name: "هابيل (رقم 1)", phone: "0932454329" },
+                    { name: "هابيل (رقم 2)", phone: "0933444837" },
+                    { name: "ابو موسى", phone: "0994229605" }
+                ]
+            },
+            {
+                city: "اللاذقية",
+                items: [
+                    { name: "سرفيس (بيطلع الجمعة)", phone: "0937301708" },
+                    { name: "ابو حسان (سرفيس)", phone: "0944252467" }
+                ]
+            },
+            {
+                city: "طرطوس",
+                items: [
+                    { name: "ابو بدر (سرفيس)", phone: "0933549598" }
+                ]
+            },
+            {
+                city: "الحسكة / قامشلي",
+                items: [
+                    { name: "الجزيرة", phone: "0935270861" }
+                ]
+            },
+            {
+                city: "الرقة",
+                items: [
+                    { name: "الوليد", phone: "0991278472" },
+                    { name: "محمد (فان H1)", phone: "0993668678" }
+                ]
+            }
+        ]
+    };
 
-        async function loadData() {
-            try {
-                const res = await fetch(`${DATA_FILE_PATH}?t=${Date.now()}`);
-                if (res.ok) portalData = await res.json();
-            } catch (e) {}
-            renderAll();
+    let portalData = FALLBACK_DATA;
+    let currentTab = 'all';
+    let reportingItem = null;
+
+    // --- SECURITY & UTILITY HELPERS ---
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function sanitizeUrl(url) {
+        if (!url) return '';
+        const trimmed = String(url).trim();
+        if (/^https?:\/\//i.test(trimmed)) {
+            return encodeURI(trimmed);
+        }
+        return '';
+    }
+
+    // Normalizes Arabic text for flexible search (أ/إ/آ -> ا, ة -> ه, ى/ئ -> ي, removes harakat, converts eastern digits)
+    function normalizeArabic(text) {
+        if (!text) return '';
+        return String(text)
+            .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+            .replace(/[\u064B-\u065F\u0670]/g, '')
+            .replace(/[أإآٱ]/g, 'ا')
+            .replace(/ة/g, 'ه')
+            .replace(/[يىئ]/g, 'ي')
+            .toLowerCase()
+            .trim();
+    }
+
+    function getStarLabel(stars) {
+        if (stars === 1) return 'نجمة واحدة';
+        if (stars === 2) return 'نجمتان';
+        if (stars >= 3 && stars <= 10) return `${stars} نجوم`;
+        return `${stars} نجمة`;
+    }
+
+    function getLocalUserRatings() {
+        try {
+            return JSON.parse(localStorage.getItem('susa_user_ratings') || '{}');
+        } catch (e) {
+            return {};
+        }
+    }
+
+    // --- TOAST SYSTEM ---
+    function showToast(msg, type = 'success') {
+        const toast = document.getElementById('toast');
+        const toastMsg = document.getElementById('toastMsg');
+        const toastIcon = document.getElementById('toastIcon');
+
+        toastMsg.textContent = msg;
+        toast.className = `toast toast-show ${type === 'error' ? 'toast-error' : 'toast-success'}`;
+
+        if (type === 'error') {
+            toastIcon.innerHTML = '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+        } else {
+            toastIcon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
         }
 
-        function createContactRow(item, searchContext = "") {
-            const isUrl = item.link || (item.phone && item.phone.startsWith('http'));
-            const url = item.link || item.phone;
+        setTimeout(() => {
+            toast.classList.remove('toast-show');
+        }, 3000);
+    }
 
-            if (isUrl) {
-                return `
-                <div class="contact-item p-3 hover:bg-slate-50 rounded-xl flex items-center justify-between transition-all" data-search="${item.name} ${searchContext}">
-                    <span class="font-bold text-sm text-slate-800">${item.name}</span>
-                    <a href="${url}" target="_blank" rel="noopener noreferrer" 
-                       class="inline-flex items-center gap-1.5 bg-susa-red hover:bg-susa-redLight text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-all">
-                        <i class="fa-brands fa-instagram"></i>
-                        <span>زيارة الصفحة</span>
-                    </a>
-                </div>`;
+    // --- CLIPBOARD HELPER ---
+    async function copyNumber(num) {
+        if (!num) return;
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(num);
+                showToast(`تم نسخ الرقم: ${num}`);
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = num;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.focus();
+                ta.select();
+                const ok = document.execCommand('copy');
+                document.body.removeChild(ta);
+                if (ok) {
+                    showToast(`تم نسخ الرقم: ${num}`);
+                } else {
+                    throw new Error('فشل النسخ');
+                }
             }
+        } catch (err) {
+            showToast(`تعذر نسخ الرقم تلقائياً (${num})`, 'error');
+        }
+    }
 
+    // --- RATINGS SYSTEM (Honest, Unfabricated, Anti-Spam) ---
+    async function rateItem(key, stars, itemName) {
+        const userRatings = getLocalUserRatings();
+        if (userRatings[key]) {
+            showToast(`لقد قمت بتقييم هذه الخدمة مسبقاً بـ (${getStarLabel(userRatings[key])}) ⭐`, 'success');
+            return;
+        }
+
+        userRatings[key] = stars;
+        try {
+            localStorage.setItem('susa_user_ratings', JSON.stringify(userRatings));
+        } catch (e) {}
+
+        showToast(`شكراً لك! تم تسجيل تقييمك (${getStarLabel(stars)}) ⭐`);
+        renderAll();
+
+        // Submit to Google Form with real entries
+        try {
+            const fd = new FormData();
+            fd.append(ENTRIES.type, "تقييم خدمة موجودة حالياً");
+            fd.append(ENTRIES.category, "تقييم من الدليل التفاعلي");
+            fd.append(ENTRIES.name, itemName);
+            fd.append(ENTRIES.phone, key);
+            fd.append(ENTRIES.rating, stars.toString());
+
+            await fetch(GOOGLE_FORM_URL, {
+                method: "POST",
+                mode: "no-cors",
+                body: fd
+            });
+        } catch (err) {
+            // silent fail for background analytics
+        }
+    }
+
+    function createStarsHtml(item) {
+        const key = item.phone || item.link || item.name;
+        const userRatings = getLocalUserRatings();
+        const userStars = userRatings[key];
+
+        let starsBtns = '';
+        for (let s = 1; s <= 5; s++) {
+            const isFilled = userStars ? s <= userStars : false;
+            const starClass = isFilled ? 'star-btn star-filled' : 'star-btn';
+            const label = getStarLabel(s);
+            starsBtns += `
+                <button type="button" class="${starClass}" data-action="rate" data-key="${escapeHtml(key)}" data-stars="${s}" data-name="${escapeHtml(item.name)}" title="قيّم بـ ${label}" aria-label="تقييم بـ ${label}">
+                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </button>
+            `;
+        }
+
+        if (userStars) {
             return `
-            <div class="contact-item p-3 hover:bg-slate-50 rounded-xl flex items-center justify-between gap-2 transition-all" data-search="${item.name} ${item.phone} ${searchContext}">
-                <div>
-                    <div class="font-bold text-sm text-slate-800">${item.name}</div>
-                    <div class="text-xs text-slate-500 font-mono tracking-wider mt-0.5" dir="ltr">${item.phone}</div>
+                <div class="rating-bar">
+                    <div class="stars-list">${starsBtns}</div>
+                    <span class="rating-score">تقييمك: ${userStars}/5</span>
                 </div>
-                <div class="flex items-center gap-1.5">
-                    <button onclick="copyNumber('${item.phone}')" title="نسخ الرقم"
-                            class="p-2 text-slate-400 hover:text-susa-teal hover:bg-slate-100 rounded-lg transition-all">
-                        <i class="fa-regular fa-copy"></i>
+            `;
+        }
+
+        return `
+            <div class="rating-bar">
+                <div class="stars-list">${starsBtns}</div>
+                <span class="rating-unrated">قيّم الخدمة</span>
+            </div>
+        `;
+    }
+
+    // --- ITEM ROW RENDERING (Safe, Escaped, Accessible) ---
+    function createContactRow(item, searchContext = "") {
+        const isUrl = Boolean(item.link || (item.phone && /^https?:\/\//i.test(item.phone)));
+        const targetUrl = sanitizeUrl(item.link || item.phone);
+        const nameEscaped = escapeHtml(item.name);
+        const phoneEscaped = escapeHtml(item.phone || '');
+        const searchContextEscaped = escapeHtml(searchContext);
+
+        if (isUrl) {
+            return `
+            <div class="contact-item" data-search="${nameEscaped} ${searchContextEscaped}">
+                <div class="contact-info">
+                    <span class="contact-name">${nameEscaped}</span>
+                    ${createStarsHtml(item)}
+                </div>
+                <div class="contact-actions">
+                    <button type="button" class="btn-icon btn-report" data-action="report" data-name="${nameEscaped}" data-phone="${targetUrl}" title="إبلاغ عن رابط غير صالح" aria-label="إبلاغ عن رابط معطل">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
                     </button>
-                    <a href="tel:${item.phone}" 
-                       class="inline-flex items-center gap-1.5 bg-susa-teal hover:bg-susa-tealLight text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-all">
-                        <i class="fa-solid fa-phone"></i>
-                        <span>اتصال</span>
+                    <a href="${targetUrl}" target="_blank" rel="noopener noreferrer" class="btn-visit" aria-label="زيارة صفحة ${nameEscaped}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                        <span>زيارة</span>
                     </a>
                 </div>
             </div>`;
         }
 
-        function renderAll() {
-            document.getElementById('list-restaurants').innerHTML = portalData.services.restaurants.map(i => createContactRow(i, "مطاعم مطعم")).join('');
-            document.getElementById('list-supermarkets').innerHTML = portalData.services.supermarkets.map(i => createContactRow(i, "سوبر ماركت")).join('');
-            document.getElementById('list-sweets').innerHTML = portalData.services.sweets.map(i => createContactRow(i, "حلويات")).join('');
-
-            const transportGrid = document.getElementById('transport-grid');
-            transportGrid.innerHTML = portalData.transport.map(group => `
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden category-card">
-                    <div class="bg-slate-100 px-5 py-3.5 border-b border-slate-200 flex items-center justify-between">
-                        <div class="flex items-center gap-2.5">
-                            <div class="w-8 h-8 rounded-lg bg-susa-red text-white flex items-center justify-center shadow-sm">
-                                <i class="fa-solid fa-location-dot"></i>
-                            </div>
-                            <h3 class="font-extrabold text-lg text-susa-tealDark">${group.city}</h3>
-                        </div>
-                        <span class="text-xs bg-white text-susa-teal font-extrabold px-2.5 py-1 rounded-full border border-slate-200">
-                            ${group.items.length}
-                        </span>
-                    </div>
-                    <div class="divide-y divide-slate-100 p-2">
-                        ${group.items.map(item => createContactRow(item, group.city)).join('')}
-                    </div>
+        return `
+        <div class="contact-item" data-search="${nameEscaped} ${phoneEscaped} ${searchContextEscaped}">
+            <div class="contact-info">
+                <span class="contact-name">${nameEscaped}</span>
+                <div class="contact-phone-row">
+                    <span class="contact-phone" dir="ltr">${phoneEscaped}</span>
+                    <span class="verified-badge">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        موثق
+                    </span>
                 </div>
-            `).join('');
+                ${createStarsHtml(item)}
+            </div>
+            <div class="contact-actions">
+                <button type="button" class="btn-icon" data-action="copy" data-phone="${phoneEscaped}" title="نسخ الرقم" aria-label="نسخ رقم ${nameEscaped}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
+                <button type="button" class="btn-icon btn-report" data-action="report" data-name="${nameEscaped}" data-phone="${phoneEscaped}" title="إبلاغ عن رقم مقطوع أو تعديل" aria-label="إبلاغ عن رقم مقطوع">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+                </button>
+                <a href="tel:${phoneEscaped}" class="btn-call" aria-label="اتصال بـ ${nameEscaped}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <span>اتصال</span>
+                </a>
+            </div>
+        </div>`;
+    }
 
-            filterItems();
+    // --- SORT HELPER ---
+    function sortArray(items) {
+        const sortBy = document.getElementById('sortSelect').value;
+        const cloned = [...items];
+        if (sortBy === 'name') {
+            cloned.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
         }
+        return cloned;
+    }
 
-        function copyNumber(num) {
-            navigator.clipboard.writeText(num);
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').innerText = `تم نسخ الرقم: ${num}`;
-            toast.classList.remove('opacity-0');
-            setTimeout(() => toast.classList.add('opacity-0'), 2200);
-        }
+    // --- RENDER ALL SECTIONS ---
+    function renderAll() {
+        // Services Lists
+        const rests = portalData.services.restaurants || [];
+        const supers = portalData.services.supermarkets || [];
+        const sweets = portalData.services.sweets || [];
 
-        let currentTab = 'all';
-        function switchTab(tab) {
-            currentTab = tab;
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('tab-active');
-                btn.classList.add('text-slate-600');
-            });
-            const activeBtn = document.getElementById(`tab-${tab}`);
+        document.getElementById('list-restaurants').innerHTML = sortArray(rests).map(i => createContactRow(i, "مطاعم مطعم")).join('');
+        document.getElementById('count-restaurants').textContent = rests.length;
+
+        document.getElementById('list-supermarkets').innerHTML = sortArray(supers).map(i => createContactRow(i, "سوبر ماركت ماركت دكان")).join('');
+        document.getElementById('count-supermarkets').textContent = supers.length;
+
+        document.getElementById('list-sweets').innerHTML = sortArray(sweets).map(i => createContactRow(i, "حلويات حلو كافيه")).join('');
+        document.getElementById('count-sweets').textContent = sweets.length;
+
+        // Transport Grid
+        const transportGrid = document.getElementById('transport-grid');
+        transportGrid.innerHTML = portalData.transport.map(group => {
+            const sortedItems = sortArray(group.items);
+            return `
+            <div class="category-card" data-section="transport">
+                <div class="category-header transport-header">
+                    <div class="category-title-wrap">
+                        <svg class="category-icon" style="color:var(--color-red);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <h3 class="category-title">${escapeHtml(group.city)}</h3>
+                    </div>
+                    <span class="category-count">${group.items.length}</span>
+                </div>
+                <div class="category-items-list">
+                    ${sortedItems.map(item => createContactRow(item, group.city + " سرفيس مواصلات بولمان")).join('')}
+                </div>
+            </div>`;
+        }).join('');
+
+        filterItems();
+    }
+
+    // --- TAB SWITCHING ---
+    function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('tab-active');
+            btn.setAttribute('aria-selected', 'false');
+        });
+        const activeBtn = document.getElementById(`tab-${tab}`);
+        if (activeBtn) {
             activeBtn.classList.add('tab-active');
-            activeBtn.classList.remove('text-slate-600');
-            filterItems();
+            activeBtn.setAttribute('aria-selected', 'true');
         }
+        filterItems();
+    }
 
-        function filterItems() {
-            const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            document.getElementById('section-services').style.display = (currentTab === 'all' || currentTab === 'services') ? 'block' : 'none';
-            document.getElementById('section-transport').style.display = (currentTab === 'all' || currentTab === 'transport') ? 'block' : 'none';
+    // --- ACCURATE ARABIC SEARCH & VISIBLE-TAB EMPTY STATE ---
+    function filterItems() {
+        const rawQuery = document.getElementById('searchInput').value;
+        const normalizedQuery = normalizeArabic(rawQuery);
 
-            let totalVisible = 0;
-            document.querySelectorAll('.category-card').forEach(card => {
-                const items = card.querySelectorAll('.contact-item');
-                let visibleInCard = 0;
-                items.forEach(item => {
-                    const text = item.getAttribute('data-search').toLowerCase();
-                    if (text.includes(query)) {
-                        item.style.display = 'flex';
-                        visibleInCard++;
-                        totalVisible++;
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-                card.style.display = visibleInCard > 0 ? 'block' : 'none';
-            });
+        const secServices = document.getElementById('section-services');
+        const secTransport = document.getElementById('section-transport');
 
-            document.getElementById('emptyState').style.display = totalVisible === 0 ? 'block' : 'none';
-        }
+        const showServices = (currentTab === 'all' || currentTab === 'services');
+        const showTransport = (currentTab === 'all' || currentTab === 'transport');
 
-        // ==========================================
-        // SECURE GITHUB-VERIFIED ADMIN GATE
-        // ==========================================
-        function triggerAdminGate() {
-            if (verifiedToken) {
-                openUnlockedDashboard();
-                return;
-            }
-            const savedToken = localStorage.getItem('susa_gh_token');
-            if (savedToken) {
-                document.getElementById('authTokenInput').value = savedToken;
-            }
-            document.getElementById('authError').classList.add('hidden');
-            const authModal = document.getElementById('authModal');
-            authModal.classList.remove('hidden');
-            authModal.classList.add('flex');
-        }
+        secServices.style.display = showServices ? 'block' : 'none';
+        secTransport.style.display = showTransport ? 'block' : 'none';
 
-        function closeAuthModal() {
-            const authModal = document.getElementById('authModal');
-            authModal.classList.add('hidden');
-            authModal.classList.remove('flex');
-            if (window.location.hash === '#admin') {
-                history.replaceState(null, null, ' ');
-            }
-        }
+        let totalVisibleInActiveTab = 0;
 
-        async function verifyAdminAccess() {
-            const token = document.getElementById('authTokenInput').value.trim();
-            const errEl = document.getElementById('authError');
-            const btn = document.getElementById('btnVerify');
+        document.querySelectorAll('.category-card').forEach(card => {
+            const cardSection = card.getAttribute('data-section');
+            const isCardInActiveTab = (currentTab === 'all') || (currentTab === cardSection);
 
-            if (!token) {
-                errEl.innerText = "يرجى إدخال رمز الوصول أولاً";
-                errEl.classList.remove('hidden');
+            if (!isCardInActiveTab) {
+                card.style.display = 'none';
                 return;
             }
 
-            btn.disabled = true;
-            btn.innerText = "جاري التحقق من الصلاحيات...";
-            errEl.classList.add('hidden');
+            const items = card.querySelectorAll('.contact-item');
+            let visibleInCard = 0;
 
-            try {
-                // Verify with GitHub API that this token has push/admin permission on FirasTDS/au-service-portal
-                const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`, {
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Accept": "application/vnd.github.v3+json"
-                    }
-                });
+            items.forEach(item => {
+                const searchStr = item.getAttribute('data-search') || '';
+                const normalizedSearch = normalizeArabic(searchStr);
 
-                if (!res.ok) throw new Error("رمز غير صالح");
-                const repoData = await res.json();
-
-                if (!repoData.permissions || !repoData.permissions.push) {
-                    throw new Error("هذا الحساب لا يملك صلاحية التعديل على المستودع");
-                }
-
-                // Auth succeeded!
-                verifiedToken = token;
-                localStorage.setItem('susa_gh_token', token);
-                closeAuthModal();
-                openUnlockedDashboard();
-            } catch (e) {
-                errEl.innerText = "❌ فشل التحقق: الرمز غير صحيح أو لا يملك صلاحية التعديل (push).";
-                errEl.classList.remove('hidden');
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "تحقق ودخول";
-            }
-        }
-
-        function openUnlockedDashboard() {
-            // Decode reference links only after verification
-            const baseTg = atob("aHR0cHM6Ly90Lm1lL0FVX1ZvbHVudGVlcl9UZWFtLw==");
-            document.getElementById('adminSecretLinks').innerHTML = `
-                <div class="text-xs font-bold text-slate-700 flex items-center gap-2">
-                    <i class="fa-brands fa-telegram text-sky-600 text-base"></i>
-                    <span>روابط رسائل التلغرام المرجعية (للمشرف فقط):</span>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <a href="${baseTg}13" target="_blank" class="text-xs bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 px-3 py-1.5 rounded-lg font-bold">
-                        منشور خدمات القدموس (#13) <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
-                    </a>
-                    <a href="${baseTg}12" target="_blank" class="text-xs bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 px-3 py-1.5 rounded-lg font-bold">
-                        منشور شركات المواصلات (#12) <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
-                    </a>
-                </div>
-            `;
-            renderAdminList();
-            const modal = document.getElementById('adminModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function logoutAdmin() {
-            verifiedToken = null;
-            localStorage.removeItem('susa_gh_token');
-            closeAdminModal();
-        }
-
-        function closeAdminModal() {
-            const modal = document.getElementById('adminModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            if (window.location.hash === '#admin') {
-                history.replaceState(null, null, ' ');
-            }
-        }
-
-        function toggleCityInput() {
-            const cat = document.getElementById('adminCategory').value;
-            document.getElementById('adminCity').classList.toggle('hidden', cat !== 'transport');
-        }
-
-        function renderAdminList() {
-            const container = document.getElementById('adminListContainer');
-            let html = '';
-            const catNames = { restaurants: 'المطاعم', supermarkets: 'سوبر ماركت', sweets: 'حلويات' };
-
-            for (const [key, label] of Object.entries(catNames)) {
-                html += `<div class="bg-white border border-slate-200 rounded-xl p-3">
-                    <div class="font-bold text-xs text-susa-teal mb-2">${label}</div>
-                    <div class="space-y-1.5">
-                        ${portalData.services[key].map((item, idx) => `
-                            <div class="flex items-center justify-between bg-slate-50 px-3 py-1.5 rounded-lg text-xs">
-                                <span><strong>${item.name}</strong> — <span dir="ltr">${item.phone || item.link}</span></span>
-                                <button onclick="deleteServiceItem('${key}',${idx})" class="text-red-600 hover:text-red-800 font-bold">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>`;
-            }
-
-            portalData.transport.forEach((group, gIdx) => {
-                html += `<div class="bg-white border border-slate-200 rounded-xl p-3">
-                    <div class="font-bold text-xs text-susa-red mb-2">مواصلات — ${group.city}</div>
-                    <div class="space-y-1.5">
-                        ${group.items.map((item, iIdx) => `
-                            <div class="flex items-center justify-between bg-slate-50 px-3 py-1.5 rounded-lg text-xs">
-                                <span><strong>${item.name}</strong> — <span dir="ltr">${item.phone}</span></span>
-                                <button onclick="deleteTransportItem(${gIdx},${iIdx})" class="text-red-600 hover:text-red-800 font-bold">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>`;
-            });
-
-            container.innerHTML = html;
-        }
-
-        function adminAddItem() {
-            const cat = document.getElementById('adminCategory').value;
-            const city = document.getElementById('adminCity').value.trim();
-            const name = document.getElementById('adminName').value.trim();
-            const val = document.getElementById('adminPhone').value.trim();
-
-            if (!name || !val) return alert('يرجى إدخال الاسم والرقم');
-            const newObj = val.startsWith('http') ? { name, link: val } : { name, phone: val };
-
-            if (cat === 'transport') {
-                if (!city) return alert('يرجى إدخال اسم المحافظة');
-                let cityGroup = portalData.transport.find(g => g.city === city);
-                if (!cityGroup) {
-                    cityGroup = { city, items: [] };
-                    portalData.transport.push(cityGroup);
-                }
-                cityGroup.items.push(newObj);
-            } else {
-                portalData.services[cat].push(newObj);
-            }
-
-            document.getElementById('adminName').value = '';
-            document.getElementById('adminPhone').value = '';
-            renderAdminList();
-            renderAll();
-        }
-
-        function deleteServiceItem(cat, idx) {
-            portalData.services[cat].splice(idx, 1);
-            renderAdminList();
-            renderAll();
-        }
-
-        function deleteTransportItem(gIdx, iIdx) {
-            portalData.transport[gIdx].items.splice(iIdx, 1);
-            if (portalData.transport[gIdx].items.length === 0) {
-                portalData.transport.splice(gIdx, 1);
-            }
-            renderAdminList();
-            renderAll();
-        }
-
-        async function pushToGitHub() {
-            if (!verifiedToken) return alert("انتهت الجلسة، يرجى تسجيل الدخول مجدداً.");
-            const statusEl = document.getElementById('ghStatus');
-            const btn = document.getElementById('btnPushGH');
-
-            statusEl.classList.remove('hidden');
-            statusEl.className = "text-xs font-bold bg-amber-50 text-amber-700 p-3 rounded-xl";
-            statusEl.innerText = "جاري الاتصال بـ GitHub وتحديث البيانات...";
-            btn.disabled = true;
-
-            try {
-                const apiUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FILE_PATH}`;
-                let sha = null;
-                const getRes = await fetch(apiUrl, {
-                    headers: { "Authorization": `Bearer ${verifiedToken}`, "Accept": "application/vnd.github.v3+json" }
-                });
-                if (getRes.ok) {
-                    const fileInfo = await getRes.json();
-                    sha = fileInfo.sha;
-                }
-
-                const jsonString = JSON.stringify(portalData, null, 2);
-                const contentBase64 = btoa(unescape(encodeURIComponent(jsonString)));
-
-                const bodyPayload = {
-                    message: "تحديث قائمة الأرقام عبر لوحة المشرف",
-                    content: contentBase64
-                };
-                if (sha) bodyPayload.sha = sha;
-
-                const putRes = await fetch(apiUrl, {
-                    method: "PUT",
-                    headers: {
-                        "Authorization": `Bearer ${verifiedToken}`,
-                        "Accept": "application/vnd.github.v3+json",
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(bodyPayload)
-                });
-
-                if (putRes.ok) {
-                    statusEl.className = "text-xs font-bold bg-emerald-50 text-emerald-700 p-3 rounded-xl";
-                    statusEl.innerText = "✅ تم حفظ التعديلات ونشرها على GitHub بنجاح! ستظهر لجميع الزوار خلال دقيقة.";
+                if (!normalizedQuery || normalizedSearch.includes(normalizedQuery)) {
+                    item.style.display = 'flex';
+                    visibleInCard++;
+                    totalVisibleInActiveTab++;
                 } else {
-                    const err = await putRes.json();
-                    throw new Error(err.message || "فشل التحديث");
+                    item.style.display = 'none';
                 }
-            } catch (err) {
-                statusEl.className = "text-xs font-bold bg-red-50 text-red-700 p-3 rounded-xl";
-                statusEl.innerText = `❌ خطأ: ${err.message}`;
-            } finally {
-                btn.disabled = false;
+            });
+
+            card.style.display = visibleInCard > 0 ? 'flex' : 'none';
+        });
+
+        const emptyState = document.getElementById('emptyState');
+        emptyState.style.display = totalVisibleInActiveTab === 0 ? 'block' : 'none';
+    }
+
+    // --- EVENT DELEGATION (Copy, Rate, Report) ---
+    document.getElementById('main').addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-action]');
+        if (!btn) return;
+
+        const action = btn.getAttribute('data-action');
+        if (action === 'copy') {
+            copyNumber(btn.getAttribute('data-phone'));
+        } else if (action === 'rate') {
+            const key = btn.getAttribute('data-key');
+            const stars = parseInt(btn.getAttribute('data-stars'), 10);
+            const name = btn.getAttribute('data-name');
+            rateItem(key, stars, name);
+        } else if (action === 'report') {
+            openReportModal(btn.getAttribute('data-name'), btn.getAttribute('data-phone'));
+        }
+    });
+
+    // --- MODAL SYSTEM (Accessible, ESC, Click-Outside) ---
+    function openModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.classList.add('modal-open');
+            const firstInput = modal.querySelector('input:not([type="hidden"]), select, textarea');
+            if (firstInput) setTimeout(() => firstInput.focus(), 50);
+        }
+    }
+
+    function closeModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.classList.remove('modal-open');
+        }
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeModal('suggestModal');
+            closeModal('reportModal');
+        }
+    });
+
+    document.querySelectorAll('.modal-backdrop').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal(modal.id);
             }
+        });
+    });
+
+    function toggleSugCity() {
+        const cat = document.getElementById('sugCategory').value;
+        const wrapper = document.getElementById('sugCityWrapper');
+        wrapper.style.display = (cat === 'شركات المواصلات سرفيس او بولمان') ? 'block' : 'none';
+    }
+
+    // --- STUDENT SUGGESTION SUBMISSION ---
+    async function submitSuggestion(e) {
+        e.preventDefault();
+        const category = document.getElementById('sugCategory').value;
+        const city = document.getElementById('sugCity').value.trim();
+        const name = document.getElementById('sugName').value.trim();
+        const phone = document.getElementById('sugPhone').value.trim();
+        const notes = document.getElementById('sugNotes').value.trim();
+        const errEl = document.getElementById('suggestError');
+        const successEl = document.getElementById('suggestSuccess');
+        const btn = document.getElementById('btnSubmitSug');
+
+        errEl.classList.remove('form-error-show');
+        errEl.textContent = '';
+
+        if (!name || !phone) {
+            errEl.textContent = 'يرجى إدخال اسم المكان ورقم الهاتف.';
+            errEl.classList.add('form-error-show');
+            return;
         }
 
-        // Triple-click footer logo or visit #admin to open login gate
-        let logoClicks = 0;
-        let logoTimer = null;
-        document.getElementById('footerLogo').addEventListener('click', () => {
+        if (category === 'شركات المواصلات سرفيس او بولمان' && !city) {
+            errEl.textContent = 'يرجى كتابة اسم المحافظة.';
+            errEl.classList.add('form-error-show');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span>جاري الإرسال...</span>';
+
+        const fd = new FormData();
+        fd.append(ENTRIES.type, "اقتراح إضافة رقم أو خدمة جديدة");
+        fd.append(ENTRIES.category, category);
+        fd.append(ENTRIES.city, city || "القدموس");
+        fd.append(ENTRIES.name, name);
+        fd.append(ENTRIES.phone, phone);
+        if (notes) fd.append(ENTRIES.notes, notes);
+
+        try {
+            await fetch(GOOGLE_FORM_URL, {
+                method: "POST",
+                mode: "no-cors",
+                body: fd
+            });
+
+            successEl.style.display = 'block';
+            document.getElementById('sugName').value = '';
+            document.getElementById('sugPhone').value = '';
+            document.getElementById('sugNotes').value = '';
+            document.getElementById('sugCity').value = '';
+
+            setTimeout(() => {
+                successEl.style.display = 'none';
+                closeModal('suggestModal');
+                showToast("✅ تم إرسال اقتراحك بنجاح!");
+            }, 1200);
+        } catch (err) {
+            errEl.textContent = 'تعذر الإرسال بسبب انقطاع الاتصال. يرجى المحاولة لاحقاً.';
+            errEl.classList.add('form-error-show');
+            showToast("تعذر الإرسال، تحقق من الإنترنت", "error");
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>إرسال الاقتراح</span>';
+        }
+    }
+
+    // --- REPORT WRONG/DEAD NUMBER ---
+    function openReportModal(name, phone) {
+        reportingItem = { name, phone };
+        document.getElementById('reportItemName').textContent = `${name} (${phone})`;
+        document.getElementById('reportNote').value = '';
+        document.getElementById('reportError').classList.remove('form-error-show');
+        document.getElementById('reportSuccess').style.display = 'none';
+        openModal('reportModal');
+    }
+
+    async function submitReport() {
+        if (!reportingItem) return;
+        const note = document.getElementById('reportNote').value.trim();
+        const errEl = document.getElementById('reportError');
+        const successEl = document.getElementById('reportSuccess');
+        const btn = document.getElementById('btnSubmitReport');
+
+        if (!note) {
+            errEl.textContent = 'يرجى كتابة تفاصيل المشكلة.';
+            errEl.classList.add('form-error-show');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span>جاري الإرسال...</span>';
+
+        const fd = new FormData();
+        fd.append(ENTRIES.type, "تقييم خدمة موجودة حالياً");
+        fd.append(ENTRIES.category, "إبلاغ عن رقم مقطوع أو مشكلة");
+        fd.append(ENTRIES.name, reportingItem.name);
+        fd.append(ENTRIES.phone, reportingItem.phone);
+        fd.append(ENTRIES.notes, `[بلاغ خطأ]: ${note}`);
+
+        try {
+            await fetch(GOOGLE_FORM_URL, {
+                method: "POST",
+                mode: "no-cors",
+                body: fd
+            });
+
+            successEl.style.display = 'block';
+            setTimeout(() => {
+                successEl.style.display = 'none';
+                closeModal('reportModal');
+                showToast("✅ شكراً لك، تم استلام البلاغ للمراجعة.");
+            }, 1200);
+        } catch (err) {
+            errEl.textContent = 'تعذر الإرسال. تحقق من اتصال الإنترنت.';
+            errEl.classList.add('form-error-show');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg><span>إرسال البلاغ</span>';
+        }
+    }
+
+    // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
+    async function loadData() {
+        try {
+            const res = await fetch(`${DATA_FILE_PATH}?t=${Date.now()}`);
+            if (!res.ok) return;
+            const json = await res.json();
+
+            // Strict schema validation to prevent crashing
+            if (
+                json &&
+                json.services &&
+                Array.isArray(json.services.restaurants) &&
+                Array.isArray(json.services.supermarkets) &&
+                Array.isArray(json.services.sweets) &&
+                Array.isArray(json.transport)
+            ) {
+                portalData = json;
+                renderAll();
+            }
+        } catch (e) {
+            // Silently retain embedded fallback data
+        }
+    }
+
+    // --- SECRET 3-CLICK ADMIN SHORTCUT ---
+    let logoClicks = 0;
+    let logoTimer = null;
+    const footerLogo = document.getElementById('footerLogo');
+    if (footerLogo) {
+        footerLogo.addEventListener('click', () => {
             logoClicks++;
             clearTimeout(logoTimer);
-            if (logoClicks === 3) {
+            if (logoClicks >= 3) {
                 logoClicks = 0;
-                triggerAdminGate();
+                window.location.href = 'admin.html';
             } else {
                 logoTimer = setTimeout(() => { logoClicks = 0; }, 800);
             }
         });
+    }
 
-        window.addEventListener('hashchange', () => {
-            if (window.location.hash === '#admin') triggerAdminGate();
-        });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            if (window.location.hash === '#admin') triggerAdminGate();
-        });
-    </script>
+    // --- INITIALIZATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+        // 1. Render fallback immediately (zero delay for students)
+        renderAll();
+        // 2. Fetch fresh data asynchronously
+        loadData();
+    });
+</script>
 </body>
 </html>

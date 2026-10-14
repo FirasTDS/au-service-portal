@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="Asset%201.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Site Header -->
+    <header class="site-nav">
+        <div class="container site-nav-inner">
+            <div class="brand-wrapper">
+                <img src="Asset%201.png" alt="اتحاد طلبة سوريا" class="brand-logo-img" onerror="this.style.display='none'">
+                <div>
+                    <div class="brand-title">لوحة المشرف المعتمدة</div>
+                    <div class="brand-subtitle">إدارة بيانات الدليل الخدمي — جامعة الأندلس</div>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html" class="btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>العودة للدليل</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="padding-top: 2rem; padding-bottom: 3rem; flex-grow: 1;">
+
+        <!-- STEP 1: AUTHENTICATION GATE (Shown when logged out) -->
+        <div id="authSection" class="admin-card" style="max-width: 580px; margin: 2rem auto; text-align: center;">
+            <div style="width: 56px; height: 56px; background-color: var(--color-teal-soft); color: var(--color-teal); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
+            <h1 style="font-size: 1.35rem; font-weight: 800; color: var(--color-teal-dark); margin-bottom: 0.5rem;">دخول مشرف الموقع</h1>
+            <p style="font-size: 0.85rem; color: var(--color-slate-600); margin-bottom: 1.25rem;">
+                يتم التحقق من الصلاحيات بأمان وبشكل مباشر مع خوادم GitHub API لنشر التحديثات على المستودع.
+            </p>
+
+            <div style="background-color: var(--color-teal-soft); border: 1px solid var(--color-teal-border); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 1.25rem; text-align: right; font-size: 0.775rem; color: var(--color-teal-dark);">
+                <strong>🔒 إرشادات الأمان والحماية:</strong>
+                <ul style="margin-top: 0.35rem; padding-right: 1.25rem; line-height: 1.5;">
+                    <li>استخدم <strong>Fine-grained Personal Access Token</strong> مخصصاً لمستودع <code>FirasTDS/au-service-portal</code> فقط.</li>
+                    <li>حدد صلاحية: <code>Repository permissions &rarr; Contents: Read and write</code>.</li>
+                    <li>لا تقم بحفظ الرمز في المتصفحات العامة؛ الرمز يُحفظ فقط في ذاكرة الجلسة المؤقتة ويُمحى عند الخروج.</li>
+                </ul>
+            </div>
+
+            <form id="authForm" onsubmit="handleAdminLogin(event)" style="display: flex; flex-direction: column; gap: 0.75rem; text-align: right;">
+                <div>
+                    <label for="adminTokenInput" class="form-label">GitHub Token (Fine-grained PAT):</label>
+                    <input type="password" id="adminTokenInput" placeholder="github_pat_11..." dir="ltr" class="form-input" required autocomplete="off">
+                </div>
+                <div id="authErrorMsg" class="form-error"></div>
+                <button type="submit" id="btnAuthSubmit" class="btn-primary" style="padding: 0.75rem; width: 100%; margin-top: 0.5rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                    <span>تحقق وفتح لوحة التحكم</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- STEP 2: ADMIN DASHBOARD (Shown when authenticated) -->
+        <div id="dashboardSection" style="display: none;">
+
+            <!-- Header Info & Actions -->
+            <div class="admin-card" style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span class="admin-badge admin-badge-teal">جلسة موثقة</span>
+                            <span id="repoNameBadge" style="font-size: 0.8rem; font-weight: 700; color: var(--color-slate-600); font-family: monospace;">FirasTDS/au-service-portal</span>
+                        </div>
+                        <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--color-teal-dark); margin-top: 0.25rem;">إدارة بيانات الدليل ونشرها</h2>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="handleAdminLogout()" class="btn-secondary" style="font-size: 0.75rem;">
+                            تسجيل خروج
+                        </button>
+                        <button onclick="saveAndPushToGitHub()" id="btnPushGitHub" class="btn-accent">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            <span>حفظ ونشر التعديلات إلى الموقع الآن</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Reference Telegram Posts -->
+                <div style="background-color: var(--color-slate-100); border-radius: var(--radius-md); padding: 0.75rem 1rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem;">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-slate-700); display: flex; align-items: center; gap: 0.4rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" color="#0284c7"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        <span>الروابط المرجعية على قناة الفريق (تلغرام):</span>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="https://t.me/AU_Volunteer_Team/13" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">منشور الخدمات (#13)</a>
+                        <a href="https://t.me/AU_Volunteer_Team/12" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">منشور المواصلات (#12)</a>
+                    </div>
+                </div>
+
+                <div id="publishStatus" class="status-box"></div>
+            </div>
+
+            <!-- ADD NEW ENTRY FORM -->
+            <div class="admin-card">
+                <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--color-teal-dark); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="width: 4px; height: 18px; background-color: var(--color-red); border-radius: 99px;"></span>
+                    <span>إضافة جهة أو سرفيس جديد</span>
+                </h3>
+
+                <form id="addItemForm" onsubmit="handleAddItem(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.85rem; align-items: flex-end;">
+                    <div class="form-group">
+                        <label for="newCategory" class="form-label">القسم الرئيسي *</label>
+                        <select id="newCategory" class="form-select" onchange="toggleAdminCityInput()" required>
+                            <option value="restaurants">المطاعم (القدموس)</option>
+                            <option value="supermarkets">سوبر ماركت (القدموس)</option>
+                            <option value="sweets">حلويات وكافيه (القدموس)</option>
+                            <option value="transport">شركات النقل والمواصلات</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="adminCityGroup" style="display: none;">
+                        <label for="newCity" class="form-label">اسم المحافظة *</label>
+                        <input type="text" id="newCity" class="form-input" placeholder="مثال: دمشق، حلب، حمص...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newName" class="form-label">اسم المحل أو السرفيس *</label>
+                        <input type="text" id="newName" class="form-input" placeholder="مثال: مطعم الفوانيس" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newPhone" class="form-label">رقم الهاتف أو رابط الصفحة *</label>
+                        <input type="text" id="newPhone" class="form-input" placeholder="09xxxxxxxx أو https://..." dir="ltr" required>
+                    </div>
+
+                    <div>
+                        <button type="submit" class="btn-primary" style="width: 100%; padding: 0.65rem;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            <span>إدراج في القائمة</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- CURRENT DATA LISTS -->
+            <div class="admin-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--color-slate-200); padding-bottom: 0.5rem;">
+                    <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--color-slate-800);">البيانات الحالية المعروضة على الموقع</h3>
+                    <span id="totalItemsCount" class="admin-badge admin-badge-teal">0 عنصر</span>
+                </div>
+
+                <div id="adminListsContainer" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <!-- Dynamically rendered -->
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast-container">
+        <div id="toast" class="toast">
+            <span id="toastMsg">تمت العملية بنجاح</span>
+        </div>
+    </div>
+
+    <script>
+        const GITHUB_OWNER = "FirasTDS";
+        const GITHUB_REPO = "au-service-portal";
+        const DATA_FILE_PATH = "data.json";
+
+        // In-memory session state ONLY (Never stored in localStorage in plain text)
+        let sessionToken = null;
+        let remoteSha = null;
+        let adminData = {
+            services: { restaurants: [], supermarkets: [], sweets: [] },
+            transport: []
+        };
+
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.textContent = msg;
+            toast.className = `toast toast-show ${type === 'error' ? 'toast-error' : 'toast-success'}`;
+            setTimeout(() => {
+                toast.classList.remove('toast-show');
+            }, 3000);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function sanitizeUrl(url) {
+            if (!url) return '';
+            const trimmed = String(url).trim();
+            if (/^https?:\/\//i.test(trimmed)) {
+                return trimmed;
+            }
+            return '';
+        }
+
+        // --- AUTHENTICATION ---
+        async function handleAdminLogin(e) {
+            e.preventDefault();
+            const tokenInput = document.getElementById('adminTokenInput');
+            const token = tokenInput.value.trim();
+            const errEl = document.getElementById('authErrorMsg');
+            const btn = document.getElementById('btnAuthSubmit');
+
+            errEl.textContent = '';
+            errEl.classList.remove('form-error-show');
+
+            if (!token) {
+                errEl.textContent = 'يرجى إدخال رمز الوصول.';
+                errEl.classList.add('form-error-show');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span>جاري التحقق مع GitHub...</span>';
+
+            try {
+                // Verify repository access
+                const repoRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (!repoRes.ok) {
+                    if (repoRes.status === 401) throw new Error('الرمز غير صالح أو منتهي الصلاحية (401 Unauthorized).');
+                    if (repoRes.status === 404) throw new Error('تعذر العثور على المستودع أو أن الرمز لا يملك صلاحية الوصول إليه (404 Not Found).');
+                    throw new Error(`خطأ في الوصول للمستودع: كود ${repoRes.status}`);
+                }
+
+                const repoData = await repoRes.json();
+
+                // Fetch current data.json and its SHA
+                const fileRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FILE_PATH}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (!fileRes.ok) {
+                    throw new Error(`تعذر قراءة ملف ${DATA_FILE_PATH} من المستودع.`);
+                }
+
+                const fileJson = await fileRes.json();
+                remoteSha = fileJson.sha;
+
+                // Decode base64 UTF-8 content
+                const binaryStr = atob(fileJson.content.replace(/\s/g, ''));
+                const bytes = new Uint8Array(binaryStr.length);
+                for (let i = 0; i < binaryStr.length; i++) {
+                    bytes[i] = binaryStr.charCodeAt(i);
+                }
+                const decodedText = new TextDecoder('utf-8').decode(bytes);
+                const parsedData = JSON.parse(decodedText);
+
+                // Store in memory
+                sessionToken = token;
+                adminData = parsedData;
+
+                // Switch UI
+                document.getElementById('authSection').style.display = 'none';
+                document.getElementById('dashboardSection').style.display = 'block';
+                tokenInput.value = '';
+
+                renderAdminLists();
+                showToast('✅ تم تسجيل الدخول وتحميل أحدث البيانات من GitHub بنجاح.');
+            } catch (err) {
+                errEl.textContent = `❌ ${err.message}`;
+                errEl.classList.add('form-error-show');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg><span>تحقق وفتح لوحة التحكم</span>';
+            }
+        }
+
+        function handleAdminLogout() {
+            sessionToken = null;
+            remoteSha = null;
+            adminData = { services: { restaurants: [], supermarkets: [], sweets: [] }, transport: [] };
+            document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('authSection').style.display = 'block';
+            showToast('تم تسجيل الخروج بنجاح.');
+        }
+
+        function toggleAdminCityInput() {
+            const cat = document.getElementById('newCategory').value;
+            const cityGroup = document.getElementById('adminCityGroup');
+            const cityInput = document.getElementById('newCity');
+            if (cat === 'transport') {
+                cityGroup.style.display = 'flex';
+                cityInput.required = true;
+            } else {
+                cityGroup.style.display = 'none';
+                cityInput.required = false;
+            }
+        }
+
+        // --- RENDER CURRENT LISTS WITH DELEGATION ---
+        function renderAdminLists() {
+            const container = document.getElementById('adminListsContainer');
+            let total = 0;
+            let html = '';
+
+            const serviceLabels = {
+                restaurants: 'المطاعم (القدموس)',
+                supermarkets: 'سوبر ماركت (القدموس)',
+                sweets: 'حلويات وكافيه (القدموس)'
+            };
+
+            for (const [key, label] of Object.entries(serviceLabels)) {
+                const items = adminData.services[key] || [];
+                total += items.length;
+                html += `
+                    <div style="background-color: var(--color-slate-50); border: 1px solid var(--color-slate-200); border-radius: var(--radius-lg); padding: 1rem;">
+                        <div style="font-weight: 800; font-size: 0.95rem; color: var(--color-teal); margin-bottom: 0.75rem; display: flex; justify-content: space-between;">
+                            <span>${escapeHtml(label)}</span>
+                            <span class="admin-badge admin-badge-teal">${items.length} عنصر</span>
+                        </div>
+                        <div>
+                            ${items.length === 0 ? '<div style="font-size: 0.8rem; color: var(--color-slate-400); text-align: center; padding: 0.5rem;">لا توجد عناصر مضافة بعد</div>' : ''}
+                            ${items.map((item, idx) => {
+                                const val = item.phone || item.link;
+                                const isLink = Boolean(item.link || (item.phone && item.phone.startsWith('http')));
+                                return `
+                                    <div class="admin-item-row">
+                                        <div class="admin-item-meta">
+                                            <strong>${escapeHtml(item.name)}</strong>
+                                            <span style="color: var(--color-slate-500); font-family: monospace;" dir="ltr">${escapeHtml(val)}</span>
+                                            ${isLink ? '<span class="admin-badge admin-badge-amber">رابط صفحة</span>' : ''}
+                                        </div>
+                                        <button type="button" class="btn-icon btn-report" data-action="delete-service" data-cat="${escapeHtml(key)}" data-idx="${idx}" title="حذف العنصر" aria-label="حذف">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                        </button>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Transport by City
+            const transportGroups = adminData.transport || [];
+            html += `
+                <div style="background-color: var(--color-slate-50); border: 1px solid var(--color-slate-200); border-radius: var(--radius-lg); padding: 1rem;">
+                    <div style="font-weight: 800; font-size: 0.95rem; color: var(--color-red); margin-bottom: 0.75rem;">
+                        شركات النقل والمواصلات (حسب المحافظة)
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        ${transportGroups.length === 0 ? '<div style="font-size: 0.8rem; color: var(--color-slate-400); text-align: center; padding: 0.5rem;">لا توجد محافظات مضافة</div>' : ''}
+                        ${transportGroups.map((group, gIdx) => {
+                            total += group.items.length;
+                            return `
+                                <div style="background-color: #ffffff; border: 1px solid var(--color-slate-200); border-radius: var(--radius-md); padding: 0.75rem;">
+                                    <div style="font-weight: 700; font-size: 0.85rem; color: var(--color-slate-800); margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+                                        <span>محافظة: <strong>${escapeHtml(group.city)}</strong></span>
+                                        <span class="admin-badge admin-badge-red">${group.items.length} شركة/سرفيس</span>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                                        ${group.items.map((item, iIdx) => `
+                                            <div class="admin-item-row" style="background-color: var(--color-slate-100);">
+                                                <div class="admin-item-meta">
+                                                    <strong>${escapeHtml(item.name)}</strong>
+                                                    <span style="color: var(--color-slate-500); font-family: monospace;" dir="ltr">${escapeHtml(item.phone)}</span>
+                                                </div>
+                                                <button type="button" class="btn-icon btn-report" data-action="delete-transport" data-gidx="${gIdx}" data-iidx="${iIdx}" title="حذف" aria-label="حذف">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                                </button>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+            document.getElementById('totalItemsCount').textContent = `${total} عنصر متاح`;
+        }
+
+        // Event delegation for deleting items
+        document.getElementById('adminListsContainer').addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-action]');
+            if (!btn) return;
+            const action = btn.getAttribute('data-action');
+
+            if (action === 'delete-service') {
+                const cat = btn.getAttribute('data-cat');
+                const idx = parseInt(btn.getAttribute('data-idx'), 10);
+                if (confirm('هل أنت متأكد من رغبتك في حذف هذا العنصر؟')) {
+                    adminData.services[cat].splice(idx, 1);
+                    renderAdminLists();
+                    showToast('تم حذف العنصر من القائمة المؤقتة (اضغط حفظ ونشر لاعتماد التعديل).');
+                }
+            } else if (action === 'delete-transport') {
+                const gIdx = parseInt(btn.getAttribute('data-gidx'), 10);
+                const iIdx = parseInt(btn.getAttribute('data-iidx'), 10);
+                if (confirm('هل أنت متأكد من حذف هذا السرفيس/الشركة؟')) {
+                    adminData.transport[gIdx].items.splice(iIdx, 1);
+                    if (adminData.transport[gIdx].items.length === 0) {
+                        adminData.transport.splice(gIdx, 1);
+                    }
+                    renderAdminLists();
+                    showToast('تم حذف العنصر من القائمة المؤقتة (اضغط حفظ ونشر لاعتماد التعديل).');
+                }
+            }
+        });
+
+        // --- ADD NEW ITEM ---
+        function handleAddItem(e) {
+            e.preventDefault();
+            const cat = document.getElementById('newCategory').value;
+            const city = document.getElementById('newCity').value.trim();
+            const name = document.getElementById('newName').value.trim();
+            const val = document.getElementById('newPhone').value.trim();
+
+            if (!name || !val) {
+                alert('يرجى كتابة الاسم والرقم أو الرابط.');
+                return;
+            }
+
+            const isUrl = /^https?:\/\//i.test(val);
+            const newItem = isUrl ? { name, link: val } : { name, phone: val };
+
+            if (cat === 'transport') {
+                if (!city) {
+                    alert('يرجى تحديد اسم المحافظة للمواصلات.');
+                    return;
+                }
+                let group = adminData.transport.find(g => g.city.trim() === city);
+                if (!group) {
+                    group = { city, items: [] };
+                    adminData.transport.push(group);
+                }
+                group.items.push(newItem);
+            } else {
+                if (!adminData.services[cat]) adminData.services[cat] = [];
+                adminData.services[cat].push(newItem);
+            }
+
+            document.getElementById('newName').value = '';
+            document.getElementById('newPhone').value = '';
+            renderAdminLists();
+            showToast('✅ تمت الإضافة بنجاح إلى القائمة المؤقتة!');
+        }
+
+        // --- SAVE AND PUSH TO GITHUB ---
+        async function saveAndPushToGitHub() {
+            if (!sessionToken) {
+                alert('الجلسة غير موثقة. يرجى تسجيل الدخول أولاً.');
+                return;
+            }
+
+            const btn = document.getElementById('btnPushGitHub');
+            const statusBox = document.getElementById('publishStatus');
+
+            statusBox.className = 'status-box show status-box-info';
+            statusBox.textContent = '⏳ جاري إعداد التغييرات وتشفيرها ونشرها إلى المستودع على GitHub...';
+            btn.disabled = true;
+
+            try {
+                // Ensure latest sha
+                const checkRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FILE_PATH}`, {
+                    headers: {
+                        'Authorization': `Bearer ${sessionToken}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                let currentSha = remoteSha;
+                if (checkRes.ok) {
+                    const checkData = await checkRes.json();
+                    currentSha = checkData.sha;
+                }
+
+                // Prepare clean JSON string
+                const jsonText = JSON.stringify(adminData, null, 2);
+
+                // Safe UTF-8 to Base64 encoding
+                const utf8Bytes = new TextEncoder().encode(jsonText);
+                let binaryStr = '';
+                for (let i = 0; i < utf8Bytes.length; i++) {
+                    binaryStr += String.fromCharCode(utf8Bytes[i]);
+                }
+                const contentBase64 = btoa(binaryStr);
+
+                // Commit via GitHub REST API
+                const putRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FILE_PATH}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${sessionToken}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'تحديث بيانات الدليل الخدمي عبر لوحة المشرف الموثقة',
+                        content: contentBase64,
+                        sha: currentSha
+                    })
+                });
+
+                if (!putRes.ok) {
+                    const errObj = await putRes.json().catch(() => ({}));
+                    throw new Error(errObj.message || `خطأ ${putRes.status}`);
+                }
+
+                const result = await putRes.json();
+                remoteSha = result.content.sha;
+
+                statusBox.className = 'status-box show status-box-success';
+                statusBox.innerHTML = `
+                    <span>🎉 تم الحفظ والنشر بنجاح على GitHub!</span>
+                    <br><small>Commit: <code>${result.commit.sha.substring(0, 7)}</code> — ستظهر التعديلات مباشرة على الموقع.</small>
+                `;
+                showToast('🎉 تم النشر بنجاح على الموقع!');
+            } catch (err) {
+                statusBox.className = 'status-box show status-box-error';
+                statusBox.textContent = `❌ فشل النشر: ${err.message}`;
+                showToast('تعذر النشر، تفقد الرسالة في الأسفل.', 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
