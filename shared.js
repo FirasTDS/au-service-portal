@@ -25,6 +25,45 @@ themePreference.addEventListener('change', event => {
     }
 });
 
+// Keep the existing phone-string schema; multiple numbers use " / " as a separator.
+function normalizeContactInput(value) {
+    const raw = String(value ?? '').trim()
+        .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+        .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+        .replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, '');
+    const invalid = { phones: [], link: '', value: raw, error: 'أدخل أرقاماً كاملة (09xxxxxxxx أو +9639xxxxxxxx)، وافصل بينها بمسافة أو /، أو أدخل رابط الصفحة.' };
+    if (/^(?:https?:\/\/|www\.|(?:t\.me|instagram\.com|facebook\.com)\/)/i.test(raw)) {
+        try {
+            const url = new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`);
+            if (!url.hostname.includes('.') || /\s/.test(raw) || url.username || url.password) return invalid;
+            return { phones: [], link: url.href, value: url.href, error: '' };
+        } catch { return invalid; }
+    }
+    if (!raw || /[^\d+\s().,،;؛/|&و\-–—]/.test(raw)) return invalid;
+    const chunks = raw.split(/[,،;؛/|&\n\rو]+/).map(s => s.replace(/[\s().\-–—]/g, '')).filter(Boolean);
+    const phones = [];
+    for (let chunk of chunks) {
+        if (/^1\d{2}$/.test(chunk)) { phones.push(chunk); continue; }
+        // Only accept unambiguous complete Syrian numbers, never truncate a remainder.
+        while (chunk) {
+            const match = /^(?:\+963|00963|963|0)([1-9]\d{8})/.exec(chunk);
+            if (match) {
+                phones.push(`0${match[1]}`);
+                chunk = chunk.slice(match[0].length);
+            } else if (/^[1-9]\d{8}$/.test(chunk)) {
+                phones.push(`0${chunk}`); // Sheets may remove the leading zero.
+                chunk = '';
+            } else return invalid;
+        }
+    }
+    const unique = [...new Set(phones)];
+    return unique.length ? { phones: unique, link: '', value: unique.join(' / '), error: '' } : invalid;
+}
+
+function whatsappUrl(phone) {
+    return /^09\d{8}$/.test(phone) ? `https://wa.me/963${phone.slice(1)}` : '';
+}
+
 function validatePortalData(data) {
     const validItem = item => item && typeof item.name === 'string' && item.name.trim() &&
         (typeof item.phone === 'string' || typeof item.link === 'string');

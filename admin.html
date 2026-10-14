@@ -6,7 +6,7 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=10"></script>
+    <script src="shared.js?v=11"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -468,7 +468,7 @@
                         <div>
                             ${items.length === 0 ? '<div style="font-size: 0.8rem; color: var(--color-slate-400); text-align: center; padding: 0.5rem;">لا توجد عناصر مضافة بعد</div>' : ''}
                             ${items.map((item, idx) => {
-                                const val = item.phone || item.link;
+                                const val = normalizeContactInput(item.phone || item.link).value;
                                 const isLink = Boolean(item.link || (item.phone && item.phone.startsWith('http')));
                                 return `
                                     <div class="admin-item-row">
@@ -525,7 +525,7 @@
                                                 <div class="admin-item-meta" style="flex: 1 1 200px;">
                                                     <div>
                                                         <strong>${escapeHtml(item.name)}</strong>
-                                                        <span style="color: var(--color-slate-500); font-family: monospace; margin-right: 0.35rem;" dir="ltr">${escapeHtml(item.phone || item.link)}</span>
+                                                        <span style="color: var(--color-slate-500); font-family: monospace; margin-right: 0.35rem;" dir="ltr">${escapeHtml(normalizeContactInput(item.phone || item.link).value)}</span>
                                                         ${item.schedule ? `<span class="admin-badge admin-badge-teal" style="font-size:0.7rem;">🕒 ${escapeHtml(item.schedule)}</span>` : ''}
                                                     </div>
                                                     ${item.note ? `<div style="font-size: 0.75rem; color: var(--color-slate-500); margin-top: 0.2rem;">📝 ${escapeHtml(item.note)}</div>` : ''}
@@ -714,7 +714,9 @@
             e.preventDefault();
             const type = document.getElementById('editType').value;
             const name = document.getElementById('editName').value.trim();
-            const val = document.getElementById('editPhone').value.trim();
+            const contact = normalizeContactInput(document.getElementById('editPhone').value);
+            if (contact.error) return showToast(contact.error, 'error');
+            const val = contact.value;
             const note = document.getElementById('editNote').value.trim();
             const schedule = document.getElementById('editSchedule').value.trim();
 
@@ -781,7 +783,9 @@
             const cat = document.getElementById('newCategory').value;
             const city = document.getElementById('newCity').value.trim();
             const name = document.getElementById('newName').value.trim();
-            const val = document.getElementById('newPhone').value.trim();
+            const contact = normalizeContactInput(document.getElementById('newPhone').value);
+            if (contact.error) return showToast(contact.error, 'error');
+            const val = contact.value;
             const noteInput = document.getElementById('newNote');
             const schedInput = document.getElementById('newSchedule');
             const note = noteInput ? noteInput.value.trim() : '';
@@ -987,6 +991,7 @@
                     // Check if already in adminData
                     const alreadyExists = checkItemExists(item.name, item.phone);
                     const decision = adminData.suggestion_reviews?.[item.reviewKey];
+                    const contact = normalizeContactInput(item.phone);
 
                     return `
                         <tr style="border-bottom: 1px solid var(--color-slate-200); background-color: ${isReport ? 'var(--color-red-soft)' : 'var(--surface)'};">
@@ -1003,7 +1008,8 @@
                                 ${escapeHtml(item.name)}
                             </td>
                             <td style="padding: 0.65rem 0.75rem; font-family: monospace;" dir="ltr">
-                                ${escapeHtml(item.phone)}
+                                ${escapeHtml(contact.value)}
+                                ${contact.error ? '<span class="admin-badge admin-badge-amber">يحتاج تصحيح الرقم</span>' : ''}
                             </td>
                             <td style="padding: 0.65rem 0.75rem; font-size: 0.75rem; color: var(--color-slate-600); max-width: 220px;">
                                 ${escapeHtml(item.notes || '—')}
@@ -1012,7 +1018,7 @@
                                 ${decision === 'ignored' ? '<span class="admin-badge admin-badge-amber">تم التجاهل</span>' : decision === 'approved' ? '<span class="admin-badge admin-badge-teal">تم الاعتماد والنشر ✓</span>' : isReport || isRating ? '<span>للمراجعة</span>' : alreadyExists ? `
                                     <span class="admin-badge admin-badge-teal" style="font-size: 0.7rem;">موجود بالفعل ✓</span>
                                 ` : `
-                                    <button type="button" onclick="approveSuggestion(${item.id})" class="btn-primary" style="font-size: 0.725rem; padding: 0.35rem 0.65rem;">
+                                    <button type="button" onclick="approveSuggestion(${item.id})" class="btn-primary" style="font-size: 0.725rem; padding: 0.35rem 0.65rem;" ${contact.error ? 'disabled' : ''}>
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                                         <span>اعتماد ونشر</span>
                                     </button>
@@ -1035,21 +1041,19 @@
 
         // Check if an item already exists in portal data
         function checkItemExists(name, phone) {
-            const normalizeContact = value => /^https?:\/\//i.test(value || '') ? value.trim().replace(/\/$/, '') : (value || '').replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\D/g, '').replace(/^(00963|963)/, '0');
-            const contact = normalizeContact(phone);
-            const matches = item => contact ? normalizeContact(item.phone || item.link) === contact : item.name.trim() === name.trim();
+            const contact = normalizeContactInput(phone);
+            if (contact.error) return false;
+            const existingContacts = [];
             for (const cat of ['emergency', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'taxis', 'sweets']) {
                 const list = adminData.services[cat] || [];
-                if (list.some(matches)) {
-                    return true;
-                }
+                existingContacts.push(...list.map(item => normalizeContactInput(item.phone || item.link)));
             }
             for (const group of (adminData.transport || [])) {
-                if (group.items.some(matches)) {
-                    return true;
-                }
+                existingContacts.push(...group.items.map(item => normalizeContactInput(item.phone || item.link)));
             }
-            return false;
+            if (contact.link) return existingContacts.some(existing => existing.link === contact.link);
+            // A shared first number must not discard a suggestion's new second number.
+            return existingContacts.some(existing => !existing.error && contact.phones.every(phone => existing.phones.includes(phone)));
         }
 
         // Approve and automatically insert a student suggestion
@@ -1082,7 +1086,9 @@
                 cat = 'transport';
             }
 
-            const val = item.phone.trim();
+            const contact = normalizeContactInput(item.phone);
+            if (contact.error) return showToast(contact.error, 'error');
+            const val = contact.value;
             const isUrl = /^https?:\/\//i.test(val);
             const newItem = isUrl ? { name: item.name.trim(), link: val } : { name: item.name.trim(), phone: val };
             if (item.notes.trim()) newItem.note = item.notes.trim();
