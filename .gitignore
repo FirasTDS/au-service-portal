@@ -8,3 +8,8 @@ token.txt
 .DS_Store
 Thumbs.db
 *.pdf
+
+# Local AI Architecture Map & Quick Lookup (kept local)
+PROJECT_MAP.md
+*.local.md
+

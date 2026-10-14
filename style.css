@@ -4,6 +4,9 @@
    ========================================================================== */
 
 :root {
+  color-scheme: light;
+  --surface: #ffffff;
+  --on-accent: #ffffff;
   --color-teal-dark: #09332c;
   --color-teal: #0f4c42;
   --color-teal-light: #166557;
@@ -360,7 +363,7 @@ body {
 
 .sort-select {
   width: 100%;
-  padding: 0.65rem 2rem 0.65rem 0.85rem;
+  padding: 0.65rem 0.85rem 0.65rem 2.25rem;
   background-color: var(--color-slate-50);
   border: 1px solid var(--color-slate-200);
   border-radius: var(--radius-md);
@@ -1413,24 +1416,29 @@ body {
    DARK MODE THEME
    ========================================================================== */
 html[data-theme="dark"] {
+  color-scheme: dark;
+  --surface: #131b2e;
+  --on-accent: #042f2e;
   --color-slate-50: #0a0f1d;
   --color-slate-100: #131b2e;
   --color-slate-200: #1e293b;
   --color-slate-300: #334155;
-  --color-slate-400: #64748b;
+  --color-slate-400: #a3b3c8;
   --color-slate-500: #94a3b8;
   --color-slate-600: #cbd5e1;
   --color-slate-700: #e2e8f0;
   --color-slate-800: #f1f5f9;
   --color-slate-900: #f8fafc;
 
-  --color-teal-dark: #0f4c42;
+  --color-teal-dark: #99f6e4;
   --color-teal: #14b8a6;
   --color-teal-light: #2dd4bf;
   --color-teal-soft: #132a26;
   --color-teal-border: #134e48;
 
-  --color-red: #ef4444;
+  --color-red: #f87171;
+  --color-amber: #fbbf24;
+  --color-amber-soft: #382b16;
   --color-red-soft: #2b1717;
   --color-red-border: #5f1f1f;
 }
@@ -1620,7 +1628,7 @@ html[data-theme="dark"] .favorites-header {
   position: fixed;
   bottom: 1.5rem;
   left: 1.5rem;
-  z-index: 999;
+  z-index: 35;
   display: flex;
   flex-direction: column-reverse;
   align-items: flex-start;
@@ -1876,3 +1884,70 @@ html[data-theme="dark"] .pharmacy-row.pharmacy-row-today {
   border-color: #10b981;
 }
 
+/* Theme-aware surfaces and foregrounds, including dynamic admin content. */
+html[data-theme="dark"] .hero-section {
+  background: linear-gradient(180deg, #0d1527, var(--color-slate-100));
+}
+html[data-theme="dark"] .btn-primary,
+html[data-theme="dark"] .btn-call:not(.duty-call-btn),
+html[data-theme="dark"] .tab-btn.tab-active,
+html[data-theme="dark"] .category-header:not(.transport-header),
+html[data-theme="dark"] .modal-header:not(.modal-header-alert) {
+  color: var(--on-accent);
+}
+html[data-theme="dark"] .category-icon { color: inherit; }
+html[data-theme="dark"] .category-count { background: #0a0f1d; }
+html[data-theme="dark"] .btn-accent,
+html[data-theme="dark"] .btn-visit,
+html[data-theme="dark"] .modal-header-alert,
+html[data-theme="dark"] .fab-main-btn { background: #b91c1c; color: #ffffff; }
+html[data-theme="dark"] .modal-header .modal-close-btn { color: inherit; }
+html[data-theme="dark"] .toast,
+html[data-theme="dark"] .toast.toast-success { background: #134e48; color: #ffffff; }
+html[data-theme="dark"] .toast.toast-error { background: #991b1b; }
+html[data-theme="dark"] .pwa-banner,
+html[data-theme="dark"] .brand-emblem { background: linear-gradient(135deg, #134e48, #0f4c42); }
+html[data-theme="dark"] .tab-btn:not(.tab-active):hover,
+html[data-theme="dark"] .btn-secondary:hover,
+html[data-theme="dark"] .pharmacy-row:hover { background-color: #243349; }
+html[data-theme="dark"] .sort-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2399f6e4'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] .duty-badge-wrap { background: #064e3b; color: #d1fae5; border-color: #059669; }
+html[data-theme="dark"] .section-header { border-color: var(--color-slate-300); }
+input::placeholder, textarea::placeholder { color: var(--color-slate-500); opacity: 1; }
+.rating-unrated, .rating-count, .empty-state-text, .footer-admin-link { color: var(--color-slate-500); }
+.star-btn { color: var(--color-slate-400); }
+.star-btn.star-filled, .star-btn:hover { color: var(--color-amber-light); }
+.btn-whatsapp { background-color: #08786c; }
+.modal-dialog { max-height: calc(100dvh - 2rem); overflow-y: auto; }
+.modal-header { gap: 0.75rem; }
+.modal-header-title { min-width: 0; }
+.modal-header-title h2 { font-size: inherit; }
+.modal-header-title > svg, .modal-close-btn { flex-shrink: 0; }
+.modal-footer { flex-wrap: wrap; }
+.brand-wrapper, .search-wrapper, .category-card, .admin-item-meta { min-width: 0; }
+.admin-item-meta, .pharmacy-row, .duty-pharmacy-name { overflow-wrap: anywhere; }
+.admin-item-row { flex-wrap: wrap; }
+.hero-banner-img, .footer-logo { max-width: 100%; }
+.pwa-banner { flex-wrap: wrap; }
+.fab-menu { max-width: calc(100vw - 3rem); }
+.fab-item { white-space: normal; }
+button:disabled { cursor: not-allowed; opacity: 0.6; }
+.controls-card { top: var(--nav-height, 5rem); }
+.site-footer { padding-bottom: 6rem; }
+@media (max-width: 599px) {
+  .site-nav-inner { flex-wrap: wrap; }
+  .nav-actions { flex-wrap: wrap; }
+  .controls-card { position: static; }
+  .tab-btn { padding-inline: 0.4rem; font-size: 0.8rem; }
+  .admin-card { padding: 1rem; }
+  .pharmacy-row { flex-wrap: wrap; }
+  .pharmacy-row > div { max-width: 100%; }
+  .fab-emergency { bottom: 1rem; left: 1rem; }
+  .toast-container { bottom: 5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

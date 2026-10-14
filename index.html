@@ -4,15 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نافذة خدمية | اتحاد طلبة سوريا - فرع جامعة الأندلس</title>
-    <meta name="description" content="دليل اتحاد طلبة سوريا الخدمي لطلاب جامعة الأندلس في منطقة القدموس: مطاعم، سوبر ماركت، حلويات، ومواصلات لجميع المحافظات.">
-    <meta property="og:title" content="نافذة خدمية | اتحاد طلبة سوريا">
-    <meta property="og:description" content="دليل خدمي تفاعلي لطلاب جامعة الأندلس في القدموس.">
+    <meta name="description" content="نافذة خدمية ودليل تفاعلي شامل لطلاب جامعة الأندلس بالقدموس: صيدليات مناوبة يومية، مطاعم، صهاريج مياه، حوالات وطرود، مواصلات للمحافظات وطوارئ.">
+    <meta property="og:title" content="نافذة خدمية | اتحاد طلبة سوريا — فرع جامعة الأندلس">
+    <meta property="og:description" content="دليل تفاعلي لطلاب جامعة الأندلس في القدموس: صيدليات مناوبة، مواصلات المحافظات، خدمات وسكن وطلبات.">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="Vertical%20Trans.png">
+    <meta property="og:site_name" content="دليل خدمات جامعة الأندلس">
+    <meta property="og:locale" content="ar_SY">
+    <meta property="og:image" content="icon.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="نافذة خدمية | اتحاد طلبة سوريا — جامعة الأندلس">
+    <meta name="twitter:description" content="دليل تفاعلي شامل لطلاب جامعة الأندلس في القدموس.">
+    <meta name="twitter:image" content="icon.svg">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f4c42">
-    <link rel="icon" type="image/png" href="Asset%201.png">
-    <link rel="apple-touch-icon" href="Asset%201.png">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <script src="shared.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -24,7 +30,7 @@
 <nav class="site-nav" role="navigation" aria-label="التنقل الرئيسي">
   <div class="container site-nav-inner">
     <div class="brand-wrapper">
-      <img src="Asset%201.png" alt="شعار اتحاد طلبة سوريا" class="brand-logo-img" onerror="this.style.display='none'">
+      <img src="icon.svg" alt="دليل الطالب" class="brand-logo-img">
       <div>
         <div class="brand-title">اتحاد طلبة سوريا</div>
         <div class="brand-subtitle">فرع جامعة الأندلس — الفريق التطوعي</div>
@@ -49,7 +55,7 @@
 <!-- HERO -->
 <header class="hero-section">
   <div class="container hero-content">
-    <img src="Vertical%20Trans.png" alt="اتحاد طلبة سوريا - فرع جامعة الأندلس" class="hero-banner-img" onerror="this.style.display='none'">
+    <img src="icon.svg" alt="دليل الطالب" class="hero-banner-img">
     <div class="hero-badge">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       دليل الطالب الخدمي التفاعلي
@@ -158,7 +164,7 @@
         </div>
         <button onclick="clearAllFavorites()" class="notice-link" style="font-size:0.75rem; color:#e11d48;">مسح الكل</button>
       </div>
-      <div id="list-favorites" class="category-items-list" style="background:#ffffff; border-radius:0 0 var(--radius-lg) var(--radius-lg);" role="list" aria-label="قائمة الأرقام المفضلة"></div>
+      <div id="list-favorites" class="category-items-list" style="background:var(--surface); border-radius:0 0 var(--radius-lg) var(--radius-lg);" role="list" aria-label="قائمة الأرقام المفضلة"></div>
     </div>
   </section>
 
@@ -171,7 +177,7 @@
       </div>
       <button type="button" onclick="openPharmacyModal()" class="duty-modal-btn">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span>جدول مناوبات الشهر (31 يوم)</span>
+        <span>جدول المناوبات المتاح</span>
       </button>
     </div>
     <div id="dutyPharmacyContent">
@@ -223,6 +229,28 @@
           <span class="category-count" id="count-supermarkets">0</span>
         </div>
         <div class="category-items-list" id="list-supermarkets" role="list" aria-label="قائمة السوبر ماركت"></div>
+      </div>
+      <!-- Water Tanks & Drinking Water Card -->
+      <div class="category-card" data-section="services">
+        <div class="category-header">
+          <div class="category-title-wrap">
+            <svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            <h3 class="category-title">صهاريج وتعبئة مياه</h3>
+          </div>
+          <span class="category-count" id="count-water">0</span>
+        </div>
+        <div class="category-items-list" id="list-water" role="list" aria-label="قائمة صهاريج وتعبئة المياه"></div>
+      </div>
+      <!-- Money Transfers & Parcels Card -->
+      <div class="category-card" data-section="services">
+        <div class="category-header">
+          <div class="category-title-wrap">
+            <svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+            <h3 class="category-title">حوالات وشحن طرود</h3>
+          </div>
+          <span class="category-count" id="count-transfers">0</span>
+        </div>
+        <div class="category-items-list" id="list-transfers" role="list" aria-label="قائمة شركات الحوالات وشحن الطرود"></div>
       </div>
       <!-- Printing & Stationery Card -->
       <div class="category-card" data-section="services">
@@ -285,7 +313,7 @@
 
 <!-- FLOATING EMERGENCY SPEED-DIAL (FAB) -->
 <aside class="fab-emergency" aria-label="أرقام الطوارئ السريعة">
-  <button onclick="toggleEmergencyFab()" id="fabMainBtn" class="fab-main-btn" aria-label="فتح أرقام الطوارئ السريعة" title="طوارئ وإسعاف فوري">
+  <button onclick="toggleEmergencyFab()" id="fabMainBtn" class="fab-main-btn" aria-expanded="false" aria-controls="fabMenu" aria-label="فتح أرقام الطوارئ السريعة" title="طوارئ وإسعاف فوري">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
   </button>
   <div id="fabMenu" class="fab-menu" role="menu">
@@ -311,7 +339,7 @@
 <!-- FOOTER -->
 <footer class="site-footer">
   <div class="container">
-    <img src="Horizontal%20Trans.png" alt="اتحاد طلبة سوريا - فرع جامعة الأندلس" class="footer-logo" id="footerLogo" onerror="this.style.display='none'">
+    <img src="icon.svg" alt="دليل الطالب" class="footer-logo" id="footerLogo">
     <p class="footer-team-title">الفريق التطوعي في جامعة الأندلس للعلوم الطبية</p>
     <p class="footer-team-subtitle">نافذة خدمية لطلاب الجامعة في منطقة القدموس</p>
     <div class="footer-buttons">
@@ -359,7 +387,12 @@
           <select id="sugCategory" class="form-select" onchange="toggleSugCity()" required>
             <option value="مطاعم القدموس">مطعم في القدموس</option>
             <option value="سوبر ماركت">سوبر ماركت في القدموس</option>
+            <option value="صهاريج وتعبئة مياه">صهاريج وتعبئة مياه</option>
+            <option value="حوالات وشحن طرود">حوالات وشحن طرود (الهرم / الفؤاد...)</option>
+            <option value="مكتبات وطباعة وقرطاسية">مكتبات وطباعة وقرطاسية</option>
+            <option value="خدمات وصيانة سكنات">خدمات وصيانة سكنات (كهرباء، صحية، نت)</option>
             <option value="حلويات وكافيه">محل حلويات / كافيه</option>
+            <option value="طوارئ ومراكز صحية">طوارئ وصيدليات ومراكز صحية</option>
             <option value="شركات المواصلات سرفيس او بولمان">شركة مواصلات / سرفيس</option>
           </select>
         </div>
@@ -409,7 +442,7 @@
     </div>
     <div class="modal-body" style="padding: 1rem 1.25rem;">
       <div style="margin-bottom: 0.85rem;">
-        <input type="search" id="pharmacySearchInput" class="form-input" placeholder="🔍 ابحث باسم الصيدلية، اليوم، أو التاريخ..." oninput="filterPharmacyTable()" style="padding: 0.55rem 0.85rem; font-size: 0.825rem;">
+         <input type="search" id="pharmacySearchInput" class="form-input" aria-label="بحث في جدول الصيدليات" placeholder="🔍 ابحث باسم الصيدلية، اليوم، أو التاريخ..." oninput="filterPharmacyTable()" style="padding: 0.55rem 0.85rem; font-size: 0.825rem;">
       </div>
       <div id="pharmacyScheduleList" class="pharmacy-schedule-list" style="max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; padding-left: 0.25rem;">
         <!-- Injected via JavaScript -->
@@ -470,42 +503,41 @@
     const FALLBACK_DATA = {
         services: {
             emergency: [
-                { name: "مستوصف القدموس الصحي (طوارئ)", phone: "043770111", note: "طوارئ وإسعاف 24 ساعة" },
-                { name: "صيدلية الشعب (القدموس)", phone: "0933758112", note: "مناوبة ليلية وخدمة توصيل" },
-                { name: "منظومة الإسعاف السريع (الهلال الأحمر)", phone: "133", note: "اتصال طوارئ مجاني" }
+                { name: "مشفى القدموس الوطني", phone: "0437553700", note: "إسعاف وطوارئ 24 ساعة - مدخل المشفى" },
+                { name: "مستوصف القدموس الصحي", phone: "0437553917", note: "رعاية صحية أولية ولقاحات - غرب المستوصف" },
+                { name: "منظومة الإسعاف السريع (الهلال الأحمر)", phone: "133", note: "طوارئ وإسعاف مجاني ومباشر" }
             ],
             restaurants: [
-                { name: "مطعم الفوانيس", phone: "0956595857", note: "وجبات غربية، شاورما، توصيل للسكن" },
-                { name: "مطعم الأحمد", phone: "0996538589", note: "فروج مشوي ومشاوي" },
-                { name: "شيكن هاوس", phone: "0982899566", note: "بروستد وساندويش" },
-                { name: "مطعم الملك", phone: "0940447761", note: "سندويش وفلافل ووجبات سريعة" },
+                { name: "مطعم الفوانيس", phone: "0956595857" },
+                { name: "مطعم الأحمد", phone: "0996538589" },
+                { name: "شيكن هاوس", phone: "0982899566" },
+                { name: "مطعم الملك", phone: "0940447761" },
                 { name: "مطعم الليث", phone: "0982365746" },
-                { name: "مطعم عبدو", phone: "0945987118" },
-                { name: "مطعم مدماك", phone: "0991028556", note: "وجبات وسندويش" },
-                { name: "مطعم كريم", phone: "0939394107" },
-                { name: "مطعم معجنات وفرايز", phone: "0959876806", note: "فطائر ومعجنات طازجة" },
-                { name: "معجنات محمود", phone: "0992614648" },
-                { name: "مطعم انوش", phone: "0934081982" }
+                { name: "مطعم عبدو", phone: "0945987118" }
             ],
             supermarkets: [
-                { name: "وديع", phone: "0983370760", note: "مواد غذائية وتوصيل" },
+                { name: "وديع", phone: "0983370760" },
                 { name: "بيت المونة", phone: "0991974444" },
                 { name: "ميني ماركت ابو علي", phone: "0935660586" },
-                { name: "الخير", phone: "0939635250" },
-                { name: "بيدونات مي شرب", phone: "0988968328", note: "توصيل بيدونات مياه شرب معقمة للسكن" }
+                { name: "الخير", phone: "0939635250" }
+            ],
+            water: [
+                { name: "صهريج مياه وتعبئة خزانات (سكنات طلابية)", phone: "0988968328", note: "توصيل وتعبئة خزانات وبيدونات مياه نقية بالقدموس" }
+            ],
+            transfers: [
+                { name: "شركة الهرم للحوالات المالية (فرع القدموس)", phone: "0437555100", note: "إرسال واستلام حوالات مالية فورية لكافة المحافظات" },
+                { name: "شركة الفؤاد للحوالات وشحن الطرود", phone: "0437554200", note: "حوالات وشحن حقائب ومستلزمات الطلاب" }
             ],
             printing: [
-                { name: "مكتبة الأندلس الجامعية", phone: "0944882110", note: "طباعة محاضرات، سلايدات، تصوير وتجليد" },
-                { name: "قرطاسية ومركز تصوير الأمل", phone: "0933119420", note: "طباعة ليزرية ومستلزمات دراسية" }
+                { name: "مكتبة ومركز تصوير الأندلس الجامعية", phone: "0944882110", note: "طباعة سلايدات ومحاضرات طبية وتجليد" }
             ],
             maintenance: [
-                { name: "علي الزير (اتصالات، كهرباء، صحية، نت)", phone: "0940254845", note: "صيانة فورية لسكنات الطلاب" },
-                { name: "اشتراك وتمديد أمبيرات (السكن الجامعي)", phone: "0944218890", note: "صيانة مولدات واشتراكات طاقة" }
+                { name: "صيانة كهرباء وتمديدات صحية ونت (سكن الطلاب)", phone: "0940254845", note: "صيانة فورية للغرف والسكنات بالقدموس" }
             ],
             sweets: [
-                { name: "مرعي", phone: "0930267864", note: "حلويات عربية وغربية ومثلجات" },
+                { name: "مرعي", phone: "0930267864" },
                 { name: "الخير", phone: "0966656200" },
-                { name: "حساب انستغرام (cook90262)", link: "https://www.instagram.com/cook90262", note: "حلويات منزلية وتواصي" }
+                { name: "حساب انستغرام (cook90262)", link: "https://www.instagram.com/cook90262" }
             ]
         },
         transport: [
@@ -594,7 +626,7 @@
         if (!url) return '';
         const trimmed = String(url).trim();
         if (/^https?:\/\//i.test(trimmed)) {
-            return encodeURI(trimmed);
+            try { return escapeHtml(new URL(trimmed).href); } catch { return ''; }
         }
         return '';
     }
@@ -621,7 +653,9 @@
 
     function getLocalUserRatings() {
         try {
-            return JSON.parse(localStorage.getItem('susa_user_ratings') || '{}');
+            const ratings = JSON.parse(portalStorage.get('susa_user_ratings') || '{}');
+            if (!ratings || Array.isArray(ratings) || typeof ratings !== 'object') return {};
+            return Object.fromEntries(Object.entries(ratings).filter(([, value]) => Number.isInteger(value) && value >= 1 && value <= 5));
         } catch (e) {
             return {};
         }
@@ -629,18 +663,18 @@
 
     // --- DARK MODE THEME SYSTEM ---
     function initTheme() {
-        const saved = localStorage.getItem('susa_theme');
+        const saved = portalStorage.get('susa_theme');
         const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = saved || (prefersDark ? 'dark' : 'light');
-        document.documentElement.setAttribute('data-theme', theme);
+        const theme = ['light', 'dark'].includes(saved) ? saved : (prefersDark ? 'dark' : 'light');
+        applyPortalTheme(theme);
         updateThemeIcon(theme);
     }
 
     function toggleDarkMode() {
         const current = document.documentElement.getAttribute('data-theme') || 'light';
         const next = current === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('susa_theme', next);
+        applyPortalTheme(next);
+        portalStorage.set('susa_theme', next);
         updateThemeIcon(next);
         showToast(next === 'dark' ? '🌙 تم تفعيل الوضع الليلي' : '☀️ تم تفعيل الوضع النهاري');
     }
@@ -660,7 +694,8 @@
     // --- STUDENT FAVORITES SYSTEM ---
     function getLocalFavorites() {
         try {
-            return JSON.parse(localStorage.getItem('susa_user_favs') || '[]');
+            const favorites = JSON.parse(portalStorage.get('susa_user_favs') || '[]');
+            return Array.isArray(favorites) ? favorites.filter(f => f && typeof f.key === 'string' && typeof f.name === 'string' && typeof f.phone === 'string') : [];
         } catch (e) {
             return [];
         }
@@ -676,54 +711,16 @@
             favs.push({ key, name, phone, context });
             showToast(`❤️ تمت إضافة (${name}) إلى أرقامك المفضلة!`);
         }
-        localStorage.setItem('susa_user_favs', JSON.stringify(favs));
+        if (!portalStorage.set('susa_user_favs', JSON.stringify(favs))) showToast('تعذر حفظ المفضلة في هذا المتصفح', 'error');
         renderAll();
     }
 
     function clearAllFavorites() {
         if (confirm('هل ترغب في مسح جميع الأرقام من قائمة المفضلة؟')) {
-            localStorage.removeItem('susa_user_favs');
+            if (!portalStorage.remove('susa_user_favs')) return showToast('تعذر مسح المفضلة', 'error');
             renderAll();
             showToast('تم مسح المفضلة');
         }
-    }
-
-    // --- LIVE OPEN / CLOSED STATUS DETECTOR ---
-    function getOpenStatusBadge(name, context) {
-        // Approximate business hours for Syrian coastal town / Qadmus
-        const now = new Date();
-        const hour = now.getHours(); // 0 to 23
-
-        // Pharmacies & Emergency
-        if (context.includes('طوارئ') || context.includes('صيدلية') || context.includes('إسعاف') || name.includes('إسعاف') || name.includes('مستوصف')) {
-            return '<span class="status-badge status-badge-open"><span class="status-dot"></span>مفتوح 24 ساعة</span>';
-        }
-
-        // Restaurants: typically open 11:30 AM to 01:00 AM
-        if (context.includes('مطعم') || context.includes('معجنات')) {
-            const isOpen = (hour >= 11 || hour < 1);
-            return isOpen 
-                ? '<span class="status-badge status-badge-open"><span class="status-dot"></span>مفتوح الآن</span>' 
-                : '<span class="status-badge status-badge-closed"><span class="status-dot"></span>مغلق حالياً</span>';
-        }
-
-        // Supermarkets: 08:00 AM to 00:00 AM
-        if (context.includes('ماركت') || context.includes('سوبر') || context.includes('مياه')) {
-            const isOpen = (hour >= 8 && hour <= 23);
-            return isOpen 
-                ? '<span class="status-badge status-badge-open"><span class="status-dot"></span>مفتوح الآن</span>' 
-                : '<span class="status-badge status-badge-closed"><span class="status-dot"></span>مغلق حالياً</span>';
-        }
-
-        // Print shops & Stationery: 08:30 AM to 20:00 PM
-        if (context.includes('مكتب') || context.includes('طباعة') || context.includes('تصوير')) {
-            const isOpen = (hour >= 8 && hour < 20);
-            return isOpen 
-                ? '<span class="status-badge status-badge-open"><span class="status-dot"></span>مفتوح الآن</span>' 
-                : '<span class="status-badge status-badge-closed"><span class="status-dot"></span>مغلق حالياً</span>';
-        }
-
-        return '';
     }
 
     // --- EMERGENCY FAB TOGGLE ---
@@ -731,10 +728,12 @@
         const menu = document.getElementById('fabMenu');
         if (menu) {
             menu.classList.toggle('fab-open');
+            document.getElementById('fabMainBtn').setAttribute('aria-expanded', String(menu.classList.contains('fab-open')));
         }
     }
 
     // --- TOAST SYSTEM ---
+    let toastTimer;
     function showToast(msg, type = 'success') {
         const toast = document.getElementById('toast');
         const toastMsg = document.getElementById('toastMsg');
@@ -749,7 +748,8 @@
             toastIcon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
         }
 
-        setTimeout(() => {
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
             toast.classList.remove('toast-show');
         }, 3000);
     }
@@ -784,15 +784,19 @@
 
     // --- RATINGS SYSTEM (Honest, Unfabricated, Anti-Spam) ---
     async function rateItem(key, stars, itemName) {
+        if (!Number.isInteger(stars) || stars < 1 || stars > 5) return;
         const userRatings = getLocalUserRatings();
-        if (userRatings[key]) {
+        if (Object.hasOwn(userRatings, key)) {
             showToast(`لقد قمت بتقييم هذه الخدمة مسبقاً بـ (${getStarLabel(userRatings[key])}) ⭐`, 'success');
             return;
         }
 
         userRatings[key] = stars;
         try {
-            localStorage.setItem('susa_user_ratings', JSON.stringify(userRatings));
+            if (!portalStorage.set('susa_user_ratings', JSON.stringify(userRatings))) {
+                showToast('تعذر حفظ التقييم في هذا المتصفح', 'error');
+                return;
+            }
         } catch (e) {}
 
         showToast(`شكراً لك! تم تسجيل تقييمك (${getStarLabel(stars)}) ⭐`);
@@ -861,7 +865,7 @@
 
         if (isUrl) {
             return `
-            <div class="contact-item" data-search="${nameEscaped} ${searchContextEscaped}">
+            <div class="contact-item" data-search="${nameEscaped} ${escapeHtml(item.note || '')} ${escapeHtml(item.link || item.phone || '')} ${searchContextEscaped}">
                 <div class="contact-header">
                     <span class="contact-name">${nameEscaped}</span>
                     ${item.note ? `<div class="contact-note">${escapeHtml(item.note)}</div>` : ''}
@@ -885,7 +889,8 @@
 
         const noteEscaped = escapeHtml(item.note || '');
         const scheduleEscaped = escapeHtml(item.schedule || '');
-        const openStatusHtml = getOpenStatusBadge(item.name, searchContext);
+        // Only display hours explicitly supplied with the entry, never inferred from its category.
+        const openStatusHtml = '';
 
         const favKey = item.phone || item.link || item.name;
         const userFavs = getLocalFavorites();
@@ -906,10 +911,10 @@
                 <span class="contact-name">${nameEscaped}</span>
                 <div class="contact-phone-row">
                     <span class="contact-phone" dir="ltr">${phoneEscaped}</span>
-                    <span class="verified-badge">
+                    ${item.verified === true ? `<span class="verified-badge">
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
                         موثق
-                    </span>
+                    </span>` : ''}
                     ${openStatusHtml}
                 </div>
                 ${noteEscaped ? `<div class="contact-note">${noteEscaped}</div>` : ''}
@@ -967,17 +972,10 @@
         const dutyData = portalData.pharmacies_duty;
         if (!dutyData || !dutyData.schedule || dutyData.schedule.length === 0) return null;
 
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
-        const todayIso = `${year}-${month}-${day}`;
-
-        let match = dutyData.schedule.find(s => s.date === todayIso);
-        if (!match) {
-            match = dutyData.schedule.find(s => s.date.endsWith(`-${day}`)) || dutyData.schedule[13] || dutyData.schedule[0];
-        }
-        return match;
+        const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Damascus', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+        const part = type => parts.find(p => p.type === type).value;
+        const todayIso = `${part('year')}-${part('month')}-${part('day')}`;
+        return dutyData.schedule.find(s => s.date === todayIso) || null;
     }
 
     function renderDutyPharmacy() {
@@ -986,6 +984,7 @@
         const dutyContent = document.getElementById('dutyPharmacyContent');
         const dutyDateLabel = document.getElementById('dutyDateLabel');
 
+        document.getElementById('fabTodayPharmacy').style.display = 'none';
         if (!dutyData || !dutyData.schedule || dutyData.schedule.length === 0) {
             if (dutySection) dutySection.style.display = 'none';
             return;
@@ -993,7 +992,9 @@
 
         const todayDuty = getTodayDutyPharmacy();
         if (!todayDuty) {
-            if (dutySection) dutySection.style.display = 'none';
+            dutySection.style.display = 'block';
+            dutyDateLabel.textContent = 'لا تتوفر مناوبة مؤكدة لتاريخ اليوم';
+            dutyContent.textContent = 'يمكنك مراجعة الجدول المتاح والتأكد من الصيدلية هاتفياً.';
             return;
         }
 
@@ -1044,27 +1045,24 @@
         const emergCount = document.getElementById('count-emergency');
         const emergCard = emergList ? emergList.closest('.category-card') : null;
         if (emergList) {
+            const baseEmerg = portalData.services.emergency || [];
             const emergencyItems = [
                 {
                     name: `${todayDuty.pharmacy} (مناوبة اليوم 🌙)`,
                     phone: todayDuty.phone,
                     note: `العنوان: ${todayDuty.address}`
                 },
-                {
-                    name: "منظومة الإسعاف السريع (الهلال الأحمر)",
-                    phone: "133",
-                    note: "طوارئ مجاني 24 ساعة"
-                }
+                ...baseEmerg
             ];
-            emergList.innerHTML = emergencyItems.map(i => createContactRow(i, "طوارئ صيدلية مناوبة إسعاف مشفى دواء")).join('') + `
+            emergList.innerHTML = sortArray(emergencyItems).map(i => createContactRow(i, "طوارئ صيدلية مناوبة إسعاف مشفى دواء مستوصف صحي")).join('') + `
                 <div style="padding: 0.65rem 0.85rem; text-align: center; background: var(--color-slate-50); border-top: 1px solid var(--color-slate-100); border-radius: 0 0 var(--radius-md) var(--radius-md);">
                     <button type="button" onclick="openPharmacyModal()" class="notice-link" style="font-size: 0.775rem; font-weight: 700; color: var(--color-teal); display: inline-flex; align-items: center; gap: 0.35rem;">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                        <span>عرض جدول مناوبات الصيدليات لهذا الشهر (31 يوم)</span>
+                        <span>عرض جدول المناوبات المتاح</span>
                     </button>
                 </div>
             `;
-            if (emergCount) emergCount.textContent = '2';
+            if (emergCount) emergCount.textContent = emergencyItems.length;
             if (emergCard) emergCard.style.display = 'flex';
         }
 
@@ -1072,6 +1070,7 @@
         const fabToday = document.getElementById('fabTodayPharmacy');
         const fabTitle = document.getElementById('fabPharmacyTitle');
         if (fabToday) {
+            fabToday.style.display = 'inline-flex';
             fabToday.href = `tel:${todayDuty.phone}`;
             if (fabTitle) {
                 fabTitle.textContent = `مناوبة اليوم: ${todayDuty.pharmacy} (${todayDuty.display_phone || todayDuty.phone})`;
@@ -1086,6 +1085,8 @@
         const listContainer = document.getElementById('pharmacyScheduleList');
         if (!listContainer) return;
 
+        document.getElementById('pharmacyModalTitle').textContent = `جدول الصيدليات المناوبة — ${dutyData.month_name || dutyData.month} ${dutyData.year}`;
+        document.getElementById('pharmacySearchInput').value = '';
         const todayDuty = getTodayDutyPharmacy();
         const todayDate = todayDuty ? todayDuty.date : '';
 
@@ -1138,9 +1139,6 @@
 
     // --- RENDER ALL SECTIONS ---
     function renderAll() {
-        // Today's Duty Pharmacy
-        renderDutyPharmacy();
-
         // Pinned Favorites List
         const favs = getLocalFavorites();
         const favSec = document.getElementById('section-favorites');
@@ -1150,6 +1148,7 @@
                 favList.innerHTML = favs.map(f => createContactRow({ name: f.name, phone: f.phone }, f.context || 'المفضلة')).join('');
                 favSec.style.display = 'block';
             } else {
+                favList.innerHTML = '';
                 favSec.style.display = 'none';
             }
         }
@@ -1158,6 +1157,8 @@
         const emergency = portalData.services.emergency || [];
         const rests = portalData.services.restaurants || [];
         const supers = portalData.services.supermarkets || [];
+        const water = portalData.services.water || [];
+        const transfers = portalData.services.transfers || [];
         const printing = portalData.services.printing || [];
         const maintenance = portalData.services.maintenance || [];
         const sweets = portalData.services.sweets || [];
@@ -1171,8 +1172,22 @@
         document.getElementById('list-restaurants').innerHTML = sortArray(rests).map(i => createContactRow(i, "مطاعم مطعم وجبات فطور غداء")).join('');
         document.getElementById('count-restaurants').textContent = rests.length;
 
-        document.getElementById('list-supermarkets').innerHTML = sortArray(supers).map(i => createContactRow(i, "سوبر ماركت ماركت دكان مياه مي")).join('');
+        document.getElementById('list-supermarkets').innerHTML = sortArray(supers).map(i => createContactRow(i, "سوبر ماركت ماركت دكان بقالة")).join('');
         document.getElementById('count-supermarkets').textContent = supers.length;
+
+        const waterEl = document.getElementById('list-water');
+        if (waterEl) {
+            waterEl.innerHTML = sortArray(water).map(i => createContactRow(i, "صهريج مياه مي تعبئة خزان بيدون شرب")).join('');
+            const countWater = document.getElementById('count-water');
+            if (countWater) countWater.textContent = water.length;
+        }
+
+        const transEl = document.getElementById('list-transfers');
+        if (transEl) {
+            transEl.innerHTML = sortArray(transfers).map(i => createContactRow(i, "حوالات حوالة مالية شحن طرود حقائب الهرم الفؤاد كاش")).join('');
+            const countTrans = document.getElementById('count-transfers');
+            if (countTrans) countTrans.textContent = transfers.length;
+        }
 
         const printEl = document.getElementById('list-printing');
         if (printEl) {
@@ -1208,6 +1223,7 @@
             </div>`;
         }).join('');
 
+        renderDutyPharmacy();
         filterItems();
     }
 
@@ -1240,12 +1256,15 @@
         secServices.style.display = showServices ? 'block' : 'none';
         secTransport.style.display = showTransport ? 'block' : 'none';
 
+        let totalVisibleInActiveTab = 0;
         const dutySection = document.getElementById('section-duty-pharmacy');
-        if (dutySection) {
+        const hasDutySchedule = portalData.pharmacies_duty?.schedule?.length > 0;
+        if (dutySection && hasDutySchedule) {
             if (!showServices) {
                 dutySection.style.display = 'none';
             } else if (!normalizedQuery) {
                 dutySection.style.display = 'block';
+                totalVisibleInActiveTab++;
             } else {
                 const dutyText = normalizeArabic(dutySection.textContent || '');
                 const matchesDuty = dutyText.includes(normalizedQuery) || normalizedQuery.includes('صيدل') || normalizedQuery.includes('مناوب') || normalizedQuery.includes('دواء');
@@ -1253,8 +1272,6 @@
                 if (matchesDuty) totalVisibleInActiveTab++;
             }
         }
-
-        let totalVisibleInActiveTab = 0;
 
         document.querySelectorAll('.category-card').forEach(card => {
             const cardSection = card.getAttribute('data-section');
@@ -1284,6 +1301,14 @@
             card.style.display = visibleInCard > 0 ? 'flex' : 'none';
         });
 
+        if (!hasDutySchedule) dutySection.style.display = 'none';
+        const favoriteItems = [...document.querySelectorAll('#list-favorites .contact-item')];
+        favoriteItems.forEach(item => {
+            item.style.display = normalizeArabic(item.dataset.search).includes(normalizedQuery) ? 'flex' : 'none';
+        });
+        document.getElementById('section-favorites').style.display = currentTab === 'all' && favoriteItems.some(item => item.style.display !== 'none') ? 'block' : 'none';
+        secServices.style.display = showServices && [...secServices.querySelectorAll('.category-card')].some(card => card.style.display !== 'none') ? 'block' : 'none';
+        secTransport.style.display = showTransport && [...secTransport.querySelectorAll('.category-card')].some(card => card.style.display !== 'none') ? 'block' : 'none';
         const emptyState = document.getElementById('emptyState');
         emptyState.style.display = totalVisibleInActiveTab === 0 ? 'block' : 'none';
     }
@@ -1330,11 +1355,10 @@
                 });
                 return;
             } catch (err) {
-                // User cancelled or share failed, fallback to clipboard
+                if (err.name === 'AbortError') return;
             }
         }
-        await copyNumber(phone);
-        showToast(`تم نسخ بطاقة الرقم للمشاركة بنجاح!`);
+        await copyNumber(text);
     }
 
     // --- PWA INSTALL PROMPT & SERVICE WORKER ---
@@ -1343,7 +1367,7 @@
         e.preventDefault();
         deferredPrompt = e;
         const banner = document.getElementById('pwaBanner');
-        if (banner && !sessionStorage.getItem('pwa_dismissed')) {
+        if (banner && !portalStorage.get('pwa_dismissed', true)) {
             banner.style.display = 'flex';
         }
     });
@@ -1364,7 +1388,7 @@
 
     function dismissPwaBanner() {
         document.getElementById('pwaBanner').style.display = 'none';
-        sessionStorage.setItem('pwa_dismissed', 'true');
+        portalStorage.set('pwa_dismissed', 'true', true);
     }
 
     // Register Service Worker for Offline Directory Browsing
@@ -1409,7 +1433,10 @@
     function toggleSugCity() {
         const cat = document.getElementById('sugCategory').value;
         const wrapper = document.getElementById('sugCityWrapper');
-        wrapper.style.display = (cat === 'شركات المواصلات سرفيس او بولمان') ? 'block' : 'none';
+        const isTransport = cat === 'شركات المواصلات سرفيس او بولمان';
+        wrapper.style.display = isTransport ? 'block' : 'none';
+        document.getElementById('sugCity').required = isTransport;
+        if (!isTransport) document.getElementById('sugCity').value = '';
     }
 
     // --- STUDENT SUGGESTION SUBMISSION ---
@@ -1423,6 +1450,8 @@
         const errEl = document.getElementById('suggestError');
         const successEl = document.getElementById('suggestSuccess');
         const btn = document.getElementById('btnSubmitSug');
+        if (btn.disabled) return;
+        successEl.style.display = 'none';
 
         errEl.classList.remove('form-error-show');
         errEl.textContent = '';
@@ -1494,6 +1523,8 @@
         const errEl = document.getElementById('reportError');
         const successEl = document.getElementById('reportSuccess');
         const btn = document.getElementById('btnSubmitReport');
+        if (btn.disabled) return;
+        errEl.classList.remove('form-error-show');
 
         if (!note) {
             errEl.textContent = 'يرجى كتابة تفاصيل المشكلة.';
@@ -1536,19 +1567,12 @@
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
     async function loadData() {
         try {
-            const res = await fetch(`${DATA_FILE_PATH}?t=${Date.now()}`);
+            const res = await fetch(DATA_FILE_PATH, { cache: 'no-cache' });
             if (!res.ok) return;
             const json = await res.json();
 
             // Strict schema validation to prevent crashing
-            if (
-                json &&
-                json.services &&
-                Array.isArray(json.services.restaurants) &&
-                Array.isArray(json.services.supermarkets) &&
-                Array.isArray(json.services.sweets) &&
-                Array.isArray(json.transport)
-            ) {
+            if (validatePortalData(json)) {
                 if (!Array.isArray(json.services.emergency)) json.services.emergency = [];
                 if (!Array.isArray(json.services.printing)) json.services.printing = [];
                 if (!Array.isArray(json.services.maintenance)) json.services.maintenance = [];
@@ -1585,6 +1609,11 @@
         renderAll();
         // 2. Fetch fresh data asynchronously
         loadData();
+        let lastDutyDate = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Damascus' });
+        setInterval(() => {
+            const date = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Damascus' });
+            if (date !== lastDutyDate) { lastDutyDate = date; renderAll(); loadData(); }
+        }, 60000);
     });
 
     // Close emergency FAB menu when clicking outside
@@ -1593,6 +1622,7 @@
         if (fab && !fab.contains(e.target)) {
             const menu = document.getElementById('fabMenu');
             if (menu) menu.classList.remove('fab-open');
+            document.getElementById('fabMainBtn').setAttribute('aria-expanded', 'false');
         }
     });
 </script>

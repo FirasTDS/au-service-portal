@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
-    <link rel="icon" type="image/png" href="Asset%201.png">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <script src="shared.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -17,7 +18,7 @@
     <header class="site-nav">
         <div class="container site-nav-inner">
             <div class="brand-wrapper">
-                <img src="Asset%201.png" alt="اتحاد طلبة سوريا" class="brand-logo-img" onerror="this.style.display='none'">
+                <img src="icon.svg" alt="دليل الطالب" class="brand-logo-img">
                 <div>
                     <div class="brand-title">لوحة المشرف المعتمدة</div>
                     <div class="brand-subtitle">إدارة بيانات الدليل الخدمي — جامعة الأندلس</div>
@@ -158,13 +159,15 @@
                     <span>إضافة جهة أو سرفيس جديد</span>
                 </h3>
 
-                <form id="addItemForm" onsubmit="handleAddItem(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.85rem; align-items: flex-end;">
+                <form id="addItemForm" onsubmit="handleAddItem(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 0.85rem; align-items: flex-end;">
                     <div class="form-group">
                         <label for="newCategory" class="form-label">القسم الرئيسي *</label>
                         <select id="newCategory" class="form-select" onchange="toggleAdminCityInput()" required>
-                            <option value="emergency">طوارئ وصيدليات (القدموس)</option>
+                            <option value="emergency">طوارئ وصيدليات ومراكز صحية</option>
                             <option value="restaurants">المطاعم (القدموس)</option>
                             <option value="supermarkets">سوبر ماركت (القدموس)</option>
+                            <option value="water">صهاريج وتعبئة مياه</option>
+                            <option value="transfers">حوالات مالية وشحن طرود</option>
                             <option value="printing">مكتبات وطباعة وقرطاسية</option>
                             <option value="maintenance">خدمات وصيانة (كهرباء، صحية، اتصالات)</option>
                             <option value="sweets">حلويات وكافيه (القدموس)</option>
@@ -289,12 +292,14 @@
             transport: []
         };
 
+        let toastTimer;
         function showToast(msg, type = 'success') {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toastMsg');
             toastMsg.textContent = msg;
             toast.className = `toast toast-show ${type === 'error' ? 'toast-error' : 'toast-success'}`;
-            setTimeout(() => {
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
                 toast.classList.remove('toast-show');
             }, 3000);
         }
@@ -354,6 +359,7 @@
                 }
 
                 const repoData = await repoRes.json();
+                if (repoData.permissions && !repoData.permissions.push) throw new Error('هذا الحساب لا يملك صلاحية تعديل المستودع.');
 
                 // Fetch current data.json and its SHA
                 const fileRes = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FILE_PATH}`, {
@@ -378,6 +384,7 @@
                 }
                 const decodedText = new TextDecoder('utf-8').decode(bytes);
                 const parsedData = JSON.parse(decodedText);
+                if (!validatePortalData(parsedData)) throw new Error('بنية ملف البيانات غير صالحة.');
 
                 // Store in memory
                 sessionToken = token;
@@ -401,6 +408,7 @@
         }
 
         function handleAdminLogout() {
+            closeAdminEditModal();
             sessionToken = null;
             remoteSha = null;
             adminData = { services: { restaurants: [], supermarkets: [], sweets: [] }, transport: [] };
@@ -437,9 +445,11 @@
             let html = '';
 
             const serviceLabels = {
-                emergency: 'طوارئ وصيدليات (القدموس)',
+                emergency: 'طوارئ وصيدليات ومراكز صحية',
                 restaurants: 'المطاعم (القدموس)',
                 supermarkets: 'سوبر ماركت (القدموس)',
+                water: 'صهاريج وتعبئة مياه',
+                transfers: 'حوالات مالية وشحن طرود',
                 printing: 'مكتبات وطباعة وقرطاسية',
                 maintenance: 'خدمات وصيانة (كهرباء، صحية، اتصالات)',
                 sweets: 'حلويات وكافيه (القدموس)'
@@ -503,7 +513,7 @@
                         ${transportGroups.map((group, gIdx) => {
                             total += group.items.length;
                             return `
-                                <div style="background-color: #ffffff; border: 1px solid var(--color-slate-200); border-radius: var(--radius-md); padding: 0.75rem;">
+                                <div style="background-color: var(--surface); border: 1px solid var(--color-slate-200); border-radius: var(--radius-md); padding: 0.75rem;">
                                     <div style="font-weight: 700; font-size: 0.85rem; color: var(--color-slate-800); margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
                                         <span>محافظة: <strong>${escapeHtml(group.city)}</strong></span>
                                         <span class="admin-badge admin-badge-red">${group.items.length} شركة/سرفيس</span>
@@ -514,7 +524,7 @@
                                                 <div class="admin-item-meta" style="flex: 1 1 200px;">
                                                     <div>
                                                         <strong>${escapeHtml(item.name)}</strong>
-                                                        <span style="color: var(--color-slate-500); font-family: monospace; margin-right: 0.35rem;" dir="ltr">${escapeHtml(item.phone)}</span>
+                                                        <span style="color: var(--color-slate-500); font-family: monospace; margin-right: 0.35rem;" dir="ltr">${escapeHtml(item.phone || item.link)}</span>
                                                         ${item.schedule ? `<span class="admin-badge admin-badge-teal" style="font-size:0.7rem;">🕒 ${escapeHtml(item.schedule)}</span>` : ''}
                                                     </div>
                                                     ${item.note ? `<div style="font-size: 0.75rem; color: var(--color-slate-500); margin-top: 0.2rem;">📝 ${escapeHtml(item.note)}</div>` : ''}
@@ -549,13 +559,13 @@
                 total += duty.schedule.length;
                 html += `
                     <div style="background-color: var(--color-slate-50); border: 1.5px solid #6ee7b7; border-radius: var(--radius-lg); padding: 1rem;">
-                        <div style="font-weight: 800; font-size: 0.95rem; color: #065f46; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="font-weight: 800; font-size: 0.95rem; color: var(--color-teal-dark); margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
                             <span>💊 جدول الصيدليات المناوبة (${escapeHtml(duty.month_name || 'الشهر الحالي')})</span>
                             <span class="admin-badge admin-badge-teal">${duty.schedule.length} يوم مناوبة</span>
                         </div>
                         <div style="max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.35rem; padding-left: 0.25rem;">
                             ${duty.schedule.map((item, idx) => `
-                                <div class="admin-item-row" style="background-color: #ffffff; padding: 0.45rem 0.65rem;">
+                                <div class="admin-item-row" style="background-color: var(--surface); padding: 0.45rem 0.65rem;">
                                     <div class="admin-item-meta" style="flex: 1 1 200px;">
                                         <div>
                                             <span style="font-weight: 800; color: var(--color-teal); font-size: 0.8rem;">${escapeHtml(item.date.substring(5))} (${escapeHtml(item.day)})</span>:
@@ -691,7 +701,7 @@
             }
 
             modal.classList.add('modal-open');
-            editName.focus();
+            setTimeout(() => { if (modal.classList.contains('modal-open')) editName.focus(); }, 0);
         }
 
         function closeAdminEditModal() {
@@ -739,7 +749,13 @@
                 const target = adminData.transport[gIdx].items[iIdx];
                 if (target) {
                     target.name = name;
-                    target.phone = val;
+                    if (isUrl) {
+                        target.link = val;
+                        delete target.phone;
+                    } else {
+                        target.phone = val;
+                        delete target.link;
+                    }
                     if (note) {
                         target.note = note;
                     } else {
@@ -813,6 +829,8 @@
 
             const btn = document.getElementById('btnPushGitHub');
             const statusBox = document.getElementById('publishStatus');
+            if (btn.disabled) return;
+            document.getElementById('dashboardSection').inert = true;
 
             statusBox.className = 'status-box show status-box-info';
             statusBox.textContent = '⏳ جاري إعداد التغييرات وتشفيرها ونشرها إلى المستودع على GitHub...';
@@ -827,11 +845,10 @@
                     }
                 });
 
-                let currentSha = remoteSha;
-                if (checkRes.ok) {
-                    const checkData = await checkRes.json();
-                    currentSha = checkData.sha;
-                }
+                if (!checkRes.ok) throw new Error('تعذر التحقق من أحدث نسخة. حاول مجدداً.');
+                const checkData = await checkRes.json();
+                if (checkData.sha !== remoteSha) throw new Error('تم تعديل الملف بواسطة مشرف آخر. احتفظ بتعديلاتك ثم أعد تحميل البيانات قبل النشر.');
+                const currentSha = remoteSha;
 
                 // Prepare clean JSON string
                 const jsonText = JSON.stringify(adminData, null, 2);
@@ -879,6 +896,7 @@
                 showToast('تعذر النشر، تفقد الرسالة في الأسفل.', 'error');
             } finally {
                 btn.disabled = false;
+                document.getElementById('dashboardSection').inert = false;
             }
         }
 
@@ -933,15 +951,16 @@
 
                 // Render suggestions table
                 tbody.innerHTML = liveSuggestions.slice().reverse().map(item => {
-                    const isReport = item.type.includes('تقييم') || item.category.includes('إبلاغ') || item.notes.includes('[بلاغ');
+                    const isReport = item.category.includes('إبلاغ') || item.notes.includes('[بلاغ');
+                    const isRating = !isReport && item.type.includes('تقييم');
                     const badgeClass = isReport ? 'admin-badge-red' : 'admin-badge-teal';
-                    const badgeText = isReport ? 'بلاغ مشكلة' : 'اقتراح جديد';
+                    const badgeText = isReport ? 'بلاغ مشكلة' : isRating ? `تقييم: ${escapeHtml(item.rating)}/5` : 'اقتراح جديد';
 
                     // Check if already in adminData
                     const alreadyExists = checkItemExists(item.name, item.phone);
 
                     return `
-                        <tr style="border-bottom: 1px solid var(--color-slate-200); background-color: ${isReport ? '#fff5f5' : '#ffffff'};">
+                        <tr style="border-bottom: 1px solid var(--color-slate-200); background-color: ${isReport ? 'var(--color-red-soft)' : 'var(--surface)'};">
                             <td style="padding: 0.65rem 0.75rem;">
                                 <span class="admin-badge ${badgeClass}">${badgeText}</span>
                             </td>
@@ -961,7 +980,7 @@
                                 ${escapeHtml(item.notes || '—')}
                             </td>
                             <td style="padding: 0.65rem 0.75rem; text-align: center;">
-                                ${alreadyExists ? `
+                                ${isReport || isRating ? '<span>للمراجعة</span>' : alreadyExists ? `
                                     <span class="admin-badge admin-badge-teal" style="font-size: 0.7rem;">موجود بالفعل ✓</span>
                                 ` : `
                                     <button type="button" onclick="approveSuggestion(${item.id})" class="btn-primary" style="font-size: 0.725rem; padding: 0.35rem 0.65rem;">
@@ -986,15 +1005,17 @@
 
         // Check if an item already exists in portal data
         function checkItemExists(name, phone) {
-            const cleanPhone = (phone || '').replace(/\D/g, '');
-            for (const cat of ['restaurants', 'supermarkets', 'maintenance', 'sweets']) {
+            const normalizeContact = value => /^https?:\/\//i.test(value || '') ? value.trim().replace(/\/$/, '') : (value || '').replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\D/g, '').replace(/^(00963|963)/, '0');
+            const contact = normalizeContact(phone);
+            const matches = item => contact ? normalizeContact(item.phone || item.link) === contact : item.name.trim() === name.trim();
+            for (const cat of ['emergency', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'sweets']) {
                 const list = adminData.services[cat] || [];
-                if (list.some(i => i.name === name || (cleanPhone && (i.phone || '').includes(cleanPhone)))) {
+                if (list.some(matches)) {
                     return true;
                 }
             }
             for (const group of (adminData.transport || [])) {
-                if (group.items.some(i => i.name === name || (cleanPhone && (i.phone || '').includes(cleanPhone)))) {
+                if (group.items.some(matches)) {
                     return true;
                 }
             }
@@ -1005,15 +1026,21 @@
         function approveSuggestion(id) {
             const item = liveSuggestions.find(s => s.id === id);
             if (!item) return;
+            if (item.type.includes('تقييم') || item.category.includes('إبلاغ') || item.notes.includes('[بلاغ')) return;
+            if (!item.name.trim() || !item.phone.trim() || checkItemExists(item.name, item.phone)) return;
 
             let cat = 'restaurants';
-            if (item.category.includes('طوارئ') || item.category.includes('صيدلية') || item.category.includes('إسعاف') || item.category.includes('مشفى')) {
+            if (item.category.includes('طوارئ') || item.category.includes('صيدلية') || item.category.includes('إسعاف') || item.category.includes('مشفى') || item.category.includes('صحي')) {
                 cat = 'emergency';
             } else if (item.category.includes('سوبر') || item.category.includes('ماركت')) {
                 cat = 'supermarkets';
+            } else if (item.category.includes('مي') || item.category.includes('مياه') || item.category.includes('صهريج')) {
+                cat = 'water';
+            } else if (item.category.includes('حوال') || item.category.includes('شحن') || item.category.includes('طرد') || item.category.includes('الهرم') || item.category.includes('الفؤاد')) {
+                cat = 'transfers';
             } else if (item.category.includes('مكتب') || item.category.includes('طباعة') || item.category.includes('قرطاسية')) {
                 cat = 'printing';
-            } else if (item.category.includes('صيانة') || item.category.includes('كهرباء') || item.category.includes('نت')) {
+            } else if (item.category.includes('صيانة') || item.category.includes('كهرباء') || item.category.includes('نت') || item.category.includes('سكن')) {
                 cat = 'maintenance';
             } else if (item.category.includes('حلو') || item.category.includes('كافيه')) {
                 cat = 'sweets';
@@ -1024,9 +1051,11 @@
             const val = item.phone.trim();
             const isUrl = /^https?:\/\//i.test(val);
             const newItem = isUrl ? { name: item.name.trim(), link: val } : { name: item.name.trim(), phone: val };
+            if (item.notes.trim()) newItem.note = item.notes.trim();
 
             if (cat === 'transport') {
-                const city = item.city.trim() || 'دمشق';
+                const city = item.city.trim();
+                if (!city) return showToast('يرجى تحديد المحافظة قبل اعتماد الاقتراح.', 'error');
                 let group = adminData.transport.find(g => g.city.trim() === city);
                 if (!group) {
                     group = { city, items: [] };
