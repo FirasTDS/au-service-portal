@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نافذة خدمية | الفريق التطوعي في جامعة الأندلس</title>
+    <!-- Google Fonts: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        .tab-active {
+            background-color: #15803d;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header / Hero -->
+    <header class="bg-gradient-to-l from-brand-900 via-brand-800 to-brand-700 text-white shadow-lg">
+        <div class="max-w-5xl mx-auto px-4 py-8 text-center">
+            <div class="inline-flex items-center gap-2 bg-white/10 px-4 py-1.5 rounded-full text-sm font-semibold mb-3 backdrop-blur-sm">
+                <i class="fa-solid fa-hands-helping text-emerald-300"></i>
+                <span>الفريق التطوعي في جامعة الأندلس</span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-extrabold mb-3">نافذة خدمية - القدموس</h1>
+            <p class="text-emerald-100 max-w-xl mx-auto text-sm md:text-base">
+                دليل شامل لأرقام الخدمات، المطاعم، السوبر ماركت، وشركات المواصلات الخاصة من وإلى القدموس لخدمة طلاب جامعة الأندلس.
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-6">
+
+        <!-- Search and Navigation Controls -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 sticky top-3 z-20">
+            <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+                <!-- Tabs -->
+                <div class="flex w-full md:w-auto bg-slate-100 p-1.5 rounded-xl gap-1">
+                    <button onclick="switchTab('all')" id="tab-all" class="tab-btn tab-active flex-1 md:flex-initial px-5 py-2 rounded-lg font-bold text-sm transition-all">
+                        الكل
+                    </button>
+                    <button onclick="switchTab('services')" id="tab-services" class="tab-btn flex-1 md:flex-initial px-5 py-2 rounded-lg font-bold text-sm text-slate-600 hover:bg-slate-200 transition-all">
+                        <i class="fa-solid fa-utensils ml-1"></i> خدمات القدموس
+                    </button>
+                    <button onclick="switchTab('transport')" id="tab-transport" class="tab-btn flex-1 md:flex-initial px-5 py-2 rounded-lg font-bold text-sm text-slate-600 hover:bg-slate-200 transition-all">
+                        <i class="fa-solid fa-bus ml-1"></i> المواصلات
+                    </button>
+                </div>
+
+                <!-- Search Input -->
+                <div class="relative w-full md:w-80">
+                    <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        onkeyup="filterItems()" 
+                        placeholder="ابحث عن مطعم، محافظة، أو رقم..." 
+                        class="w-full pr-10 pl-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white transition-all"
+                    >
+                </div>
+            </div>
+        </div>
+
+        <!-- Disclaimer Banner -->
+        <div class="bg-amber-50 border-r-4 border-amber-500 p-4 rounded-xl mb-8 flex items-start gap-3 shadow-sm">
+            <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xl mt-0.5"></i>
+            <div class="text-sm text-amber-900">
+                <span class="font-bold">ملاحظة هامة:</span> ليس للفريق التطوعي في جامعة الأندلس أي صلة بهذه المحلات أو شركات المواصلات، وإنما جُمعت هذه الأرقام لتسهيل وصول الطلاب للخدمات.
+            </div>
+        </div>
+
+        <!-- SECTION 1: Local Services in Al-Qadmous -->
+        <section id="section-services" class="mb-10">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5 pb-3 border-b border-slate-200">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-store text-brand-600"></i>
+                        أرقام الخدمات في القدموس
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">مطاعم، سوبر ماركت، وحلويات</p>
+                </div>
+                <a href="https://t.me/AU_Volunteer_Team/13" target="_blank" rel="noopener noreferrer" 
+                   class="inline-flex items-center gap-2 text-xs font-bold bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 px-3.5 py-2 rounded-lg transition-all self-start sm:self-auto">
+                    <i class="fa-brands fa-telegram text-base"></i>
+                    <span>تحديث الرسالة على تلغرام</span>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Restaurants Card -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden category-card">
+                    <div class="bg-orange-50 px-5 py-3.5 border-b border-orange-100 flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center">
+                            <i class="fa-solid fa-burger"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-800">المطاعم</h3>
+                    </div>
+                    <div class="divide-y divide-slate-100 p-2" id="list-restaurants">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+
+                <!-- Supermarkets Card -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden category-card">
+                    <div class="bg-emerald-50 px-5 py-3.5 border-b border-emerald-100 flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-800">سوبر ماركت</h3>
+                    </div>
+                    <div class="divide-y divide-slate-100 p-2" id="list-supermarkets">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+
+                <!-- Sweets Card -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden category-card">
+                    <div class="bg-pink-50 px-5 py-3.5 border-b border-pink-100 flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-pink-500 text-white flex items-center justify-center">
+                            <i class="fa-solid fa-cake-candles"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-800">حلويات</h3>
+                    </div>
+                    <div class="divide-y divide-slate-100 p-2" id="list-sweets">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 2: Transportation Companies -->
+        <section id="section-transport" class="mb-10">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5 pb-3 border-b border-slate-200">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-van-shuttle text-brand-600"></i>
+                        شركات المواصلات الخاصة (خارج أوقات الدوام)
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">لجميع المحافظات من وإلى القدموس — يتم تحديث القائمة بشكل دائم</p>
+                </div>
+                <a href="https://t.me/AU_Volunteer_Team/12" target="_blank" rel="noopener noreferrer" 
+                   class="inline-flex items-center gap-2 text-xs font-bold bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 px-3.5 py-2 rounded-lg transition-all self-start sm:self-auto">
+                    <i class="fa-brands fa-telegram text-base"></i>
+                    <span>تحديث الرسالة على تلغرام</span>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="transport-grid">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+        <!-- Empty State for Search -->
+        <div id="emptyState" class="hidden text-center py-12 bg-white rounded-2xl border border-slate-200">
+            <i class="fa-solid fa-magnifying-glass text-4xl text-slate-300 mb-3"></i>
+            <p class="text-slate-600 font-bold">لا توجد نتائج مطابقة لبحثك</p>
+            <p class="text-xs text-slate-400 mt-1">جرب البحث بكلمة أخرى أو مسح حقل البحث</p>
+        </div>
+
+    </main>
+
+    <!-- Toast Notification for Copy -->
+    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-5 py-2.5 rounded-full shadow-lg text-sm font-semibold flex items-center gap-2 opacity-0 pointer-events-none transition-opacity duration-300 z-50">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMsg">تم نسخ الرقم بنجاح</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-auto">
+        <div class="max-w-5xl mx-auto px-4 text-center">
+            <p class="font-bold text-white mb-2">الفريق التطوعي في جامعة الأندلس للعلوم الطبية</p>
+            <p class="text-xs mb-4">نافذة خدمية لطلاب الجامعة في منطقة القدموس</p>
+            <div class="flex justify-center gap-4">
+                <a href="https://t.me/AU_Volunteer_Team" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all">
+                    <i class="fa-brands fa-telegram text-sky-400 text-base"></i>
+                    <span>القناة الرسمية على تلغرام</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Application Data & Logic -->
+    <script>
+        const servicesData = {
+            restaurants: [
+                { name: "مطعم الفوانيس", phone: "0956595857" },
+                { name: "مطعم الأحمد", phone: "0996538589" },
+                { name: "شيكن هاوس", phone: "0982899566" },
+                { name: "مطعم الملك", phone: "0940447761" },
+                { name: "مطعم الليث", phone: "0982365746" },
+                { name: "مطعم عبدو", phone: "0945987118" }
+            ],
+            supermarkets: [
+                { name: "وديع", phone: "0983370760" },
+                { name: "بيت المونة", phone: "0991974444" },
+                { name: "ميني ماركت ابو علي", phone: "0935660586" },
+                { name: "الخير", phone: "0939635250" }
+            ],
+            sweets: [
+                { name: "مرعي", phone: "0930267864" },
+                { name: "الخير", phone: "0966656200" },
+                { name: "حساب انستغرام (cook90262)", link: "https://www.instagram.com/cook90262", icon: "fa-brands fa-instagram" }
+            ]
+        };
+
+        const transportData = [
+            {
+                city: "دمشق",
+                items: [
+                    { name: "الجبل", phone: "0991000205" },
+                    { name: "سام", phone: "0934964838" },
+                    { name: "المجد", phone: "0936922225" },
+                    { name: "الزعيم", phone: "0953845861" },
+                    { name: "العروه", phone: "0986011696" },
+                    { name: "الاحمد", phone: "0994602820" },
+                    { name: "الورد", phone: "0938051309" },
+                    { name: "الوسام", phone: "0982514190" }
+                ]
+            },
+            {
+                city: "حلب",
+                items: [
+                    { name: "الجبل", phone: "0954640525" },
+                    { name: "المجد", phone: "0982501082" },
+                    { name: "سام", phone: "0996941501" },
+                    { name: "المختار", phone: "0988245264" }
+                ]
+            },
+            {
+                city: "حمص",
+                items: [
+                    { name: "جبران (سرفيس)", phone: "0994826365" },
+                    { name: "رامز (سرفيس)", phone: "0938286693" }
+                ]
+            },
+            {
+                city: "حماة",
+                items: [
+                    { name: "هابيل (رقم 1)", phone: "0932454329" },
+                    { name: "هابيل (رقم 2)", phone: "0933444837" },
+                    { name: "ابو موسى", phone: "0994229605" }
+                ]
+            },
+            {
+                city: "اللاذقية",
+                items: [
+                    { name: "سرفيس (بيطلع الجمعة)", phone: "0937301708" },
+                    { name: "ابو حسان (سرفيس)", phone: "0944252467" }
+                ]
+            },
+            {
+                city: "طرطوس",
+                items: [
+                    { name: "ابو بدر (سرفيس)", phone: "0933549598" }
+                ]
+            },
+            {
+                city: "الحسكة / قامشلي",
+                items: [
+                    { name: "الجزيرة", phone: "0935270861" }
+                ]
+            },
+            {
+                city: "الرقة",
+                items: [
+                    { name: "الوليد", phone: "0991278472" },
+                    { name: "محمد (فان H1)", phone: "0993668678" }
+                ]
+            }
+        ];
+
+        function createContactRow(item, searchContext = "") {
+            if (item.link) {
+                return `
+                <div class="contact-item p-3 hover:bg-slate-50 rounded-xl flex items-center justify-between transition-all" data-search="${item.name} ${searchContext}">
+                    <span class="font-semibold text-sm text-slate-700">${item.name}</span>
+                    <a href="${item.link}" target="_blank" rel="noopener noreferrer" 
+                       class="inline-flex items-center gap-1.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm hover:opacity-90 transition-all">
+                        <i class="${item.icon}"></i>
+                        <span>زيارة الصفحة</span>
+                    </a>
+                </div>`;
+            }
+
+            return `
+            <div class="contact-item p-3 hover:bg-slate-50 rounded-xl flex items-center justify-between gap-2 transition-all" data-search="${item.name} ${item.phone} ${searchContext}">
+                <div>
+                    <div class="font-bold text-sm text-slate-800">${item.name}</div>
+                    <div class="text-xs text-slate-500 font-mono tracking-wider mt-0.5" dir="ltr">${item.phone}</div>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <button onclick="copyNumber('${item.phone}')" title="نسخ الرقم"
+                            class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-200 rounded-lg transition-all">
+                        <i class="fa-regular fa-copy"></i>
+                    </button>
+                    <a href="tel:${item.phone}" 
+                       class="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-all">
+                        <i class="fa-solid fa-phone"></i>
+                        <span>اتصال</span>
+                    </a>
+                </div>
+            </div>`;
+        }
+
+        function renderAll() {
+            // Render Local Services
+            document.getElementById('list-restaurants').innerHTML = servicesData.restaurants.map(i => createContactRow(i, "مطاعم مطعم")).join('');
+            document.getElementById('list-supermarkets').innerHTML = servicesData.supermarkets.map(i => createContactRow(i, "سوبر ماركت")).join('');
+            document.getElementById('list-sweets').innerHTML = servicesData.sweets.map(i => createContactRow(i, "حلويات")).join('');
+
+            // Render Transport
+            const transportGrid = document.getElementById('transport-grid');
+            transportGrid.innerHTML = transportData.map(group => `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden category-card">
+                    <div class="bg-slate-100 px-5 py-3.5 border-b border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-brand-700 text-white flex items-center justify-center">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <h3 class="font-bold text-lg text-slate-800">${group.city}</h3>
+                        </div>
+                        <span class="text-xs bg-white text-slate-600 font-bold px-2.5 py-1 rounded-full border border-slate-200">
+                            ${group.items.length}
+                        </span>
+                    </div>
+                    <div class="divide-y divide-slate-100 p-2">
+                        ${group.items.map(item => createContactRow(item, group.city)).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function copyNumber(num) {
+            navigator.clipboard.writeText(num);
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = `تم نسخ الرقم: ${num}`;
+            toast.classList.remove('opacity-0');
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+            }, 2200);
+        }
+
+        let currentTab = 'all';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-active');
+                btn.classList.add('text-slate-600');
+            });
+            const activeBtn = document.getElementById(`tab-${tab}`);
+            activeBtn.classList.add('tab-active');
+            activeBtn.classList.remove('text-slate-600');
+
+            filterItems();
+        }
+
+        function filterItems() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const secServices = document.getElementById('section-services');
+            const secTransport = document.getElementById('section-transport');
+
+            // Handle Tab Visibility
+            secServices.style.display = (currentTab === 'all' || currentTab === 'services') ? 'block' : 'none';
+            secTransport.style.display = (currentTab === 'all' || currentTab === 'transport') ? 'block' : 'none';
+
+            let totalVisible = 0;
+
+            // Filter individual items and cards
+            document.querySelectorAll('.category-card').forEach(card => {
+                const items = card.querySelectorAll('.contact-item');
+                let visibleInCard = 0;
+
+                items.forEach(item => {
+                    const text = item.getAttribute('data-search').toLowerCase();
+                    if (text.includes(query)) {
+                        item.style.display = 'flex';
+                        visibleInCard++;
+                        totalVisible++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                card.style.display = visibleInCard > 0 ? 'block' : 'none';
+            });
+
+            document.getElementById('emptyState').style.display = totalVisible === 0 ? 'block' : 'none';
+        }
+
+        // Initialize on page load
+        renderAll();
+    </script>
+</body>
+</html>
