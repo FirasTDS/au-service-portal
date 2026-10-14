@@ -431,6 +431,70 @@ body {
   color: var(--color-red);
 }
 
+/* Syrian Services & Utilities Quick Hub (syfatora.com) */
+.sy-hub-card {
+  background: #ffffff;
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 1.15rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+@media (min-width: 768px) {
+  .sy-hub-card {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.sy-hub-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--color-teal-dark);
+}
+
+.sy-hub-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.sy-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: all 0.15s ease;
+  background-color: var(--color-slate-100);
+  color: var(--color-slate-700);
+  border: 1px solid var(--color-slate-200);
+}
+
+.sy-chip:hover {
+  background-color: var(--color-teal-soft);
+  color: var(--color-teal);
+  border-color: var(--color-teal-border);
+  transform: translateY(-1px);
+}
+
+.sy-chip svg {
+  width: 13px;
+  height: 13px;
+}
+
 /* Section Headers */
 .section-header {
   margin-bottom: 1.25rem;
@@ -778,6 +842,85 @@ body {
 .btn-visit svg {
   width: 14px;
   height: 14px;
+}
+
+.btn-whatsapp {
+  background-color: #128c7e;
+  color: #ffffff;
+  border: none;
+  padding: 0.4rem 0.65rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.15s ease;
+  min-height: 34px;
+}
+
+.btn-whatsapp:hover {
+  background-color: #075e54;
+}
+
+.btn-whatsapp svg {
+  width: 14px;
+  height: 14px;
+}
+
+.contact-note {
+  font-size: 0.75rem;
+  color: var(--color-slate-600);
+  margin-top: 0.25rem;
+  line-height: 1.4;
+}
+
+.schedule-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #0369a1;
+  background-color: #f0f9ff;
+  border: 1px solid #bae6fd;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-sm);
+  margin-top: 0.25rem;
+}
+
+/* Install PWA Prompt Banner */
+.pwa-banner {
+  background: linear-gradient(135deg, var(--color-teal-dark), var(--color-teal));
+  color: #ffffff;
+  border-radius: var(--radius-xl);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  box-shadow: var(--shadow-md);
+}
+
+.pwa-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pwa-banner-icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 /* Empty Search State */
@@ -1222,5 +1365,239 @@ body {
   background-color: var(--color-red-soft);
   color: var(--color-red);
   border: 1px solid var(--color-red-border);
+}
+
+/* ==========================================================================
+   DARK MODE THEME
+   ========================================================================== */
+html[data-theme="dark"] {
+  --color-slate-50: #0a0f1d;
+  --color-slate-100: #131b2e;
+  --color-slate-200: #1e293b;
+  --color-slate-300: #334155;
+  --color-slate-400: #64748b;
+  --color-slate-500: #94a3b8;
+  --color-slate-600: #cbd5e1;
+  --color-slate-700: #e2e8f0;
+  --color-slate-800: #f1f5f9;
+  --color-slate-900: #f8fafc;
+
+  --color-teal-dark: #0f4c42;
+  --color-teal: #14b8a6;
+  --color-teal-light: #2dd4bf;
+  --color-teal-soft: #132a26;
+  --color-teal-border: #134e48;
+
+  --color-red: #ef4444;
+  --color-red-soft: #2b1717;
+  --color-red-border: #5f1f1f;
+}
+
+html[data-theme="dark"] body {
+  background-color: var(--color-slate-50);
+  color: var(--color-slate-800);
+}
+
+html[data-theme="dark"] .controls-card,
+html[data-theme="dark"] .category-card,
+html[data-theme="dark"] .sy-hub-card,
+html[data-theme="dark"] .modal-dialog,
+html[data-theme="dark"] .empty-state {
+  background-color: var(--color-slate-100);
+  border-color: var(--color-slate-200);
+}
+
+html[data-theme="dark"] .contact-item {
+  border-color: var(--color-slate-200);
+  background-color: transparent;
+}
+
+html[data-theme="dark"] .contact-item:hover {
+  background-color: var(--color-slate-200);
+}
+
+html[data-theme="dark"] .search-input,
+html[data-theme="dark"] .sort-select,
+html[data-theme="dark"] .form-input,
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] .form-textarea {
+  background-color: var(--color-slate-200);
+  border-color: var(--color-slate-300);
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .btn-secondary {
+  background-color: var(--color-slate-200);
+  border-color: var(--color-slate-300);
+  color: var(--color-slate-700);
+}
+
+/* Open / Closed Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--radius-full);
+}
+
+.status-badge-open {
+  background-color: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+html[data-theme="dark"] .status-badge-open {
+  background-color: #064e3b;
+  color: #6ee7b7;
+  border-color: #047857;
+}
+
+.status-badge-closed {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+html[data-theme="dark"] .status-badge-closed {
+  background-color: #450a0a;
+  color: #fca5a5;
+  border-color: #7f1d1d;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-badge-open .status-dot {
+  background-color: #10b981;
+}
+
+.status-badge-closed .status-dot {
+  background-color: #ef4444;
+}
+
+/* Favorite Pin Button & Heart */
+.btn-fav {
+  color: var(--color-slate-400);
+}
+
+.btn-fav.fav-active {
+  color: #e11d48;
+}
+
+.btn-fav.fav-active svg {
+  fill: #e11d48;
+}
+
+/* Favorites Pinned Section */
+#section-favorites {
+  display: none;
+  margin-bottom: 2rem;
+}
+
+.favorites-card {
+  background: linear-gradient(135deg, #fff1f2, #ffe4e6);
+  border: 1.5px solid #fecdd3;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+html[data-theme="dark"] .favorites-card {
+  background: linear-gradient(135deg, #2b1115, #1f0b0f);
+  border-color: #4c1d24;
+}
+
+.favorites-header {
+  padding: 0.85rem 1.15rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #fecdd3;
+}
+
+html[data-theme="dark"] .favorites-header {
+  border-bottom-color: #4c1d24;
+}
+
+/* Emergency Floating Action Button (FAB) */
+.fab-emergency {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  z-index: 999;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.fab-main-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-red), var(--color-red-light));
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 14px rgba(193, 27, 27, 0.45);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fab-main-btn:hover {
+  transform: scale(1.08);
+}
+
+.fab-menu {
+  display: none;
+  flex-direction: column;
+  gap: 0.5rem;
+  animation: fabFadeIn 0.2s ease-out forwards;
+}
+
+.fab-menu.fab-open {
+  display: flex;
+}
+
+.fab-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #ffffff;
+  color: var(--color-slate-800);
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-lg);
+  text-decoration: none;
+  font-size: 0.775rem;
+  font-weight: 800;
+  border: 1px solid var(--color-slate-200);
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+html[data-theme="dark"] .fab-item {
+  background-color: var(--color-slate-100);
+  color: #ffffff;
+  border-color: var(--color-slate-300);
+}
+
+.fab-item:hover {
+  background-color: var(--color-red-soft);
+  color: var(--color-red);
+  transform: translateX(-3px);
+}
+
+@keyframes fabFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 

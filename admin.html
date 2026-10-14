@@ -162,8 +162,10 @@
                     <div class="form-group">
                         <label for="newCategory" class="form-label">القسم الرئيسي *</label>
                         <select id="newCategory" class="form-select" onchange="toggleAdminCityInput()" required>
+                            <option value="emergency">طوارئ وصيدليات (القدموس)</option>
                             <option value="restaurants">المطاعم (القدموس)</option>
                             <option value="supermarkets">سوبر ماركت (القدموس)</option>
+                            <option value="printing">مكتبات وطباعة وقرطاسية</option>
                             <option value="maintenance">خدمات وصيانة (كهرباء، صحية، اتصالات)</option>
                             <option value="sweets">حلويات وكافيه (القدموس)</option>
                             <option value="transport">شركات النقل والمواصلات</option>
@@ -370,8 +372,10 @@
             let html = '';
 
             const serviceLabels = {
+                emergency: 'طوارئ وصيدليات (القدموس)',
                 restaurants: 'المطاعم (القدموس)',
                 supermarkets: 'سوبر ماركت (القدموس)',
+                printing: 'مكتبات وطباعة وقرطاسية',
                 maintenance: 'خدمات وصيانة (كهرباء، صحية، اتصالات)',
                 sweets: 'حلويات وكافيه (القدموس)'
             };
@@ -397,9 +401,17 @@
                                             <span style="color: var(--color-slate-500); font-family: monospace;" dir="ltr">${escapeHtml(val)}</span>
                                             ${isLink ? '<span class="admin-badge admin-badge-amber">رابط صفحة</span>' : ''}
                                         </div>
-                                        <button type="button" class="btn-icon btn-report" data-action="delete-service" data-cat="${escapeHtml(key)}" data-idx="${idx}" title="حذف العنصر" aria-label="حذف">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                                        </button>
+                                        <div style="display:flex; align-items:center; gap:0.25rem;">
+                                            <button type="button" class="btn-icon" data-action="move-service-up" data-cat="${escapeHtml(key)}" data-idx="${idx}" title="تحريك لأعلى" aria-label="تحريك لأعلى" ${idx === 0 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''}>
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                                            </button>
+                                            <button type="button" class="btn-icon" data-action="move-service-down" data-cat="${escapeHtml(key)}" data-idx="${idx}" title="تحريك لأسفل" aria-label="تحريك لأسفل" ${idx === items.length - 1 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''}>
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                                            </button>
+                                            <button type="button" class="btn-icon btn-report" data-action="delete-service" data-cat="${escapeHtml(key)}" data-idx="${idx}" title="حذف العنصر" aria-label="حذف">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                            </button>
+                                        </div>
                                     </div>
                                 `;
                             }).join('')}
@@ -432,9 +444,17 @@
                                                     <strong>${escapeHtml(item.name)}</strong>
                                                     <span style="color: var(--color-slate-500); font-family: monospace;" dir="ltr">${escapeHtml(item.phone)}</span>
                                                 </div>
-                                                <button type="button" class="btn-icon btn-report" data-action="delete-transport" data-gidx="${gIdx}" data-iidx="${iIdx}" title="حذف" aria-label="حذف">
-                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                                                </button>
+                                                <div style="display:flex; align-items:center; gap:0.25rem;">
+                                                    <button type="button" class="btn-icon" data-action="move-transport-up" data-gidx="${gIdx}" data-iidx="${iIdx}" title="تحريك لأعلى" aria-label="تحريك لأعلى" ${iIdx === 0 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''}>
+                                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                                                    </button>
+                                                    <button type="button" class="btn-icon" data-action="move-transport-down" data-gidx="${gIdx}" data-iidx="${iIdx}" title="تحريك لأسفل" aria-label="تحريك لأسفل" ${iIdx === group.items.length - 1 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''}>
+                                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                                                    </button>
+                                                    <button type="button" class="btn-icon btn-report" data-action="delete-transport" data-gidx="${gIdx}" data-iidx="${iIdx}" title="حذف" aria-label="حذف">
+                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                                    </button>
+                                                </div>
                                             </div>
                                         `).join('')}
                                     </div>
@@ -462,6 +482,42 @@
                     adminData.services[cat].splice(idx, 1);
                     renderAdminLists();
                     showToast('تم حذف العنصر من القائمة المؤقتة (اضغط حفظ ونشر لاعتماد التعديل).');
+                }
+            } else if (action === 'move-service-up') {
+                const cat = btn.getAttribute('data-cat');
+                const idx = parseInt(btn.getAttribute('data-idx'), 10);
+                if (idx > 0) {
+                    const temp = adminData.services[cat][idx];
+                    adminData.services[cat][idx] = adminData.services[cat][idx - 1];
+                    adminData.services[cat][idx - 1] = temp;
+                    renderAdminLists();
+                }
+            } else if (action === 'move-service-down') {
+                const cat = btn.getAttribute('data-cat');
+                const idx = parseInt(btn.getAttribute('data-idx'), 10);
+                if (idx < adminData.services[cat].length - 1) {
+                    const temp = adminData.services[cat][idx];
+                    adminData.services[cat][idx] = adminData.services[cat][idx + 1];
+                    adminData.services[cat][idx + 1] = temp;
+                    renderAdminLists();
+                }
+            } else if (action === 'move-transport-up') {
+                const gIdx = parseInt(btn.getAttribute('data-gidx'), 10);
+                const iIdx = parseInt(btn.getAttribute('data-iidx'), 10);
+                if (iIdx > 0) {
+                    const temp = adminData.transport[gIdx].items[iIdx];
+                    adminData.transport[gIdx].items[iIdx] = adminData.transport[gIdx].items[iIdx - 1];
+                    adminData.transport[gIdx].items[iIdx - 1] = temp;
+                    renderAdminLists();
+                }
+            } else if (action === 'move-transport-down') {
+                const gIdx = parseInt(btn.getAttribute('data-gidx'), 10);
+                const iIdx = parseInt(btn.getAttribute('data-iidx'), 10);
+                if (iIdx < adminData.transport[gIdx].items.length - 1) {
+                    const temp = adminData.transport[gIdx].items[iIdx];
+                    adminData.transport[gIdx].items[iIdx] = adminData.transport[gIdx].items[iIdx + 1];
+                    adminData.transport[gIdx].items[iIdx + 1] = temp;
+                    renderAdminLists();
                 }
             } else if (action === 'delete-transport') {
                 const gIdx = parseInt(btn.getAttribute('data-gidx'), 10);
@@ -718,8 +774,12 @@
             if (!item) return;
 
             let cat = 'restaurants';
-            if (item.category.includes('سوبر') || item.category.includes('ماركت')) {
+            if (item.category.includes('طوارئ') || item.category.includes('صيدلية') || item.category.includes('إسعاف') || item.category.includes('مشفى')) {
+                cat = 'emergency';
+            } else if (item.category.includes('سوبر') || item.category.includes('ماركت')) {
                 cat = 'supermarkets';
+            } else if (item.category.includes('مكتب') || item.category.includes('طباعة') || item.category.includes('قرطاسية')) {
+                cat = 'printing';
             } else if (item.category.includes('صيانة') || item.category.includes('كهرباء') || item.category.includes('نت')) {
                 cat = 'maintenance';
             } else if (item.category.includes('حلو') || item.category.includes('كافيه')) {
@@ -750,22 +810,46 @@
             showToast(`✅ تم اعتماد وإدراج (${item.name}) في القائمة! اضغط "حفظ ونشر" لنشره على الموقع.`);
         }
 
-        // Robust CSV Parser handling quotes and commas
+        // Robust CSV Parser handling quotes, commas and newlines
         function parseCSV(text) {
-            const p = '', row = [''], ret = [row];
-            let i = 0, r = 0, s = !0, l;
-            for (l of text) {
-                if ('"' === l) {
-                    if (s && l === p) row[i] += l;
-                    s = !s;
-                } else if (',' === l && s) l = row[++i] = '';
-                else if ('\n' === l && s) {
-                    if ('\r' === p) row[i] = row[i].slice(0, -1);
-                    row = ret[++r] = [l = '']; i = 0;
-                } else row[i] += l;
-                p = l;
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const nextChar = text[i + 1];
+
+                if (char === '"') {
+                    if (inQuotes && nextChar === '"') {
+                        currentField += '"';
+                        i++; // skip escaped quote
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    currentRow.push(currentField);
+                    currentField = '';
+                } else if ((char === '\r' || char === '\n') && !inQuotes) {
+                    if (char === '\r' && nextChar === '\n') {
+                        i++; // skip \n
+                    }
+                    currentRow.push(currentField);
+                    rows.push(currentRow);
+                    currentRow = [];
+                    currentField = '';
+                } else {
+                    currentField += char;
+                }
             }
-            return ret;
+
+            if (currentField || currentRow.length > 0) {
+                currentRow.push(currentField);
+                rows.push(currentRow);
+            }
+
+            return rows;
         }
     </script>
 </body>
