@@ -187,6 +187,16 @@
                         <input type="text" id="newPhone" class="form-input" placeholder="09xxxxxxxx أو https://..." dir="ltr" required>
                     </div>
 
+                    <div class="form-group">
+                        <label for="newNote" class="form-label">ملاحظات / ساعات العمل (اختياري)</label>
+                        <input type="text" id="newNote" class="form-input" placeholder="مثال: يفتح 11 ص - 1 ليلاً / توصيل للسكن">
+                    </div>
+
+                    <div class="form-group" id="adminScheduleGroup" style="display: none;">
+                        <label for="newSchedule" class="form-label">موعد الرحلة / الانطلاق (للمواصلات فقط)</label>
+                        <input type="text" id="newSchedule" class="form-input" placeholder="مثال: كل جمعة ظهراً / يومياً صباحاً ومساءً">
+                    </div>
+
                     <div>
                         <button type="submit" class="btn-primary" style="width: 100%; padding: 0.65rem;">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -216,6 +226,53 @@
     <div class="toast-container">
         <div id="toast" class="toast">
             <span id="toastMsg">تمت العملية بنجاح</span>
+        </div>
+    </div>
+
+    <!-- EDIT ITEM MODAL -->
+    <div id="adminEditModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <div class="modal-header-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    <h2 id="editModalTitle">تعديل بيانات الجهة / الخدمة</h2>
+                </div>
+                <button type="button" class="modal-close-btn" onclick="closeAdminEditModal()" aria-label="إغلاق">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <form id="adminEditForm" onsubmit="saveEditedItem(event)">
+                <input type="hidden" id="editType">
+                <input type="hidden" id="editCat">
+                <input type="hidden" id="editGIdx">
+                <input type="hidden" id="editIIdx">
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="editName">الاسم *</label>
+                        <input type="text" id="editName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editPhone">رقم الهاتف أو الرابط *</label>
+                        <input type="text" id="editPhone" class="form-input" dir="ltr" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editNote">ملاحظة إضافية / ساعات ومواعيد العمل</label>
+                        <input type="text" id="editNote" class="form-input" placeholder="مثال: يفتح من 11 صباحاً حتى 1 ليلاً / توصيل للسكن">
+                    </div>
+                    <div class="form-group" id="editScheduleGroup" style="display:none;">
+                        <label class="form-label" for="editSchedule">موعد الرحلة / الانطلاق (للمواصلات فقط)</label>
+                        <input type="text" id="editSchedule" class="form-input" placeholder="مثال: كل جمعة ظهراً / يومياً صباحاً ومساءً">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeAdminEditModal()" class="btn-secondary">إلغاء</button>
+                    <button type="submit" class="btn-primary">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>حفظ التعديلات</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -356,12 +413,20 @@
             const cat = document.getElementById('newCategory').value;
             const cityGroup = document.getElementById('adminCityGroup');
             const cityInput = document.getElementById('newCity');
+            const schedGroup = document.getElementById('adminScheduleGroup');
+            const schedInput = document.getElementById('newSchedule');
+
             if (cat === 'transport') {
                 cityGroup.style.display = 'flex';
                 cityInput.required = true;
+                if (schedGroup) schedGroup.style.display = 'flex';
             } else {
                 cityGroup.style.display = 'none';
                 cityInput.required = false;
+                if (schedGroup) {
+                    schedGroup.style.display = 'none';
+                    if (schedInput) schedInput.value = '';
+                }
             }
         }
 
@@ -396,12 +461,18 @@
                                 const isLink = Boolean(item.link || (item.phone && item.phone.startsWith('http')));
                                 return `
                                     <div class="admin-item-row">
-                                        <div class="admin-item-meta">
-                                            <strong>${escapeHtml(item.name)}</strong>
-                                            <span style="color: var(--color-slate-500); font-family: monospace;" dir="ltr">${escapeHtml(val)}</span>
-                                            ${isLink ? '<span class="admin-badge admin-badge-amber">رابط صفحة</span>' : ''}
+                                        <div class="admin-item-meta" style="flex: 1 1 200px;">
+                                            <div>
+                                                <strong>${escapeHtml(item.name)}</strong>
+                                                <span style="color: var(--color-slate-500); font-family: monospace; margin-right: 0.35rem;" dir="ltr">${escapeHtml(val)}</span>
+                                                ${isLink ? '<span class="admin-badge admin-badge-amber">رابط صفحة</span>' : ''}
+                                            </div>
+                                            ${item.note ? `<div style="font-size: 0.75rem; color: var(--color-slate-500); margin-top: 0.2rem;">🕒 ${escapeHtml(item.note)}</div>` : ''}
                                         </div>
                                         <div style="display:flex; align-items:center; gap:0.25rem;">
+                                            <button type="button" class="btn-icon" data-action="edit-service" data-cat="${escapeHtml(key)}" data-idx="${idx}" title="تعديل بيانات الجهة ومواعيد العمل" aria-label="تعديل">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                            </button>
                                             <button type="button" class="btn-icon" data-action="move-service-up" data-cat="${escapeHtml(key)}" data-idx="${idx}" title="تحريك لأعلى" aria-label="تحريك لأعلى" ${idx === 0 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''}>
                                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
                                             </button>
@@ -440,11 +511,18 @@
                                     <div style="display: flex; flex-direction: column; gap: 0.35rem;">
                                         ${group.items.map((item, iIdx) => `
                                             <div class="admin-item-row" style="background-color: var(--color-slate-100);">
-                                                <div class="admin-item-meta">
-                                                    <strong>${escapeHtml(item.name)}</strong>
-                                                    <span style="color: var(--color-slate-500); font-family: monospace;" dir="ltr">${escapeHtml(item.phone)}</span>
+                                                <div class="admin-item-meta" style="flex: 1 1 200px;">
+                                                    <div>
+                                                        <strong>${escapeHtml(item.name)}</strong>
+                                                        <span style="color: var(--color-slate-500); font-family: monospace; margin-right: 0.35rem;" dir="ltr">${escapeHtml(item.phone)}</span>
+                                                        ${item.schedule ? `<span class="admin-badge admin-badge-teal" style="font-size:0.7rem;">🕒 ${escapeHtml(item.schedule)}</span>` : ''}
+                                                    </div>
+                                                    ${item.note ? `<div style="font-size: 0.75rem; color: var(--color-slate-500); margin-top: 0.2rem;">📝 ${escapeHtml(item.note)}</div>` : ''}
                                                 </div>
                                                 <div style="display:flex; align-items:center; gap:0.25rem;">
+                                                    <button type="button" class="btn-icon" data-action="edit-transport" data-gidx="${gIdx}" data-iidx="${iIdx}" title="تعديل بيانات السرفيس وموعد الرحلة" aria-label="تعديل">
+                                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                                    </button>
                                                     <button type="button" class="btn-icon" data-action="move-transport-up" data-gidx="${gIdx}" data-iidx="${iIdx}" title="تحريك لأعلى" aria-label="تحريك لأعلى" ${iIdx === 0 ? 'disabled style="opacity:0.3; cursor:not-allowed;"' : ''}>
                                                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
                                                     </button>
@@ -469,7 +547,7 @@
             document.getElementById('totalItemsCount').textContent = `${total} عنصر متاح`;
         }
 
-        // Event delegation for deleting items
+        // Event delegation for deleting and editing items
         document.getElementById('adminListsContainer').addEventListener('click', (e) => {
             const btn = e.target.closest('button[data-action]');
             if (!btn) return;
@@ -483,6 +561,14 @@
                     renderAdminLists();
                     showToast('تم حذف العنصر من القائمة المؤقتة (اضغط حفظ ونشر لاعتماد التعديل).');
                 }
+            } else if (action === 'edit-service') {
+                const cat = btn.getAttribute('data-cat');
+                const idx = parseInt(btn.getAttribute('data-idx'), 10);
+                openAdminEditModal('service', cat, idx);
+            } else if (action === 'edit-transport') {
+                const gIdx = parseInt(btn.getAttribute('data-gidx'), 10);
+                const iIdx = parseInt(btn.getAttribute('data-iidx'), 10);
+                openAdminEditModal('transport', gIdx, iIdx);
             } else if (action === 'move-service-up') {
                 const cat = btn.getAttribute('data-cat');
                 const idx = parseInt(btn.getAttribute('data-idx'), 10);
@@ -533,6 +619,117 @@
             }
         });
 
+        // --- EDIT MODAL CONTROLS ---
+        function openAdminEditModal(type, p1, p2) {
+            const modal = document.getElementById('adminEditModal');
+            const editType = document.getElementById('editType');
+            const editCat = document.getElementById('editCat');
+            const editGIdx = document.getElementById('editGIdx');
+            const editIIdx = document.getElementById('editIIdx');
+            const editName = document.getElementById('editName');
+            const editPhone = document.getElementById('editPhone');
+            const editNote = document.getElementById('editNote');
+            const editSchedule = document.getElementById('editSchedule');
+            const editScheduleGroup = document.getElementById('editScheduleGroup');
+
+            editType.value = type;
+
+            if (type === 'service') {
+                const cat = p1;
+                const idx = p2;
+                const item = adminData.services[cat][idx];
+                if (!item) return;
+
+                editCat.value = cat;
+                editGIdx.value = idx;
+                editName.value = item.name || '';
+                editPhone.value = item.phone || item.link || '';
+                editNote.value = item.note || '';
+                editScheduleGroup.style.display = 'none';
+                editSchedule.value = '';
+            } else if (type === 'transport') {
+                const gIdx = p1;
+                const iIdx = p2;
+                const item = adminData.transport[gIdx].items[iIdx];
+                if (!item) return;
+
+                editGIdx.value = gIdx;
+                editIIdx.value = iIdx;
+                editName.value = item.name || '';
+                editPhone.value = item.phone || item.link || '';
+                editNote.value = item.note || '';
+                editScheduleGroup.style.display = 'block';
+                editSchedule.value = item.schedule || '';
+            }
+
+            modal.classList.add('modal-open');
+            editName.focus();
+        }
+
+        function closeAdminEditModal() {
+            const modal = document.getElementById('adminEditModal');
+            modal.classList.remove('modal-open');
+        }
+
+        function saveEditedItem(e) {
+            e.preventDefault();
+            const type = document.getElementById('editType').value;
+            const name = document.getElementById('editName').value.trim();
+            const val = document.getElementById('editPhone').value.trim();
+            const note = document.getElementById('editNote').value.trim();
+            const schedule = document.getElementById('editSchedule').value.trim();
+
+            if (!name || !val) {
+                alert('يرجى ملء الاسم والرقم/الرابط.');
+                return;
+            }
+
+            const isUrl = /^https?:\/\//i.test(val);
+
+            if (type === 'service') {
+                const cat = document.getElementById('editCat').value;
+                const idx = parseInt(document.getElementById('editGIdx').value, 10);
+                const target = adminData.services[cat][idx];
+                if (target) {
+                    target.name = name;
+                    if (isUrl) {
+                        target.link = val;
+                        delete target.phone;
+                    } else {
+                        target.phone = val;
+                        delete target.link;
+                    }
+                    if (note) {
+                        target.note = note;
+                    } else {
+                        delete target.note;
+                    }
+                }
+            } else if (type === 'transport') {
+                const gIdx = parseInt(document.getElementById('editGIdx').value, 10);
+                const iIdx = parseInt(document.getElementById('editIIdx').value, 10);
+                const target = adminData.transport[gIdx].items[iIdx];
+                if (target) {
+                    target.name = name;
+                    target.phone = val;
+                    if (note) {
+                        target.note = note;
+                    } else {
+                        delete target.note;
+                    }
+                    if (schedule) {
+                        target.schedule = schedule;
+                    } else {
+                        delete target.schedule;
+                    }
+                }
+            }
+
+            closeAdminEditModal();
+            renderAdminLists();
+            showToast('✅ تم تعديل البيانات بنجاح (اضغط "حفظ ونشر" لاعتماد التعديل).');
+        }
+
         // --- ADD NEW ITEM ---
         function handleAddItem(e) {
             e.preventDefault();
@@ -540,6 +737,10 @@
             const city = document.getElementById('newCity').value.trim();
             const name = document.getElementById('newName').value.trim();
             const val = document.getElementById('newPhone').value.trim();
+            const noteInput = document.getElementById('newNote');
+            const schedInput = document.getElementById('newSchedule');
+            const note = noteInput ? noteInput.value.trim() : '';
+            const schedule = schedInput ? schedInput.value.trim() : '';
 
             if (!name || !val) {
                 alert('يرجى كتابة الاسم والرقم أو الرابط.');
@@ -548,12 +749,14 @@
 
             const isUrl = /^https?:\/\//i.test(val);
             const newItem = isUrl ? { name, link: val } : { name, phone: val };
+            if (note) newItem.note = note;
 
             if (cat === 'transport') {
                 if (!city) {
                     alert('يرجى تحديد اسم المحافظة للمواصلات.');
                     return;
                 }
+                if (schedule) newItem.schedule = schedule;
                 let group = adminData.transport.find(g => g.city.trim() === city);
                 if (!group) {
                     group = { city, items: [] };
@@ -567,6 +770,8 @@
 
             document.getElementById('newName').value = '';
             document.getElementById('newPhone').value = '';
+            if (noteInput) noteInput.value = '';
+            if (schedInput) schedInput.value = '';
             renderAdminLists();
             showToast('✅ تمت الإضافة بنجاح إلى القائمة المؤقتة!');
         }

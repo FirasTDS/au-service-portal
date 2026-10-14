@@ -564,7 +564,7 @@ body {
 
 @media (min-width: 1024px) {
   .transport-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
   }
 }
 
@@ -633,12 +633,13 @@ body {
 
 /* Contact Item Card */
 .contact-item {
-  padding: 0.75rem 0.6rem;
+  padding: 0.85rem 0.75rem;
   border-radius: var(--radius-md);
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: 0.75rem;
   transition: background-color 0.15s ease;
 }
 
@@ -647,7 +648,7 @@ body {
 }
 
 .contact-info {
-  flex-grow: 1;
+  flex: 1 1 200px;
   min-width: 0;
 }
 
@@ -756,8 +757,9 @@ body {
 .contact-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.35rem;
-  flex-shrink: 0;
+  justify-content: flex-end;
 }
 
 .btn-icon {
@@ -881,15 +883,18 @@ body {
 .schedule-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  font-size: 0.7rem;
+  gap: 0.35rem;
+  font-size: 0.725rem;
   font-weight: 700;
   color: #0369a1;
   background-color: #f0f9ff;
   border: 1px solid #bae6fd;
-  padding: 0.15rem 0.45rem;
+  padding: 0.2rem 0.55rem;
   border-radius: var(--radius-sm);
-  margin-top: 0.25rem;
+  margin-top: 0.35rem;
+  max-width: 100%;
+  line-height: 1.4;
+  word-break: break-word;
 }
 
 /* Install PWA Prompt Banner */
@@ -1398,13 +1403,45 @@ html[data-theme="dark"] body {
   color: var(--color-slate-800);
 }
 
+html[data-theme="dark"] .site-nav {
+  background-color: #0d1527;
+  border-bottom-color: var(--color-red);
+}
+
+html[data-theme="dark"] .brand-title {
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .brand-subtitle {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .site-footer {
+  background-color: #0d1527;
+  border-top-color: var(--color-slate-200);
+}
+
+html[data-theme="dark"] .footer-team-title {
+  color: var(--color-teal);
+}
+
 html[data-theme="dark"] .controls-card,
 html[data-theme="dark"] .category-card,
 html[data-theme="dark"] .sy-hub-card,
 html[data-theme="dark"] .modal-dialog,
-html[data-theme="dark"] .empty-state {
+html[data-theme="dark"] .empty-state,
+html[data-theme="dark"] .admin-card {
   background-color: var(--color-slate-100);
   border-color: var(--color-slate-200);
+}
+
+html[data-theme="dark"] .admin-item-row {
+  background-color: var(--color-slate-200);
+  border-color: var(--color-slate-300);
+}
+
+html[data-theme="dark"] .admin-item-row strong {
+  color: #ffffff;
 }
 
 html[data-theme="dark"] .contact-item {
@@ -1430,6 +1467,22 @@ html[data-theme="dark"] .btn-secondary {
   background-color: var(--color-slate-200);
   border-color: var(--color-slate-300);
   color: var(--color-slate-700);
+}
+
+html[data-theme="dark"] .category-header.transport-header {
+  background: var(--color-slate-200);
+  color: #ffffff;
+  border-bottom-color: var(--color-slate-300);
+}
+
+html[data-theme="dark"] .schedule-badge {
+  background-color: #0c4a6e !important;
+  color: #38bdf8 !important;
+  border-color: #0284c7 !important;
+}
+
+html[data-theme="dark"] .btn-icon:hover {
+  background-color: var(--color-slate-200);
 }
 
 /* Open / Closed Status Badges */

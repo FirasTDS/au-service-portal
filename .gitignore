@@ -1,0 +1,10 @@
+# Sensitive credentials and local tokens
+token.txt
+*.token
+*.key
+.env
+
+# Local OS & Scratch files
+.DS_Store
+Thumbs.db
+*.pdf
