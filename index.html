@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نافذة خدمية | الفريق التطوعي في جامعة الأندلس</title>
+    <title>نافذة خدمية | اتحاد طلبة سوريا - فرع جامعة الأندلس</title>
+    <link rel="icon" type="image/png" href="Asset%201.png">
     <!-- Google Fonts: Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN -->
@@ -19,13 +20,14 @@
                         cairo: ['Cairo', 'sans-serif'],
                     },
                     colors: {
-                        brand: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            600: '#16a34a',
-                            700: '#15803d',
-                            800: '#166534',
-                            900: '#14532d',
+                        susa: {
+                            teal: '#0f4c42',
+                            tealLight: '#176b5d',
+                            tealDark: '#09332c',
+                            red: '#c11b1b',
+                            redLight: '#dc2626',
+                            redSoft: '#fef2f2',
+                            tealSoft: '#f0fdfa'
                         }
                     }
                 }
@@ -35,24 +37,43 @@
     <style>
         body { font-family: 'Cairo', sans-serif; }
         .tab-active {
-            background-color: #15803d;
+            background-color: #0f4c42;
             color: white;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(15, 76, 66, 0.25);
         }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-    <!-- Header / Hero -->
-    <header class="bg-gradient-to-l from-brand-900 via-brand-800 to-brand-700 text-white shadow-lg">
-        <div class="max-w-5xl mx-auto px-4 py-8 text-center">
-            <div class="inline-flex items-center gap-2 bg-white/10 px-4 py-1.5 rounded-full text-sm font-semibold mb-3 backdrop-blur-sm">
-                <i class="fa-solid fa-hands-helping text-emerald-300"></i>
-                <span>الفريق التطوعي في جامعة الأندلس</span>
+    <!-- Top Brand Navigation Bar -->
+    <nav class="bg-white border-b-4 border-susa-red shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="Asset%201.png" alt="شعار اتحاد طلبة سوريا" class="w-11 h-11 object-contain" onerror="this.style.display='none'">
+                <div>
+                    <div class="text-susa-red font-extrabold text-base md:text-lg leading-tight">اتحاد طلبة سوريا</div>
+                    <div class="text-susa-teal font-bold text-xs md:text-sm">فرع جامعة الأندلس — الفريق التطوعي</div>
+                </div>
             </div>
-            <h1 class="text-3xl md:text-4xl font-extrabold mb-3">نافذة خدمية - القدموس</h1>
-            <p class="text-emerald-100 max-w-xl mx-auto text-sm md:text-base">
-                دليل شامل لأرقام الخدمات، المطاعم، السوبر ماركت، وشركات المواصلات الخاصة من وإلى القدموس لخدمة طلاب جامعة الأندلس.
+            <a href="https://t.me/AU_Volunteer_Team" target="_blank" rel="noopener noreferrer" 
+               class="inline-flex items-center gap-2 bg-susa-teal hover:bg-susa-tealLight text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm">
+                <i class="fa-brands fa-telegram text-sm"></i>
+                <span class="hidden sm:inline">قناة الفريق التطوعي</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Banner -->
+    <header class="bg-gradient-to-b from-white to-slate-100 border-b border-slate-200 relative overflow-hidden">
+        <div class="max-w-5xl mx-auto px-4 py-8 text-center relative z-10">
+            <img src="Vertical%20Trans.png" alt="اتحاد طلبة سوريا - فرع جامعة الأندلس" class="h-32 md:h-36 mx-auto mb-4 object-contain drop-shadow-sm" onerror="this.style.display='none'">
+            <div class="inline-flex items-center gap-2 bg-susa-teal/10 text-susa-teal px-4 py-1 rounded-full text-xs font-extrabold mb-2">
+                <i class="fa-solid fa-compass"></i>
+                <span>دليل الطالب الخدمي</span>
+            </div>
+            <h1 class="text-2xl md:text-4xl font-extrabold text-susa-tealDark mb-2">نافذة خدمية — منطقة القدموس</h1>
+            <p class="text-slate-600 max-w-xl mx-auto text-sm md:text-base">
+                دليل شامل لأرقام المطاعم، السوبر ماركت، الحلويات، وشركات المواصلات الخاصة لجميع المحافظات لخدمة طلاب جامعة الأندلس.
             </p>
         </div>
     </header>
@@ -60,7 +81,7 @@
     <!-- Main Content -->
     <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-6">
 
-        <!-- Search and Navigation Controls -->
+        <!-- Search and Filter Bar -->
         <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 sticky top-3 z-20">
             <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
                 <!-- Tabs -->
@@ -69,10 +90,10 @@
                         الكل
                     </button>
                     <button onclick="switchTab('services')" id="tab-services" class="tab-btn flex-1 md:flex-initial px-5 py-2 rounded-lg font-bold text-sm text-slate-600 hover:bg-slate-200 transition-all">
-                        <i class="fa-solid fa-utensils ml-1"></i> خدمات القدموس
+                        <i class="fa-solid fa-store ml-1"></i> خدمات القدموس
                     </button>
                     <button onclick="switchTab('transport')" id="tab-transport" class="tab-btn flex-1 md:flex-initial px-5 py-2 rounded-lg font-bold text-sm text-slate-600 hover:bg-slate-200 transition-all">
-                        <i class="fa-solid fa-bus ml-1"></i> المواصلات
+                        <i class="fa-solid fa-van-shuttle ml-1"></i> المواصلات
                     </button>
                 </div>
 
@@ -84,104 +105,84 @@
                         id="searchInput" 
                         onkeyup="filterItems()" 
                         placeholder="ابحث عن مطعم، محافظة، أو رقم..." 
-                        class="w-full pr-10 pl-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white transition-all"
+                        class="w-full pr-10 pl-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-susa-teal focus:bg-white transition-all"
                     >
                 </div>
             </div>
         </div>
 
-        <!-- Disclaimer Banner -->
-        <div class="bg-amber-50 border-r-4 border-amber-500 p-4 rounded-xl mb-8 flex items-start gap-3 shadow-sm">
-            <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xl mt-0.5"></i>
-            <div class="text-sm text-amber-900">
-                <span class="font-bold">ملاحظة هامة:</span> ليس للفريق التطوعي في جامعة الأندلس أي صلة بهذه المحلات أو شركات المواصلات، وإنما جُمعت هذه الأرقام لتسهيل وصول الطلاب للخدمات.
+        <!-- Official Disclaimer Banner -->
+        <div class="bg-red-50/80 border-r-4 border-susa-red p-4 rounded-xl mb-8 flex items-start gap-3 shadow-sm">
+            <i class="fa-solid fa-circle-exclamation text-susa-red text-xl mt-0.5"></i>
+            <div class="text-sm text-slate-800">
+                <span class="font-extrabold text-susa-red">ملاحظة هامة:</span> ليس للفريق التطوعي في جامعة الأندلس أي صلة بهذه المحلات أو شركات المواصلات، وإنما جُمعت هذه الأرقام لتسهيل وصول الطلاب للخدمات.
             </div>
         </div>
 
-        <!-- SECTION 1: Local Services in Al-Qadmous -->
+        <!-- SECTION 1: Local Services -->
         <section id="section-services" class="mb-10">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5 pb-3 border-b border-slate-200">
+            <div class="flex items-center justify-between mb-5 pb-3 border-b-2 border-susa-teal/15">
                 <div>
-                    <h2 class="text-2xl font-extrabold text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-store text-brand-600"></i>
+                    <h2 class="text-2xl font-extrabold text-susa-tealDark flex items-center gap-2.5">
+                        <span class="w-2 h-7 bg-susa-red rounded-full inline-block"></span>
                         أرقام الخدمات في القدموس
                     </h2>
-                    <p class="text-xs text-slate-500 mt-1">مطاعم، سوبر ماركت، وحلويات</p>
+                    <p class="text-xs text-slate-500 mt-1 mr-4">المطاعم، السوبر ماركت، ومحال الحلويات</p>
                 </div>
-                <a href="https://t.me/AU_Volunteer_Team/13" target="_blank" rel="noopener noreferrer" 
-                   class="inline-flex items-center gap-2 text-xs font-bold bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 px-3.5 py-2 rounded-lg transition-all self-start sm:self-auto">
-                    <i class="fa-brands fa-telegram text-base"></i>
-                    <span>تحديث الرسالة على تلغرام</span>
-                </a>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                <!-- Restaurants Card -->
+                <!-- Restaurants -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden category-card">
-                    <div class="bg-orange-50 px-5 py-3.5 border-b border-orange-100 flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center">
-                            <i class="fa-solid fa-burger"></i>
+                    <div class="bg-susa-teal text-white px-5 py-3.5 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-utensils text-red-300"></i>
+                            <h3 class="font-bold text-lg">المطاعم</h3>
                         </div>
-                        <h3 class="font-bold text-lg text-slate-800">المطاعم</h3>
                     </div>
-                    <div class="divide-y divide-slate-100 p-2" id="list-restaurants">
-                        <!-- Populated via JS -->
-                    </div>
+                    <div class="divide-y divide-slate-100 p-2" id="list-restaurants"></div>
                 </div>
 
-                <!-- Supermarkets Card -->
+                <!-- Supermarkets -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden category-card">
-                    <div class="bg-emerald-50 px-5 py-3.5 border-b border-emerald-100 flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center">
-                            <i class="fa-solid fa-cart-shopping"></i>
+                    <div class="bg-susa-teal text-white px-5 py-3.5 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-cart-shopping text-red-300"></i>
+                            <h3 class="font-bold text-lg">سوبر ماركت</h3>
                         </div>
-                        <h3 class="font-bold text-lg text-slate-800">سوبر ماركت</h3>
                     </div>
-                    <div class="divide-y divide-slate-100 p-2" id="list-supermarkets">
-                        <!-- Populated via JS -->
-                    </div>
+                    <div class="divide-y divide-slate-100 p-2" id="list-supermarkets"></div>
                 </div>
 
-                <!-- Sweets Card -->
+                <!-- Sweets -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden category-card">
-                    <div class="bg-pink-50 px-5 py-3.5 border-b border-pink-100 flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-pink-500 text-white flex items-center justify-center">
-                            <i class="fa-solid fa-cake-candles"></i>
+                    <div class="bg-susa-teal text-white px-5 py-3.5 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-cake-candles text-red-300"></i>
+                            <h3 class="font-bold text-lg">حلويات</h3>
                         </div>
-                        <h3 class="font-bold text-lg text-slate-800">حلويات</h3>
                     </div>
-                    <div class="divide-y divide-slate-100 p-2" id="list-sweets">
-                        <!-- Populated via JS -->
-                    </div>
+                    <div class="divide-y divide-slate-100 p-2" id="list-sweets"></div>
                 </div>
-
             </div>
         </section>
 
         <!-- SECTION 2: Transportation Companies -->
         <section id="section-transport" class="mb-10">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5 pb-3 border-b border-slate-200">
+            <div class="flex items-center justify-between mb-5 pb-3 border-b-2 border-susa-teal/15">
                 <div>
-                    <h2 class="text-2xl font-extrabold text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-van-shuttle text-brand-600"></i>
+                    <h2 class="text-2xl font-extrabold text-susa-tealDark flex items-center gap-2.5">
+                        <span class="w-2 h-7 bg-susa-red rounded-full inline-block"></span>
                         شركات المواصلات الخاصة (خارج أوقات الدوام)
                     </h2>
-                    <p class="text-xs text-slate-500 mt-1">لجميع المحافظات من وإلى القدموس — يتم تحديث القائمة بشكل دائم</p>
+                    <p class="text-xs text-slate-500 mt-1 mr-4">لجميع المحافظات من وإلى القدموس — يتم تحديث القائمة بشكل دوري</p>
                 </div>
-                <a href="https://t.me/AU_Volunteer_Team/12" target="_blank" rel="noopener noreferrer" 
-                   class="inline-flex items-center gap-2 text-xs font-bold bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 px-3.5 py-2 rounded-lg transition-all self-start sm:self-auto">
-                    <i class="fa-brands fa-telegram text-base"></i>
-                    <span>تحديث الرسالة على تلغرام</span>
-                </a>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="transport-grid">
-                <!-- Populated via JS -->
-            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="transport-grid"></div>
         </section>
 
-        <!-- Empty State for Search -->
+        <!-- Empty Search State -->
         <div id="emptyState" class="hidden text-center py-12 bg-white rounded-2xl border border-slate-200">
             <i class="fa-solid fa-magnifying-glass text-4xl text-slate-300 mb-3"></i>
             <p class="text-slate-600 font-bold">لا توجد نتائج مطابقة لبحثك</p>
@@ -190,124 +191,258 @@
 
     </main>
 
-    <!-- Toast Notification for Copy -->
-    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-5 py-2.5 rounded-full shadow-lg text-sm font-semibold flex items-center gap-2 opacity-0 pointer-events-none transition-opacity duration-300 z-50">
+    <!-- Copy Notification Toast -->
+    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-susa-tealDark text-white px-5 py-2.5 rounded-full shadow-lg text-sm font-semibold flex items-center gap-2 opacity-0 pointer-events-none transition-opacity duration-300 z-50">
         <i class="fa-solid fa-circle-check text-emerald-400"></i>
         <span id="toastMsg">تم نسخ الرقم بنجاح</span>
     </div>
 
     <!-- Footer -->
-    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-auto">
-        <div class="max-w-5xl mx-auto px-4 text-center">
-            <p class="font-bold text-white mb-2">الفريق التطوعي في جامعة الأندلس للعلوم الطبية</p>
-            <p class="text-xs mb-4">نافذة خدمية لطلاب الجامعة في منطقة القدموس</p>
-            <div class="flex justify-center gap-4">
-                <a href="https://t.me/AU_Volunteer_Team" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all">
-                    <i class="fa-brands fa-telegram text-sky-400 text-base"></i>
+    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col items-center text-center">
+            <img src="Horiszontal.png" alt="اتحاد طلبة سوريا - فرع جامعة الأندلس" class="h-16 md:h-20 object-contain mb-3" onerror="this.style.display='none'">
+            <p class="font-bold text-susa-tealDark text-sm">الفريق التطوعي في جامعة الأندلس للعلوم الطبية</p>
+            <p class="text-xs text-slate-500 mt-1 mb-4">نافذة خدمية لطلاب الجامعة في منطقة القدموس</p>
+            <div class="flex items-center gap-3">
+                <a href="https://t.me/AU_Volunteer_Team" target="_blank" rel="noopener noreferrer" 
+                   class="inline-flex items-center gap-2 bg-susa-teal hover:bg-susa-tealLight text-white px-4 py-2 rounded-xl text-xs font-bold transition-all">
+                    <i class="fa-brands fa-telegram text-sm"></i>
                     <span>القناة الرسمية على تلغرام</span>
                 </a>
+                <!-- Subtle Admin Portal Button -->
+                <button onclick="openAdminModal()" title="لوحة تحكم المشرف" 
+                        class="p-2 text-slate-300 hover:text-susa-red transition-colors rounded-lg">
+                    <i class="fa-solid fa-lock text-xs"></i>
+                </button>
             </div>
         </div>
     </footer>
 
-    <!-- Application Data & Logic -->
+    <!-- ========================================== -->
+    <!-- ADMIN PORTAL MODAL                         -->
+    <!-- ========================================== -->
+    <div id="adminModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+            
+            <!-- Modal Header -->
+            <div class="bg-susa-tealDark text-white px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="Asset%201.png" alt="Logo" class="w-8 h-8 bg-white rounded-lg p-1" onerror="this.style.display='none'">
+                    <div>
+                        <h3 class="font-extrabold text-lg">لوحة تحكم المشرف — تحديث البيانات</h3>
+                        <p class="text-xs text-emerald-200">إضافة أو تعديل أو حذف الأرقام ونشرها مباشرة على الموقع</p>
+                    </div>
+                </div>
+                <button onclick="closeAdminModal()" class="text-slate-300 hover:text-white text-xl px-2">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto space-y-6 flex-grow">
+                
+                <!-- Private Reference Links (Hidden from Public) -->
+                <div class="bg-slate-100 p-4 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                    <div class="text-xs font-bold text-slate-700 flex items-center gap-2">
+                        <i class="fa-brands fa-telegram text-sky-600 text-base"></i>
+                        <span>روابط رسائل التلغرام المرجعية (تظهر للمشرف فقط):</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <a href="https://t.me/AU_Volunteer_Team/13" target="_blank" class="text-xs bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 px-3 py-1.5 rounded-lg font-bold">
+                            منشور خدمات القدموس (#13) <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
+                        </a>
+                        <a href="https://t.me/AU_Volunteer_Team/12" target="_blank" class="text-xs bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 px-3 py-1.5 rounded-lg font-bold">
+                            منشور شركات المواصلات (#12) <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Add New Item Form -->
+                <div class="bg-susa-tealSoft border border-susa-teal/20 p-4 rounded-xl">
+                    <h4 class="font-extrabold text-sm text-susa-tealDark mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-plus-circle text-susa-red"></i>
+                        <span>إضافة رقم أو خدمة جديدة</span>
+                    </h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                        <select id="adminCategory" onchange="toggleCityInput()" class="bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold">
+                            <option value="restaurants">المطاعم</option>
+                            <option value="supermarkets">سوبر ماركت</option>
+                            <option value="sweets">حلويات</option>
+                            <option value="transport">شركات المواصلات (حسب المحافظة)</option>
+                        </select>
+                        <input type="text" id="adminCity" placeholder="اسم المحافظة (مثال: دمشق)" class="hidden bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm">
+                        <input type="text" id="adminName" placeholder="الاسم (مثال: مطعم الفوانيس)" class="bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm">
+                        <input type="text" id="adminPhone" placeholder="الرقم أو الرابط" class="bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm" dir="ltr">
+                    </div>
+                    <button onclick="adminAddItem()" class="mt-3 bg-susa-teal hover:bg-susa-tealLight text-white px-5 py-2 rounded-xl text-xs font-bold transition-all">
+                        <i class="fa-solid fa-plus ml-1"></i> مدرج في القائمة
+                    </button>
+                </div>
+
+                <!-- Current Items Editor -->
+                <div>
+                    <h4 class="font-extrabold text-sm text-slate-800 mb-2">القائمة الحالية (يمكنك الحذف أو التعديل مباشرة):</h4>
+                    <div id="adminListContainer" class="space-y-4 max-h-72 overflow-y-auto pr-1"></div>
+                </div>
+
+                <!-- GitHub Direct Sync Configuration -->
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-extrabold text-sm text-slate-800 flex items-center gap-2">
+                            <i class="fa-brands fa-github text-lg"></i>
+                            <span>النشر المباشر على GitHub (اختياري)</span>
+                        </h4>
+                        <span class="text-[11px] text-slate-500">المستودع: <code dir="ltr">FirasTDS/au-service-portal</code></span>
+                    </div>
+                    <p class="text-xs text-slate-500">
+                        أدخل رمز الوصول الشخصي (GitHub Personal Access Token بصلاحية <code>repo</code> أو <code>contents:write</code>) لحفظ التعديلات مباشرة على الموقع بضغطة زر:
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" dir="ltr"
+                               class="flex-grow bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono">
+                        <button onclick="pushToGitHub()" id="btnPushGH"
+                                class="bg-susa-red hover:bg-susa-redLight text-white px-5 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span>حفظ ونشر على الموقع الآن</span>
+                        </button>
+                    </div>
+                    <div id="ghStatus" class="text-xs font-bold hidden"></div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-slate-100 px-6 py-3.5 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                <button onclick="downloadDataJson()" class="bg-white hover:bg-slate-200 text-slate-700 border border-slate-300 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-download"></i>
+                    <span>تحميل ملف data.json يدوياً</span>
+                </button>
+                <button onclick="closeAdminModal()" class="bg-slate-700 hover:bg-slate-800 text-white px-5 py-2 rounded-xl text-xs font-bold">
+                    إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
     <script>
-        const servicesData = {
-            restaurants: [
-                { name: "مطعم الفوانيس", phone: "0956595857" },
-                { name: "مطعم الأحمد", phone: "0996538589" },
-                { name: "شيكن هاوس", phone: "0982899566" },
-                { name: "مطعم الملك", phone: "0940447761" },
-                { name: "مطعم الليث", phone: "0982365746" },
-                { name: "مطعم عبدو", phone: "0945987118" }
-            ],
-            supermarkets: [
-                { name: "وديع", phone: "0983370760" },
-                { name: "بيت المونة", phone: "0991974444" },
-                { name: "ميني ماركت ابو علي", phone: "0935660586" },
-                { name: "الخير", phone: "0939635250" }
-            ],
-            sweets: [
-                { name: "مرعي", phone: "0930267864" },
-                { name: "الخير", phone: "0966656200" },
-                { name: "حساب انستغرام (cook90262)", link: "https://www.instagram.com/cook90262", icon: "fa-brands fa-instagram" }
+        const GITHUB_OWNER = "FirasTDS";
+        const GITHUB_REPO = "au-service-portal";
+        const DATA_FILE_PATH = "data.json";
+
+        // Default fallback data (used if data.json isn't loaded yet)
+        let portalData = {
+            services: {
+                restaurants: [
+                    { name: "مطعم الفوانيس", phone: "0956595857" },
+                    { name: "مطعم الأحمد", phone: "0996538589" },
+                    { name: "شيكن هاوس", phone: "0982899566" },
+                    { name: "مطعم الملك", phone: "0940447761" },
+                    { name: "مطعم الليث", phone: "0982365746" },
+                    { name: "مطعم عبدو", phone: "0945987118" }
+                ],
+                supermarkets: [
+                    { name: "وديع", phone: "0983370760" },
+                    { name: "بيت المونة", phone: "0991974444" },
+                    { name: "ميني ماركت ابو علي", phone: "0935660586" },
+                    { name: "الخير", phone: "0939635250" }
+                ],
+                sweets: [
+                    { name: "مرعي", phone: "0930267864" },
+                    { name: "الخير", phone: "0966656200" },
+                    { name: "حساب انستغرام (cook90262)", link: "https://www.instagram.com/cook90262" }
+                ]
+            },
+            transport: [
+                {
+                    city: "دمشق",
+                    items: [
+                        { name: "الجبل", phone: "0991000205" },
+                        { name: "سام", phone: "0934964838" },
+                        { name: "المجد", phone: "0936922225" },
+                        { name: "الزعيم", phone: "0953845861" },
+                        { name: "العروه", phone: "0986011696" },
+                        { name: "الاحمد", phone: "0994602820" },
+                        { name: "الورد", phone: "0938051309" },
+                        { name: "الوسام", phone: "0982514190" }
+                    ]
+                },
+                {
+                    city: "حلب",
+                    items: [
+                        { name: "الجبل", phone: "0954640525" },
+                        { name: "المجد", phone: "0982501082" },
+                        { name: "سام", phone: "0996941501" },
+                        { name: "المختار", phone: "0988245264" }
+                    ]
+                },
+                {
+                    city: "حمص",
+                    items: [
+                        { name: "جبران (سرفيس)", phone: "0994826365" },
+                        { name: "رامز (سرفيس)", phone: "0938286693" }
+                    ]
+                },
+                {
+                    city: "حماة",
+                    items: [
+                        { name: "هابيل (رقم 1)", phone: "0932454329" },
+                        { name: "هابيل (رقم 2)", phone: "0933444837" },
+                        { name: "ابو موسى", phone: "0994229605" }
+                    ]
+                },
+                {
+                    city: "اللاذقية",
+                    items: [
+                        { name: "سرفيس (بيطلع الجمعة)", phone: "0937301708" },
+                        { name: "ابو حسان (سرفيس)", phone: "0944252467" }
+                    ]
+                },
+                {
+                    city: "طرطوس",
+                    items: [
+                        { name: "ابو بدر (سرفيس)", phone: "0933549598" }
+                    ]
+                },
+                {
+                    city: "الحسكة / قامشلي",
+                    items: [
+                        { name: "الجزيرة", phone: "0935270861" }
+                    ]
+                },
+                {
+                    city: "الرقة",
+                    items: [
+                        { name: "الوليد", phone: "0991278472" },
+                        { name: "محمد (فان H1)", phone: "0993668678" }
+                    ]
+                }
             ]
         };
 
-        const transportData = [
-            {
-                city: "دمشق",
-                items: [
-                    { name: "الجبل", phone: "0991000205" },
-                    { name: "سام", phone: "0934964838" },
-                    { name: "المجد", phone: "0936922225" },
-                    { name: "الزعيم", phone: "0953845861" },
-                    { name: "العروه", phone: "0986011696" },
-                    { name: "الاحمد", phone: "0994602820" },
-                    { name: "الورد", phone: "0938051309" },
-                    { name: "الوسام", phone: "0982514190" }
-                ]
-            },
-            {
-                city: "حلب",
-                items: [
-                    { name: "الجبل", phone: "0954640525" },
-                    { name: "المجد", phone: "0982501082" },
-                    { name: "سام", phone: "0996941501" },
-                    { name: "المختار", phone: "0988245264" }
-                ]
-            },
-            {
-                city: "حمص",
-                items: [
-                    { name: "جبران (سرفيس)", phone: "0994826365" },
-                    { name: "رامز (سرفيس)", phone: "0938286693" }
-                ]
-            },
-            {
-                city: "حماة",
-                items: [
-                    { name: "هابيل (رقم 1)", phone: "0932454329" },
-                    { name: "هابيل (رقم 2)", phone: "0933444837" },
-                    { name: "ابو موسى", phone: "0994229605" }
-                ]
-            },
-            {
-                city: "اللاذقية",
-                items: [
-                    { name: "سرفيس (بيطلع الجمعة)", phone: "0937301708" },
-                    { name: "ابو حسان (سرفيس)", phone: "0944252467" }
-                ]
-            },
-            {
-                city: "طرطوس",
-                items: [
-                    { name: "ابو بدر (سرفيس)", phone: "0933549598" }
-                ]
-            },
-            {
-                city: "الحسكة / قامشلي",
-                items: [
-                    { name: "الجزيرة", phone: "0935270861" }
-                ]
-            },
-            {
-                city: "الرقة",
-                items: [
-                    { name: "الوليد", phone: "0991278472" },
-                    { name: "محمد (فان H1)", phone: "0993668678" }
-                ]
+        async function loadData() {
+            try {
+                const res = await fetch(`${DATA_FILE_PATH}?t=${Date.now()}`);
+                if (res.ok) {
+                    portalData = await res.json();
+                }
+            } catch (e) {
+                console.log("Using embedded default data.");
             }
-        ];
+            renderAll();
+        }
 
         function createContactRow(item, searchContext = "") {
-            if (item.link) {
+            const isUrl = item.link || (item.phone && item.phone.startsWith('http'));
+            const url = item.link || item.phone;
+
+            if (isUrl) {
                 return `
                 <div class="contact-item p-3 hover:bg-slate-50 rounded-xl flex items-center justify-between transition-all" data-search="${item.name} ${searchContext}">
-                    <span class="font-semibold text-sm text-slate-700">${item.name}</span>
-                    <a href="${item.link}" target="_blank" rel="noopener noreferrer" 
-                       class="inline-flex items-center gap-1.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm hover:opacity-90 transition-all">
-                        <i class="${item.icon}"></i>
+                    <span class="font-bold text-sm text-slate-800">${item.name}</span>
+                    <a href="${url}" target="_blank" rel="noopener noreferrer" 
+                       class="inline-flex items-center gap-1.5 bg-susa-red hover:bg-susa-redLight text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-all">
+                        <i class="fa-brands fa-instagram"></i>
                         <span>زيارة الصفحة</span>
                     </a>
                 </div>`;
@@ -321,11 +456,11 @@
                 </div>
                 <div class="flex items-center gap-1.5">
                     <button onclick="copyNumber('${item.phone}')" title="نسخ الرقم"
-                            class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-200 rounded-lg transition-all">
+                            class="p-2 text-slate-400 hover:text-susa-teal hover:bg-slate-100 rounded-lg transition-all">
                         <i class="fa-regular fa-copy"></i>
                     </button>
                     <a href="tel:${item.phone}" 
-                       class="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-all">
+                       class="inline-flex items-center gap-1.5 bg-susa-teal hover:bg-susa-tealLight text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm transition-all">
                         <i class="fa-solid fa-phone"></i>
                         <span>اتصال</span>
                     </a>
@@ -334,23 +469,21 @@
         }
 
         function renderAll() {
-            // Render Local Services
-            document.getElementById('list-restaurants').innerHTML = servicesData.restaurants.map(i => createContactRow(i, "مطاعم مطعم")).join('');
-            document.getElementById('list-supermarkets').innerHTML = servicesData.supermarkets.map(i => createContactRow(i, "سوبر ماركت")).join('');
-            document.getElementById('list-sweets').innerHTML = servicesData.sweets.map(i => createContactRow(i, "حلويات")).join('');
+            document.getElementById('list-restaurants').innerHTML = portalData.services.restaurants.map(i => createContactRow(i, "مطاعم مطعم")).join('');
+            document.getElementById('list-supermarkets').innerHTML = portalData.services.supermarkets.map(i => createContactRow(i, "سوبر ماركت")).join('');
+            document.getElementById('list-sweets').innerHTML = portalData.services.sweets.map(i => createContactRow(i, "حلويات")).join('');
 
-            // Render Transport
             const transportGrid = document.getElementById('transport-grid');
-            transportGrid.innerHTML = transportData.map(group => `
+            transportGrid.innerHTML = portalData.transport.map(group => `
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden category-card">
                     <div class="bg-slate-100 px-5 py-3.5 border-b border-slate-200 flex items-center justify-between">
                         <div class="flex items-center gap-2.5">
-                            <div class="w-8 h-8 rounded-lg bg-brand-700 text-white flex items-center justify-center">
+                            <div class="w-8 h-8 rounded-lg bg-susa-red text-white flex items-center justify-center shadow-sm">
                                 <i class="fa-solid fa-location-dot"></i>
                             </div>
-                            <h3 class="font-bold text-lg text-slate-800">${group.city}</h3>
+                            <h3 class="font-extrabold text-lg text-susa-tealDark">${group.city}</h3>
                         </div>
-                        <span class="text-xs bg-white text-slate-600 font-bold px-2.5 py-1 rounded-full border border-slate-200">
+                        <span class="text-xs bg-white text-susa-teal font-extrabold px-2.5 py-1 rounded-full border border-slate-200">
                             ${group.items.length}
                         </span>
                     </div>
@@ -359,6 +492,8 @@
                     </div>
                 </div>
             `).join('');
+
+            filterItems();
         }
 
         function copyNumber(num) {
@@ -366,13 +501,10 @@
             const toast = document.getElementById('toast');
             document.getElementById('toastMsg').innerText = `تم نسخ الرقم: ${num}`;
             toast.classList.remove('opacity-0');
-            setTimeout(() => {
-                toast.classList.add('opacity-0');
-            }, 2200);
+            setTimeout(() => toast.classList.add('opacity-0'), 2200);
         }
 
         let currentTab = 'all';
-
         function switchTab(tab) {
             currentTab = tab;
             document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -382,26 +514,18 @@
             const activeBtn = document.getElementById(`tab-${tab}`);
             activeBtn.classList.add('tab-active');
             activeBtn.classList.remove('text-slate-600');
-
             filterItems();
         }
 
         function filterItems() {
             const query = document.getElementById('searchInput').value.trim().toLowerCase();
-            const secServices = document.getElementById('section-services');
-            const secTransport = document.getElementById('section-transport');
-
-            // Handle Tab Visibility
-            secServices.style.display = (currentTab === 'all' || currentTab === 'services') ? 'block' : 'none';
-            secTransport.style.display = (currentTab === 'all' || currentTab === 'transport') ? 'block' : 'none';
+            document.getElementById('section-services').style.display = (currentTab === 'all' || currentTab === 'services') ? 'block' : 'none';
+            document.getElementById('section-transport').style.display = (currentTab === 'all' || currentTab === 'transport') ? 'block' : 'none';
 
             let totalVisible = 0;
-
-            // Filter individual items and cards
             document.querySelectorAll('.category-card').forEach(card => {
                 const items = card.querySelectorAll('.contact-item');
                 let visibleInCard = 0;
-
                 items.forEach(item => {
                     const text = item.getAttribute('data-search').toLowerCase();
                     if (text.includes(query)) {
@@ -412,15 +536,200 @@
                         item.style.display = 'none';
                     }
                 });
-
                 card.style.display = visibleInCard > 0 ? 'block' : 'none';
             });
 
             document.getElementById('emptyState').style.display = totalVisible === 0 ? 'block' : 'none';
         }
 
-        // Initialize on page load
-        renderAll();
+        // ==========================================
+        // ADMIN PORTAL FUNCTIONS
+        // ==========================================
+        function openAdminModal() {
+            const savedToken = localStorage.getItem('susa_gh_token');
+            if (savedToken) document.getElementById('ghToken').value = savedToken;
+            renderAdminList();
+            const modal = document.getElementById('adminModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeAdminModal() {
+            const modal = document.getElementById('adminModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function toggleCityInput() {
+            const cat = document.getElementById('adminCategory').value;
+            const cityInput = document.getElementById('adminCity');
+            cityInput.classList.toggle('hidden', cat !== 'transport');
+        }
+
+        function renderAdminList() {
+            const container = document.getElementById('adminListContainer');
+            let html = '';
+
+            const catNames = { restaurants: 'المطاعم', supermarkets: 'سوبر ماركت', sweets: 'حلويات' };
+            for (const [key, label] of Object.entries(catNames)) {
+                html += `<div class="bg-white border border-slate-200 rounded-xl p-3">
+                    <div class="font-bold text-xs text-susa-teal mb-2">${label}</div>
+                    <div class="space-y-1.5">
+                        ${portalData.services[key].map((item, idx) => `
+                            <div class="flex items-center justify-between bg-slate-50 px-3 py-1.5 rounded-lg text-xs">
+                                <span><strong>${item.name}</strong> — <span dir="ltr">${item.phone || item.link}</span></span>
+                                <button onclick="deleteServiceItem('${key}',${idx})" class="text-red-600 hover:text-red-800 font-bold">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+            }
+
+            portalData.transport.forEach((group, gIdx) => {
+                html += `<div class="bg-white border border-slate-200 rounded-xl p-3">
+                    <div class="font-bold text-xs text-susa-red mb-2">مواصلات — ${group.city}</div>
+                    <div class="space-y-1.5">
+                        ${group.items.map((item, iIdx) => `
+                            <div class="flex items-center justify-between bg-slate-50 px-3 py-1.5 rounded-lg text-xs">
+                                <span><strong>${item.name}</strong> — <span dir="ltr">${item.phone}</span></span>
+                                <button onclick="deleteTransportItem(${gIdx},${iIdx})" class="text-red-600 hover:text-red-800 font-bold">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function adminAddItem() {
+            const cat = document.getElementById('adminCategory').value;
+            const city = document.getElementById('adminCity').value.trim();
+            const name = document.getElementById('adminName').value.trim();
+            const val = document.getElementById('adminPhone').value.trim();
+
+            if (!name || !val) return alert('يرجى إدخال الاسم والرقم');
+
+            const newObj = val.startsWith('http') ? { name, link: val } : { name, phone: val };
+
+            if (cat === 'transport') {
+                if (!city) return alert('يرجى إدخال اسم المحافظة');
+                let cityGroup = portalData.transport.find(g => g.city === city);
+                if (!cityGroup) {
+                    cityGroup = { city, items: [] };
+                    portalData.transport.push(cityGroup);
+                }
+                cityGroup.items.push(newObj);
+            } else {
+                portalData.services[cat].push(newObj);
+            }
+
+            document.getElementById('adminName').value = '';
+            document.getElementById('adminPhone').value = '';
+            renderAdminList();
+            renderAll();
+        }
+
+        function deleteServiceItem(cat, idx) {
+            portalData.services[cat].splice(idx, 1);
+            renderAdminList();
+            renderAll();
+        }
+
+        function deleteTransportItem(gIdx, iIdx) {
+            portalData.transport[gIdx].items.splice(iIdx, 1);
+            if (portalData.transport[gIdx].items.length === 0) {
+                portalData.transport.splice(gIdx, 1);
+            }
+            renderAdminList();
+            renderAll();
+        }
+
+        function downloadDataJson() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(portalData, null, 2));
+            const a = document.createElement('a');
+            a.setAttribute("href", dataStr);
+            a.setAttribute("download", "data.json");
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }
+
+        async function pushToGitHub() {
+            const token = document.getElementById('ghToken').value.trim();
+            const statusEl = document.getElementById('ghStatus');
+            const btn = document.getElementById('btnPushGH');
+
+            if (!token) {
+                alert("يرجى إدخال رمز GitHub Personal Access Token أولاً، أو استخدم زر تحميل data.json يدوياً.");
+                return;
+            }
+
+            localStorage.setItem('susa_gh_token', token);
+            statusEl.classList.remove('hidden');
+            statusEl.className = "text-xs font-bold text-amber-600";
+            statusEl.innerText = "جاري الاتصال بـ GitHub وتحديث البيانات...";
+            btn.disabled = true;
+
+            try {
+                const apiUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FILE_PATH}`;
+                
+                // Get current file SHA if it exists
+                let sha = null;
+                const getRes = await fetch(apiUrl, {
+                    headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
+                });
+                if (getRes.ok) {
+                    const fileInfo = await getRes.json();
+                    sha = fileInfo.sha;
+                }
+
+                // Encode UTF-8 JSON to Base64
+                const jsonString = JSON.stringify(portalData, null, 2);
+                const contentBase64 = btoa(unescape(encodeURIComponent(jsonString)));
+
+                const bodyPayload = {
+                    message: "تحديث قائمة الأرقام عبر لوحة المشرف",
+                    content: contentBase64
+                };
+                if (sha) bodyPayload.sha = sha;
+
+                const putRes = await fetch(apiUrl, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Accept": "application/vnd.github.v3+json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(bodyPayload)
+                });
+
+                if (putRes.ok) {
+                    statusEl.className = "text-xs font-bold text-emerald-600";
+                    statusEl.innerText = "✅ تم حفظ التعديلات ونشرها على GitHub بنجاح! ستظهر لجميع الزوار خلال دقيقة.";
+                } else {
+                    const err = await putRes.json();
+                    throw new Error(err.message || "فشل التحديث");
+                }
+            } catch (err) {
+                statusEl.className = "text-xs font-bold text-red-600";
+                statusEl.innerText = `❌ خطأ: ${err.message}`;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // Open Admin automatically if URL ends with #admin
+        window.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            if (window.location.hash === '#admin') {
+                openAdminModal();
+            }
+        });
     </script>
 </body>
 </html>
