@@ -46,6 +46,11 @@
         "name": "بيتزا و فطائر ابو علي",
         "phone": "0995787906 / 0990351968",
         "note": "يوجد خدمة ديلفري للجامعة و بكل القدموس"
+      },
+      {
+        "name": "فطاير محمود",
+        "phone": "0951339026",
+        "note": "يوصل للسكن. مختص مناقيش و فطاير و بيتزا"
       }
     ],
     "supermarkets": [
@@ -543,6 +548,7 @@
     "8e599c1dda4b2c4859131b41b34766e0e1a76b420e286b7c299137218f097e74": "approved",
     "9a95593066e564288367466e462e4656edfb234ee4645f8aa40ec4228862a437": "approved",
     "85aa110bcc53bbffadb3c390cb4f3a30d45815103e6d982b57ea54cdf3730141": "approved",
-    "0f8a72d3a72b20dc9ef446cbcc92ca0bfaf882d5344098a205ae5f98939606a4": "approved"
+    "0f8a72d3a72b20dc9ef446cbcc92ca0bfaf882d5344098a205ae5f98939606a4": "approved",
+    "eacc30810275cf8d4e02065c9ebbbbf65bcb855338734ce4df3de3d700400057": "approved"
   }
 }
