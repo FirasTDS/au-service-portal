@@ -232,6 +232,11 @@
         "name": "متجر القدموس(فروج حلال)",
         "phone": "0992336660",
         "note": "بجيب فروج من بانياس"
+      },
+      {
+        "name": "ماركت ذوالفقار",
+        "phone": "0942320907",
+        "note": "كل ما يحتاجه الطالب من معلبات وأطعمة ومشروبات ومواد تنظيف"
       }
     ],
     "water": [
@@ -383,6 +388,11 @@
       {
         "name": "مكتب الحسن للإعمار",
         "phone": "0944866328"
+      },
+      {
+        "name": "مجموعة طنجور للعقارات",
+        "phone": "0988929432",
+        "note": "المكتب قرب الكراجات"
       }
     ]
   },
@@ -832,7 +842,9 @@
     "b279e11c9efa2962f75dd6e3a6b2c7f356ca925900a3169bb8876387cc866f41": "approved",
     "461f672fa4d1cb50367fb233100eb1b779b88d3c0af931e00173246be2931462": "approved",
     "719fcdd2fbd46b5904db1a58928ea3ffb8ab7ed5d3bdae268563c41e00fd97cf": "approved",
-    "f87f8f6b123e3d70c65628e49cd66c06420bf2a61f8331c5a221f8139cee625a": "approved"
+    "f87f8f6b123e3d70c65628e49cd66c06420bf2a61f8331c5a221f8139cee625a": "approved",
+    "d002335b867e32370211568666f7e3f33fabc27a2b0a997dde884bac77a1e346": "approved",
+    "d64a4f3dbfd618b2066ca5c6c740e58711dbdc30b7ad0639cc602b5768624cec": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -920,6 +932,14 @@
       "updated": "2026-10-15"
     },
     "4f983f47-d4ad-4564-a46d-2c0d6f4bf5f4": {
+      "status": "approved",
+      "updated": "2026-10-15"
+    },
+    "a1a0c702-dad6-40ce-8dab-84c3dd56ed1d": {
+      "status": "approved",
+      "updated": "2026-10-15"
+    },
+    "d230c04c-7197-4220-aca2-6544ec034b38": {
       "status": "approved",
       "updated": "2026-10-15"
     }
