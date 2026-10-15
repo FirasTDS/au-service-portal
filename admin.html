@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=22">
-    <script src="portal-features.js?v=23"></script>
+    <link rel="stylesheet" href="style.css?v=24">
+    <script src="portal-features.js?v=24"></script>
 </head>
 <body>
 
@@ -203,6 +203,7 @@
                             <option value="printing">مكتبات وطباعة وقرطاسية</option>
                             <option value="maintenance">خدمات وصيانة (كهرباء، صحية، اتصالات)</option>
                             <option value="sweets">حلويات وكافيه (القدموس)</option>
+                            <option value="rental">مكاتب الإيجار (شقق وسكن)</option>
                             <option value="taxis">تكاسي وموتورات داخل القدموس</option>
                             <option value="delivery">ديليفري وتوصيل طلبات (أكل ومشاوير)</option>
                             <option value="transport">شركات النقل والمواصلات بين المحافظات</option>
@@ -519,7 +520,8 @@
             maintenance: 'خدمات وصيانة (كهرباء، صحية، اتصالات)',
             taxis: 'تكاسي وموتورات داخل القدموس',
             delivery: 'ديليفري وتوصيل طلبات',
-            sweets: 'حلويات وكافيه (القدموس)'
+            sweets: 'حلويات وكافيه (القدموس)',
+            rental: 'مكاتب الإيجار (شقق وسكن)'
         };
 
         function renderAdminLists() {
@@ -1114,6 +1116,8 @@
                 cat = 'water';
             } else if (item.category.includes('حوال') || item.category.includes('شحن') || item.category.includes('طرد') || item.category.includes('الهرم') || item.category.includes('الفؤاد')) {
                 cat = 'transfers';
+            } else if (item.category.includes('إيجار')) {
+                cat = 'rental';
             } else if (item.category.includes('مكتب') || item.category.includes('طباعة') || item.category.includes('قرطاسية')) {
                 cat = 'printing';
             } else if (item.category.includes('صيانة') || item.category.includes('كهرباء') || item.category.includes('نت') || item.category.includes('سكن')) {
@@ -1400,7 +1404,7 @@
             const contact = normalizeContactInput(phone);
             if (contact.error) return false;
             const existingContacts = [];
-            for (const cat of ['emergency', 'pharmacies', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'taxis', 'delivery', 'sweets']) {
+            for (const cat of ['emergency', 'pharmacies', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'taxis', 'delivery', 'sweets', 'rental']) {
                 if (category && categoryFromLabel(category) !== cat) continue;
                 const list = adminData.services[cat] || [];
                 existingContacts.push(...list.map(item => normalizeContactInput(item.phone || item.link)));

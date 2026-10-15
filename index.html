@@ -23,8 +23,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=22">
-    <script src="portal-features.js?v=23"></script>
+    <link rel="stylesheet" href="style.css?v=24">
+    <script src="portal-features.js?v=24"></script>
+    <script src="rates.js?v=24"></script>
 </head>
 <body>
 
@@ -150,6 +151,15 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--color-teal);"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
       <span>حاسبة الفواتير والأسعار في سوريا:</span>
     </div>
+    <section class="exchange-strip" aria-labelledby="exchangeRatesTitle">
+      <div class="exchange-heading">
+        <h2 id="exchangeRatesTitle">سعر الدولار · دمشق (ل.س جديدة)</h2>
+        <button type="button" id="refreshExchangeRates" class="btn-secondary">تحديث السعر</button>
+      </div>
+      <div id="exchangeRateValues" class="exchange-grid"></div>
+      <p id="exchangeRateStatus" class="exchange-status" role="status">جاري جلب السعر…</p>
+      <p class="exchange-disclaimer">الأسعار مأخوذة من موقع الليرة اليوم (SP-Today) وقد تتغير خلال اليوم — <a href="https://sp-today.com/currency/us-dollar" target="_blank" rel="noopener noreferrer" class="notice-link">راجع الأسعار المحدثة للدقة</a>.</p>
+    </section>
     <div class="sy-hub-chips">
       <a href="https://syfatora.com/" target="_blank" rel="noopener noreferrer" class="sy-chip" title="حساب فاتورة الكهرباء المنزلية والتجارية">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -356,6 +366,17 @@
         </div>
         <div class="category-items-list" id="list-sweets" role="list" aria-label="قائمة الحلويات"></div>
       </div>
+      <!-- Rental offices card -->
+      <div class="category-card" data-section="services">
+        <div class="category-header">
+          <div class="category-title-wrap">
+            <svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <h3 class="category-title">مكاتب الإيجار</h3>
+          </div>
+          <span class="category-count" id="count-rental">0</span>
+        </div>
+        <div class="category-items-list" id="list-rental" role="list" aria-label="قائمة مكاتب إيجار الشقق والسكن"></div>
+      </div>
     </div>
   </section>
 
@@ -465,6 +486,7 @@
             <option value="حلويات وكافيه">محل حلويات / كافيه</option>
             <option value="طوارئ ومراكز صحية">طوارئ وصيدليات ومراكز صحية</option>
             <option value="صيدليات القدموس">صيدليات القدموس</option>
+            <option value="مكاتب الإيجار">مكاتب الإيجار (شقق وسكن)</option>
             <option value="تكاسي وموتورات داخل القدموس">تكاسي وموتورات داخل القدموس</option>
             <option value="ديليفري وتوصيل طلبات">ديليفري وتوصيل طلبات (أكل ومشاوير)</option>
             <option value="شركات المواصلات سرفيس او بولمان">شركة مواصلات / سرفيس</option>
@@ -641,7 +663,8 @@
                 { name: "مرعي", phone: "0930267864" },
                 { name: "الخير", phone: "0966656200" },
                 { name: "حساب انستغرام (cook90262)", link: "https://www.instagram.com/cook90262" }
-            ]
+            ],
+            rental: []
         },
         transport: [
             {
@@ -1285,6 +1308,7 @@
         const printing = portalData.services.printing || [];
         const maintenance = portalData.services.maintenance || [];
         const sweets = portalData.services.sweets || [];
+        const rental = portalData.services.rental || [];
         const taxis = portalData.services.taxis || [];
         document.getElementById('list-taxis').innerHTML = sortArray(taxis).map(i => createContactRow(i, 'تكاسي تاكسي تكسي موتورات موتور دراجة نقل محلي داخل القدموس')).join('');
         document.getElementById('count-taxis').textContent = taxis.length;
@@ -1339,6 +1363,9 @@
         document.getElementById('list-sweets').innerHTML = sortArray(sweets).map(i => createContactRow(i, "حلويات حلو كافيه")).join('');
         document.getElementById('count-sweets').textContent = sweets.length;
 
+        document.getElementById('list-rental').innerHTML = sortArray(rental).map(i => createContactRow(i, "إيجار إيجارات شقق سكن مكاتب عقارات")).join('');
+        document.getElementById('count-rental').textContent = rental.length;
+
         // Transport Grid
         const transportGrid = document.getElementById('transport-grid');
         transportGrid.innerHTML = portalData.transport.map(group => {
@@ -1377,7 +1404,8 @@
             if (!list.id) list.id = `list-auto-${ci}`;
             const id = list.id;
             const count = list.querySelectorAll('.contact-item').length;
-            if (!count) return;
+            // New categories (e.g. rental offices) stay visible while awaiting their first contact.
+            if (!count && id !== 'list-rental') return;
             const button = document.createElement('button');
             button.type = 'button';
             button.className = 'category-tile';
@@ -1874,7 +1902,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v23';
+    const APP_VERSION = 'v25';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.
@@ -1884,7 +1912,7 @@
 
             // Strict schema validation to prevent crashing
             if (validatePortalData(json)) {
-                for (const key of ['emergency', 'pharmacies', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'taxis', 'delivery', 'sweets']) {
+                for (const key of ['emergency', 'pharmacies', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'taxis', 'delivery', 'sweets', 'rental']) {
                     if (!Array.isArray(json.services[key])) json.services[key] = [];
                 }
                 if (!Array.isArray(json.transport)) json.transport = [];
