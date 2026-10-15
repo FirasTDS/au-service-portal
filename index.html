@@ -23,8 +23,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=17">
-    <script src="portal-features.js?v=17"></script>
+    <link rel="stylesheet" href="style.css?v=18">
+    <script src="portal-features.js?v=18"></script>
 </head>
 <body>
 
@@ -93,7 +93,7 @@
         </button>
         <button class="tab-btn" id="tab-transport" role="tab" aria-selected="false" onclick="switchTab('transport')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-          المواصلات
+          النقل خارج القدموس
         </button>
       </div>
       <div class="search-sort-group">
@@ -152,7 +152,18 @@
   <section id="categoryBrowser" aria-labelledby="browseTitle">
     <h2 id="browseTitle" tabindex="-1">شو بدك اليوم؟</h2>
     <p class="browse-hint">اختر القسم لتشوف أرقامه، أو ابحث بالاسم أو الرقم في كل الدليل.</p>
-    <div id="categoryTiles" class="category-tiles"></div>
+    <div id="categoryTiles">
+      <section class="category-group" data-category-group="services" aria-labelledby="localCategoriesTitle">
+        <h3 id="localCategoriesTitle">خدمات داخل القدموس</h3>
+        <p>المحلات والخدمات اليومية، والتكاسي والموتورات داخل المنطقة.</p>
+        <div id="serviceCategoryTiles" class="category-tiles"></div>
+      </section>
+      <section class="category-group" data-category-group="transport" aria-labelledby="transportCategoriesTitle">
+        <h3 id="transportCategoriesTitle">النقل خارج القدموس</h3>
+        <p>اختر المحافظة لعرض أرقام السرافيس وشركات النقل.</p>
+        <div id="transportCategoryTiles" class="category-tiles"></div>
+      </section>
+    </div>
   </section>
   <div id="browseToolbar" class="browse-toolbar" hidden>
     <button type="button" class="btn-secondary" onclick="backToCategories()">→ كل الأقسام</button>
@@ -1287,7 +1298,7 @@
 
     function decorateCardHeaders() {
         const tiles = document.getElementById('categoryTiles');
-        tiles.replaceChildren();
+        tiles.querySelectorAll('.category-tiles').forEach(grid => grid.replaceChildren());
         document.querySelectorAll('.category-card').forEach((card, ci) => {
             const header = card.querySelector(':scope > .category-header');
             const list = card.querySelector(':scope > .category-items-list');
@@ -1317,10 +1328,10 @@
                 navigateCategory(id);
                 document.getElementById('browseStatus').focus();
             };
-            tiles.appendChild(button);
+            document.getElementById(card.dataset.section === 'transport' ? 'transportCategoryTiles' : 'serviceCategoryTiles').appendChild(button);
         });
         // A refresh may remove the open category's last contact.
-        if (selectedCategory && ![...tiles.children].some(tile => tile.dataset.list === selectedCategory)) {
+        if (selectedCategory && ![...tiles.querySelectorAll('.category-tile')].some(tile => tile.dataset.list === selectedCategory)) {
             selectedCategory = null;
         }
     }
@@ -1369,6 +1380,9 @@
         document.getElementById('main').classList.toggle('directory-detail', !browsing);
         document.querySelectorAll('.category-tile').forEach(tile => {
             tile.hidden = currentTab !== 'all' && tile.dataset.section !== currentTab;
+        });
+        document.querySelectorAll('[data-category-group]').forEach(group => {
+            group.hidden = ![...group.querySelectorAll('.category-tile')].some(tile => !tile.hidden);
         });
         const selectedList = selectedCategory && document.getElementById(selectedCategory);
         const shareButton = document.getElementById('shareCategory');
@@ -1718,7 +1732,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v17';
+    const APP_VERSION = 'v18';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.

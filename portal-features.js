@@ -143,13 +143,14 @@ function readCategoryLink() {
 }
 
 function enhancePublicDirectory() {
-    const tiles = document.getElementById('categoryTiles');
     // Put configured categories first and append new categories without losing them.
     const order = portalData.category_order || [];
-    [...tiles.children].sort((a,b) => {
-        const x = order.indexOf(a.dataset.list), y = order.indexOf(b.dataset.list);
-        return (x < 0 ? order.length : x) - (y < 0 ? order.length : y);
-    }).forEach(tile => tiles.append(tile));
+    document.querySelectorAll('#categoryTiles .category-tiles').forEach(tiles => {
+        [...tiles.children].sort((a,b) => {
+            const x = order.indexOf(a.dataset.list), y = order.indexOf(b.dataset.list);
+            return (x < 0 ? order.length : x) - (y < 0 ? order.length : y);
+        }).forEach(tile => tiles.append(tile));
+    });
     if (!document.getElementById('shareCategory')) {
         const button = featureButton('مشاركة القسم', async () => {
             if (!selectedCategory) return showToast('افتح قسماً أولاً.');
@@ -293,17 +294,22 @@ function enhanceAdminDirectory() {
     let panel = document.getElementById('directoryTools');
     if (!panel) { panel = document.createElement('section'); panel.id = 'directoryTools'; panel.className = 'admin-card'; document.getElementById('dashboardSection').append(panel); }
     panel.replaceChildren();
-    const heading = document.createElement('h3'); heading.textContent = 'ترتيب الأقسام — اسحب المقبض ⠿ أو استخدم الأسهم'; panel.append(heading);
+    const heading = document.createElement('h3'); heading.textContent = 'ترتيب الأقسام داخل كل مجموعة — اسحب المقبض ⠿ أو استخدم الأسهم'; panel.append(heading);
     const categories = Object.entries(SERVICE_LABELS).map(([key,label]) => ({id:'list-' + key,label})).concat((adminData.transport || []).map(group => ({id:cityListId(group.city), label:group.city})));
     const valid = new Set(categories.map(c => c.id));
     const order = [...new Set([...(adminData.category_order || []).filter(id => valid.has(id)), ...categories.map(c => c.id)])];
+    const isTransport = id => id.startsWith('list-city-');
+    order.sort((a,b) => Number(isTransport(a)) - Number(isTransport(b)));
     order.forEach((id,idx) => {
+        if (idx === 0 || isTransport(id) !== isTransport(order[idx-1])) {
+            const title = document.createElement('h4'); title.textContent = isTransport(id) ? 'النقل خارج القدموس' : 'خدمات داخل القدموس'; panel.append(title);
+        }
         const row = document.createElement('div'); row.className = 'feature-actions';
         const label = document.createElement('span'); label.textContent = categories.find(c => c.id === id).label; row.append(label);
         const move = (from,to) => { adminData.category_order = [...order]; moveDirectoryItem(adminData.category_order,from,to); };
-        const up = featureButton('↑', () => move(idx,idx-1)); up.disabled = idx === 0; up.setAttribute('aria-label','تحريك القسم لأعلى');
-        const down = featureButton('↓', () => move(idx,idx+1)); down.disabled = idx === order.length-1; down.setAttribute('aria-label','تحريك القسم لأسفل');
-        row.append(up,down); reorderControls(row,'categories',idx,move); panel.append(row);
+        const up = featureButton('↑', () => move(idx,idx-1)); up.disabled = idx === 0 || isTransport(id) !== isTransport(order[idx-1]); up.setAttribute('aria-label','تحريك القسم لأعلى');
+        const down = featureButton('↓', () => move(idx,idx+1)); down.disabled = idx === order.length-1 || isTransport(id) !== isTransport(order[idx+1]); down.setAttribute('aria-label','تحريك القسم لأسفل');
+        row.append(up,down); reorderControls(row,isTransport(id) ? 'categories-transport' : 'categories-services',idx,move); panel.append(row);
     });
     const trashTitle = document.createElement('h3'); trashTitle.textContent = `سلة المحذوفات (${(adminData.trash || []).length})`; panel.append(trashTitle);
     (adminData.trash || []).forEach(record => {
