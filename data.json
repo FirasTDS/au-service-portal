@@ -226,6 +226,11 @@
         "name": "ستوب اند شوب",
         "phone": "0952532845",
         "note": "كافة المنتجات المحلية والمستوردة والخضار والفواكه (يوجد لديهم توصيل)"
+      },
+      {
+        "name": "سوبر ماركت رامي",
+        "phone": "0951460666",
+        "note": "الموقع: الاستراد_ مقابل مفرق مطعم نايا_خدمة ٢٤ ساعة"
       }
     ],
     "water": [
@@ -325,6 +330,11 @@
       {
         "name": "محمد معروف توصيل طلبات",
         "phone": "0932083094"
+      },
+      {
+        "name": "تكسي ربيع ابراهيم",
+        "phone": "0951460666",
+        "note": "الخدمة ليلاً ونهاراً _توصيل للسكن الجامعي"
       }
     ],
     "sweets": [
@@ -339,6 +349,11 @@
       {
         "name": "حساب انستغرام (cook90262)",
         "link": "https://www.instagram.com/cook90262"
+      },
+      {
+        "name": "Friends  cafe",
+        "phone": "0983162723",
+        "note": "الموقع: القصور_تحت مشفى الحياة _مقابل المركز الثقافي"
       }
     ],
     "rental": []
@@ -782,7 +797,10 @@
     "2c19d6d36f91a4027341608f52c5212a9921afb5fba1a8a6f35304b079f6b607": "approved",
     "fd65d061eb7d5f20d6896540cabb7f48235cb80ff954ae6e8a352fb51d8a38f1": "approved",
     "1ac551183d7896a76e7c09c4322809dc33f17bb658ad2749c212915d0e79785b": "approved",
-    "fe268b123ab5e08c1b00439097033dd4704e444175ec4824403b2dfb52c7aa5e": "approved"
+    "fe268b123ab5e08c1b00439097033dd4704e444175ec4824403b2dfb52c7aa5e": "approved",
+    "882278dce97c526a2f6bc272401a4aef258ec3bfee28e4cdb93b63140cafd814": "approved",
+    "0c5e74d609a63e5491a171924448d25f5ffb1148565ed15944e97321cd7ec117": "approved",
+    "f2b8b70268e65b4f144edba361a8187fbf9c26065b0566a3e40f37e3e8e3956e": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -842,6 +860,18 @@
       "updated": "2026-10-15"
     },
     "5cf2cf5e-ba4d-4136-aaa9-1db7a2bb9758": {
+      "status": "approved",
+      "updated": "2026-10-15"
+    },
+    "bbff546d-9ad5-46d9-a39b-7c4ae4f705a5": {
+      "status": "approved",
+      "updated": "2026-10-15"
+    },
+    "fefda5e4-2b61-4a0b-92ab-3498187fc726": {
+      "status": "approved",
+      "updated": "2026-10-15"
+    },
+    "67ca263f-3aa6-47d7-9c3b-347af09e3fee": {
       "status": "approved",
       "updated": "2026-10-15"
     }
