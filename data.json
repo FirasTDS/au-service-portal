@@ -283,6 +283,10 @@
       {
         "name": "علي العيسى موتور توصيل",
         "phone": "0985386912"
+      },
+      {
+        "name": "أبو سعيد موتور توصيل",
+        "phone": "0985463697"
       }
     ],
     "sweets": [
@@ -719,7 +723,8 @@
     "f23158d90f64ce66943c0ebe7be86621fd6d051da3e6bbc8c00430016f3179bd": "approved",
     "dfda0f156a7114cef488ab884288df1cd47ed5bb6aecacedaa3106560d6bdb9b": "approved",
     "996675386d32495bf7674169c6acc15b0135c19be804986a5151593b85d30f26": "approved",
-    "e6f334943bea42bc46f3d3342e7175a74a3a8afa4524afdc272d464aece6f8b2": "approved"
+    "e6f334943bea42bc46f3d3342e7175a74a3a8afa4524afdc272d464aece6f8b2": "approved",
+    "b7a69ad43bd812a1c8c996dc225cef3de031b43d156ec8e22f5ad7e8d58540bf": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -735,6 +740,10 @@
       "updated": "2026-10-15"
     },
     "fa331dba-f254-4eeb-bd19-af02aa807dae": {
+      "status": "approved",
+      "updated": "2026-10-15"
+    },
+    "6140208d-af4e-4691-8a64-2edee2c1f1ec": {
       "status": "approved",
       "updated": "2026-10-15"
     }
