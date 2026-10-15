@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
 
@@ -286,6 +286,17 @@
         </div>
         <div class="category-items-list" id="list-taxis" role="list" aria-label="قائمة التكاسي والموتورات داخل القدموس"></div>
       </div>
+      <!-- Food & errand delivery riders -->
+      <div class="category-card" data-section="services">
+        <div class="category-header">
+          <div class="category-title-wrap">
+            <svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M5.5 17.5h8l3-7h4M9 7h6l2 4"/><path d="M15 4h4v4"/></svg>
+            <h3 class="category-title">ديليفري وتوصيل طلبات</h3>
+          </div>
+          <span class="category-count" id="count-delivery">0</span>
+        </div>
+        <div class="category-items-list" id="list-delivery" role="list" aria-label="قائمة الديليفري وتوصيل الطلبات"></div>
+      </div>
       <!-- Sweets Card -->
       <div class="category-card" data-section="services">
         <div class="category-header">
@@ -406,6 +417,7 @@
             <option value="حلويات وكافيه">محل حلويات / كافيه</option>
             <option value="طوارئ ومراكز صحية">طوارئ وصيدليات ومراكز صحية</option>
             <option value="تكاسي وموتورات داخل القدموس">تكاسي وموتورات داخل القدموس</option>
+            <option value="ديليفري وتوصيل طلبات">ديليفري وتوصيل طلبات (أكل ومشاوير)</option>
             <option value="شركات المواصلات سرفيس او بولمان">شركة مواصلات / سرفيس</option>
           </select>
         </div>
@@ -1187,6 +1199,9 @@
         const taxis = portalData.services.taxis || [];
         document.getElementById('list-taxis').innerHTML = sortArray(taxis).map(i => createContactRow(i, 'تكاسي تاكسي تكسي موتورات موتور دراجة نقل محلي داخل القدموس')).join('');
         document.getElementById('count-taxis').textContent = taxis.length;
+        const delivery = portalData.services.delivery || [];
+        document.getElementById('list-delivery').innerHTML = sortArray(delivery).map(i => createContactRow(i, 'ديليفري ديلفري توصيل طلبات طعام اكل موتور مشاوير')).join('');
+        document.getElementById('count-delivery').textContent = delivery.length;
 
         const emergEl = document.getElementById('list-emergency');
         if (emergEl) {
@@ -1249,6 +1264,54 @@
         }).join('');
 
         renderDutyPharmacy();
+        decorateCardHeaders();
+        filterItems();
+    }
+
+    // --- COLLAPSIBLE CARDS + SHOW-MORE (keeps long category lists compact) ---
+    const CARD_LIMIT = 3;
+    let collapsedCards = [];
+    try {
+        collapsedCards = JSON.parse(portalStorage.get('susa_collapsed') || '[]');
+        if (!Array.isArray(collapsedCards)) collapsedCards = [];
+    } catch (e) { collapsedCards = []; }
+    const expandedCards = new Set();
+
+    function decorateCardHeaders() {
+        document.querySelectorAll('.category-card').forEach((card, ci) => {
+            const header = card.querySelector(':scope > .category-header');
+            const list = card.querySelector(':scope > .category-items-list');
+            if (!header || !list) return;
+            if (!list.id) list.id = `list-auto-${ci}`;
+            const id = list.id;
+            header.classList.add('collapsible');
+            header.setAttribute('role', 'button');
+            header.setAttribute('tabindex', '0');
+            header.setAttribute('aria-expanded', String(!collapsedCards.includes(id)));
+            if (!header.querySelector('.collapse-chevron')) {
+                const chev = document.createElement('span');
+                chev.className = 'collapse-chevron';
+                chev.setAttribute('aria-hidden', 'true');
+                chev.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>';
+                header.appendChild(chev);
+            }
+            header.onclick = () => toggleCardCollapse(id);
+            header.onkeydown = (e) => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCardCollapse(id); }
+            };
+        });
+    }
+
+    function toggleCardCollapse(id) {
+        collapsedCards = collapsedCards.includes(id)
+            ? collapsedCards.filter(x => x !== id)
+            : [...collapsedCards, id];
+        portalStorage.set('susa_collapsed', JSON.stringify(collapsedCards));
+        filterItems();
+    }
+
+    function expandCard(id) {
+        expandedCards.add(id);
         filterItems();
     }
 
@@ -1309,22 +1372,46 @@
             }
 
             const items = card.querySelectorAll('.contact-item');
+            const listEl = card.querySelector(':scope > .category-items-list');
+            const listId = listEl && listEl.id;
+            const hasQuery = !!normalizedQuery;
+            const isCollapsed = !hasQuery && listId && collapsedCards.includes(listId);
+            const isExpanded = listId && expandedCards.has(listId);
+            card.classList.toggle('card-collapsed', !!isCollapsed);
             let visibleInCard = 0;
 
-            items.forEach(item => {
+            items.forEach((item, idx) => {
                 const searchStr = item.getAttribute('data-search') || '';
                 const normalizedSearch = normalizeArabic(searchStr);
 
                 if (!normalizedQuery || normalizedSearch.includes(normalizedQuery)) {
-                    item.style.display = 'flex';
-                    visibleInCard++;
-                    totalVisibleInActiveTab++;
+                    if (!hasQuery && !isExpanded && idx >= CARD_LIMIT) {
+                        item.style.display = 'none';
+                    } else {
+                        item.style.display = 'flex';
+                        visibleInCard++;
+                        totalVisibleInActiveTab++;
+                    }
                 } else {
                     item.style.display = 'none';
                 }
             });
 
             card.style.display = visibleInCard > 0 ? 'flex' : 'none';
+
+            let moreBtn = card.querySelector(':scope > .card-show-more');
+            if (hasQuery || isExpanded || isCollapsed || visibleInCard <= CARD_LIMIT) {
+                if (moreBtn) moreBtn.style.display = 'none';
+            } else {
+                if (!moreBtn) {
+                    moreBtn = document.createElement('div');
+                    moreBtn.className = 'card-show-more';
+                    moreBtn.innerHTML = `<button type="button" onclick="expandCard('${listId}')" aria-label="عرض كل العناصر"></button>`;
+                    card.appendChild(moreBtn);
+                }
+                moreBtn.style.display = 'block';
+                moreBtn.querySelector('button').textContent = `عرض الكل (${visibleInCard - CARD_LIMIT} المزيد) ▾`;
+            }
         });
 
         if (!hasDutySchedule) dutySection.style.display = 'none';
@@ -1614,7 +1701,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v12';
+    const APP_VERSION = 'v14';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.
@@ -1624,7 +1711,7 @@
 
             // Strict schema validation to prevent crashing
             if (validatePortalData(json)) {
-                for (const key of ['emergency', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'taxis', 'sweets']) {
+                for (const key of ['emergency', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'taxis', 'delivery', 'sweets']) {
                     if (!Array.isArray(json.services[key])) json.services[key] = [];
                 }
                 if (!Array.isArray(json.transport)) json.transport = [];

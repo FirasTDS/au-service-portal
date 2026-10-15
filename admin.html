@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
 
@@ -161,6 +161,27 @@
                 </div>
             </div>
 
+            <!-- DUPLICATE NUMBER DETECTOR -->
+            <div class="admin-card">
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 1rem; border-bottom: 1px solid var(--color-slate-200); padding-bottom: 0.75rem;">
+                    <div>
+                        <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--color-teal-dark); display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="width: 4px; height: 18px; background-color: var(--color-amber); border-radius: 99px;"></span>
+                            <span>كشف الأرقام المكررة</span>
+                        </h3>
+                        <p style="font-size: 0.75rem; color: var(--color-slate-500); margin-top: 0.2rem;">
+                            نفس الرقم في أكثر من مكان — أحياناً مقصود (خدمة مزدوجة) وأحياناً خطأ يحتاج حذف
+                        </p>
+                    </div>
+                    <button type="button" onclick="scanDuplicates()" id="btnScanDup" class="btn-secondary" style="font-size: 0.75rem; padding: 0.4rem 0.75rem;">
+                        <span>فحص التكرار</span>
+                    </button>
+                </div>
+                <div id="duplicatesResult" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div style="font-size: 0.8rem; color: var(--color-slate-500); text-align: center; padding: 0.5rem;">اضغط "فحص التكرار" لعرض الأرقام الموجودة في أكثر من قسم</div>
+                </div>
+            </div>
+
             <!-- ADD NEW ENTRY FORM -->
             <div class="admin-card">
                 <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--color-teal-dark); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
@@ -181,6 +202,7 @@
                             <option value="maintenance">خدمات وصيانة (كهرباء، صحية، اتصالات)</option>
                             <option value="sweets">حلويات وكافيه (القدموس)</option>
                             <option value="taxis">تكاسي وموتورات داخل القدموس</option>
+                            <option value="delivery">ديليفري وتوصيل طلبات (أكل ومشاوير)</option>
                             <option value="transport">شركات النقل والمواصلات بين المحافظات</option>
                         </select>
                     </div>
@@ -484,22 +506,25 @@
         }
 
         // --- RENDER CURRENT LISTS WITH DELEGATION ---
+        const SERVICE_LABELS = {
+            emergency: 'طوارئ وصيدليات ومراكز صحية',
+            restaurants: 'المطاعم (القدموس)',
+            supermarkets: 'سوبر ماركت (القدموس)',
+            water: 'صهاريج وتعبئة مياه',
+            transfers: 'حوالات مالية وشحن طرود',
+            printing: 'مكتبات وطباعة وقرطاسية',
+            maintenance: 'خدمات وصيانة (كهرباء، صحية، اتصالات)',
+            taxis: 'تكاسي وموتورات داخل القدموس',
+            delivery: 'ديليفري وتوصيل طلبات',
+            sweets: 'حلويات وكافيه (القدموس)'
+        };
+
         function renderAdminLists() {
             const container = document.getElementById('adminListsContainer');
             let total = 0;
             let html = '';
 
-            const serviceLabels = {
-                emergency: 'طوارئ وصيدليات ومراكز صحية',
-                restaurants: 'المطاعم (القدموس)',
-                supermarkets: 'سوبر ماركت (القدموس)',
-                water: 'صهاريج وتعبئة مياه',
-                transfers: 'حوالات مالية وشحن طرود',
-                printing: 'مكتبات وطباعة وقرطاسية',
-                maintenance: 'خدمات وصيانة (كهرباء، صحية، اتصالات)',
-                taxis: 'تكاسي وموتورات داخل القدموس',
-                sweets: 'حلويات وكافيه (القدموس)'
-            };
+            const serviceLabels = SERVICE_LABELS;
 
             for (const [key, label] of Object.entries(serviceLabels)) {
                 const items = adminData.services[key] || [];
@@ -1068,7 +1093,9 @@
             if (item.type.includes('تقييم') || item.category.includes('إبلاغ') || item.notes.includes('[بلاغ')) return null;
             if (!item.name.trim() || !item.phone.trim() || checkItemExists(item.name, item.phone)) return null;
             let cat = 'restaurants';
-            if (/تكاسي|تاكسي|تكسي|موتور/.test(item.category)) {
+            if (/ديليفري|ديلفري|توصيل/.test(item.category)) {
+                cat = 'delivery';
+            } else if (/تكاسي|تاكسي|تكسي|موتور/.test(item.category)) {
                 cat = 'taxis';
             } else if (item.category.includes('طوارئ') || item.category.includes('صيدلية') || item.category.includes('إسعاف') || item.category.includes('مشفى') || item.category.includes('صحي')) {
                 cat = 'emergency';
@@ -1209,6 +1236,89 @@
             await fetchLiveSuggestions();
         }
 
+        // --- DUPLICATE NUMBER DETECTOR ---
+        // Same normalized number/link in 2+ entries: sometimes a legit dual service, sometimes an error.
+        function collectContactIndex() {
+            const index = new Map();
+            const push = (key, display, loc) => {
+                if (!index.has(key)) index.set(key, { key, display, entries: [] });
+                index.get(key).entries.push({ loc, display, ...loc });
+            };
+            for (const [cat, list] of Object.entries(adminData.services || {})) {
+                (list || []).forEach((item, idx) => {
+                    const c = normalizeContactInput(item.phone || item.link);
+                    if (c.error) return;
+                    const label = `${SERVICE_LABELS[cat] || cat} — ${item.name}`;
+                    if (c.link) push(`l:${c.link}`, c.link, { type: 'service', cat, idx, label });
+                    c.phones.forEach(p => push(`p:${p}`, p, { type: 'service', cat, idx, label }));
+                });
+            }
+            (adminData.transport || []).forEach((group, gIdx) => {
+                (group.items || []).forEach((item, iIdx) => {
+                    const c = normalizeContactInput(item.phone || item.link);
+                    if (c.error) return;
+                    const label = `${group.city} — ${item.name}`;
+                    if (c.link) push(`l:${c.link}`, c.link, { type: 'transport', gIdx, iIdx, label });
+                    c.phones.forEach(p => push(`p:${p}`, p, { type: 'transport', gIdx, iIdx, label }));
+                });
+            });
+            return index;
+        }
+
+        let lastDupGroups = [];
+
+        function scanDuplicates() {
+            const box = document.getElementById('duplicatesResult');
+            const known = adminData.known_duplicates || [];
+            lastDupGroups = [...collectContactIndex().values()].filter(g => g.entries.length > 1 && !known.includes(g.key));
+            if (!lastDupGroups.length) {
+                box.innerHTML = '<div style="font-size: 0.8rem; color: var(--color-slate-500); text-align: center; padding: 0.5rem;">لا يوجد تكرار جديد — كل الأرقام فريدة أو تم تجاهلها مسبقاً ✓</div>';
+                return;
+            }
+            box.innerHTML = lastDupGroups.map((g, gi) => `
+                <div style="background-color: var(--color-slate-50); border: 1px solid var(--color-slate-200); border-radius: var(--radius-md); padding: 0.75rem;">
+                    <div style="font-weight: 800; font-size: 0.85rem; margin-bottom: 0.5rem;" dir="ltr">${escapeHtml(g.display)}</div>
+                    ${g.entries.map(e => `
+                        <div class="admin-item-row">
+                            <div class="admin-item-meta" style="flex: 1 1 auto;"><span>${escapeHtml(e.label)}</span></div>
+                            <button type="button" class="btn-icon btn-report" onclick="deleteDuplicateEntry('${e.type}','${e.type === 'service' ? e.cat : e.gIdx}',${e.type === 'service' ? e.idx : e.iIdx})" title="حذف هذا الإدخال" aria-label="حذف">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            </button>
+                        </div>
+                    `).join('')}
+                    <button type="button" onclick="ignoreDuplicateGroup(${gi})" class="btn-secondary" style="font-size: 0.725rem; padding: 0.35rem 0.65rem; margin-top: 0.5rem;">ليس خطأ — تجاهل مستقبلاً</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteDuplicateEntry(type, a, b) {
+            if (!confirm('حذف هذا الإدخال المكرر؟ (تحتاج "حفظ ونشر" بعدها)')) return;
+            if (type === 'service') {
+                (adminData.services[a] || []).splice(b, 1);
+            } else {
+                const group = (adminData.transport || [])[parseInt(a, 10)];
+                if (group) {
+                    group.items.splice(b, 1);
+                    if (!group.items.length) adminData.transport.splice(parseInt(a, 10), 1);
+                }
+            }
+            renderAdminLists();
+            scanDuplicates();
+            showToast('تم حذف الإدخال مؤقتاً — اضغط "حفظ ونشر" لاعتماده.');
+        }
+
+        async function ignoreDuplicateGroup(gi) {
+            if (!sessionToken) return;
+            const key = lastDupGroups[gi] && lastDupGroups[gi].key;
+            if (!key) return;
+            const previousData = structuredClone(adminData);
+            adminData.known_duplicates = [...(adminData.known_duplicates || []), key];
+            const saved = await saveAndPushToGitHub();
+            if (!saved) adminData = previousData;
+            renderAdminLists();
+            scanDuplicates();
+        }
+
         async function ignoreSuggestion(id) {
             if (!sessionToken || document.getElementById('btnPushGitHub').disabled) return;
             const item = liveSuggestions.find(s => s.id === id);
@@ -1337,7 +1447,7 @@
             const contact = normalizeContactInput(phone);
             if (contact.error) return false;
             const existingContacts = [];
-            for (const cat of ['emergency', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'taxis', 'sweets']) {
+            for (const cat of ['emergency', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'taxis', 'delivery', 'sweets']) {
                 const list = adminData.services[cat] || [];
                 existingContacts.push(...list.map(item => normalizeContactInput(item.phone || item.link)));
             }

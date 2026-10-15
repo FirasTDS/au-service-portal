@@ -647,6 +647,58 @@ body {
   border-bottom: 1px solid var(--color-slate-100);
 }
 
+/* Collapsible headers + show-more (debloat long categories) */
+.category-header.collapsible {
+  cursor: pointer;
+  user-select: none;
+  gap: 0.5rem;
+}
+
+.collapse-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+.collapse-chevron svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.category-card.card-collapsed .collapse-chevron svg {
+  transform: rotate(180deg);
+}
+
+.category-card.card-collapsed > .category-items-list,
+.category-card.card-collapsed > .card-show-more {
+  display: none;
+}
+
+.card-show-more {
+  padding: 0.5rem 0.75rem 0.75rem 0.75rem;
+  text-align: center;
+}
+
+.card-show-more button {
+  background: none;
+  border: 1px dashed var(--color-slate-300);
+  color: var(--color-teal);
+  border-radius: var(--radius-full);
+  padding: 0.35rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.card-show-more button:hover {
+  background-color: var(--color-teal-soft);
+}
+
 /* Contact Item Card */
 .contact-item {
   padding: 0.95rem 0.85rem;
