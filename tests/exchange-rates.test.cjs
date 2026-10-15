@@ -78,6 +78,12 @@ test('rental category is wired in directory, suggestion form, admin and mapping'
     vm.runInContext(features.slice(features.indexOf('function categoryFromLabel('), features.indexOf('\n}\n') + 3), ctx);
     assert.equal(ctx.categoryFromLabel('مكاتب الإيجار'), 'rental');
     assert.ok(index.includes("id !== 'list-rental'"), 'empty rental category keeps its tile');
+    const appVer = index.match(/APP_VERSION = '(v\d+)'/)[1];
+    const verNum = appVer.slice(1);
+    for (const asset of ['style.css', 'portal-features.js', 'rates.js']) {
+        assert.ok(index.includes(`${asset}?v=${verNum}`), `${asset} cache-bust matches ${appVer}`);
+    }
+    assert.ok((index.match(/<svg width="13" height="13"/g) || []).length >= 4, 'calculator chip icons carry width/height attributes');
     const yaml = read('.github/workflows/update-rates.yml');
     assert.ok(yaml.includes('scripts/update-rates.py') && yaml.includes('schedule') && yaml.includes('contents: write'));
     new vm.Script(read('rates.js'));
