@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (main && pharmacy) {
             main.prepend(main.querySelector('.notice-banner'), main.querySelector('.sy-hub-card'), pharmacy, document.getElementById('installCard'));
         }
-        const tracker = document.createElement('section'); tracker.id = 'suggestionTracker'; tracker.className = 'tracker-panel'; tracker.hidden = true; pharmacy.after(tracker);
+        const tracker = document.createElement('section'); tracker.id = 'suggestionTracker'; tracker.className = 'tracker-panel'; tracker.hidden = true; main.prepend(tracker);
         extraFields('sug', document.getElementById('sugNotes').parentElement, false);
         const update = () => { document.getElementById('sugExtras').hidden = document.getElementById('sugCategory').value !== 'ديليفري وتوصيل طلبات'; };
         document.getElementById('sugCategory').addEventListener('change',update); update();
