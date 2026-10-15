@@ -2,8 +2,9 @@
 function cityListId(city) { return 'list-city-' + encodeURIComponent(city); }
 
 function categoryFromLabel(label) {
+    label = String(label || '').normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640\u200B-\u200F\u202A-\u202E\u2066-\u2069]/g, '');
+    if (/[إأآا]يجار|عقارات|rental/i.test(label)) return 'rental';
     if (/صيدليات القدموس/.test(label)) return 'pharmacies';
-    if (/إيجار/.test(label)) return 'rental';
     if (/ديليفري|ديلفري|توصيل/.test(label)) return 'delivery';
     if (/تكاسي|تاكسي|تكسي|موتور/.test(label)) return 'taxis';
     if (/طوارئ|صيدلي|إسعاف|مشفى|صحي/.test(label)) return 'emergency';

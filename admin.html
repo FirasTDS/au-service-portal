@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=31">
-    <script src="portal-features.js?v=24"></script>
+    <script src="portal-features.js?v=32"></script>
 </head>
 <body>
 
@@ -1105,32 +1105,7 @@
         function buildApprovedItem(item) {
             if (item.type.includes('تقييم') || item.category.includes('إبلاغ') || item.notes.includes('[بلاغ')) return null;
             if (!item.name.trim() || !item.phone.trim() || checkItemExists(item.name, item.phone, item.category)) return null;
-            let cat = 'restaurants';
-            if (/ديليفري|ديلفري|توصيل/.test(item.category)) {
-                cat = 'delivery';
-            } else if (/تكاسي|تاكسي|تكسي|موتور/.test(item.category)) {
-                cat = 'taxis';
-            } else if (item.category.includes('صيدليات القدموس')) {
-                cat = 'pharmacies';
-            } else if (item.category.includes('طوارئ') || item.category.includes('صيدلية') || item.category.includes('إسعاف') || item.category.includes('مشفى') || item.category.includes('صحي')) {
-                cat = 'emergency';
-            } else if (item.category.includes('سوبر') || item.category.includes('ماركت')) {
-                cat = 'supermarkets';
-            } else if (item.category.includes('مي') || item.category.includes('مياه') || item.category.includes('صهريج')) {
-                cat = 'water';
-            } else if (item.category.includes('حوال') || item.category.includes('شحن') || item.category.includes('طرد') || item.category.includes('الهرم') || item.category.includes('الفؤاد')) {
-                cat = 'transfers';
-            } else if (item.category.includes('إيجار')) {
-                cat = 'rental';
-            } else if (item.category.includes('مكتب') || item.category.includes('طباعة') || item.category.includes('قرطاسية')) {
-                cat = 'printing';
-            } else if (item.category.includes('صيانة') || item.category.includes('كهرباء') || item.category.includes('نت') || item.category.includes('سكن')) {
-                cat = 'maintenance';
-            } else if (item.category.includes('حلو') || item.category.includes('كافيه')) {
-                cat = 'sweets';
-            } else if (item.category.includes('مواصلات') || item.category.includes('سرفيس') || item.category.includes('بولمان')) {
-                cat = 'transport';
-            }
+            const cat = categoryFromLabel(item.category);
             const contact = normalizeContactInput(item.phone);
             if (contact.error) { showToast(contact.error, 'error'); return null; }
             const val = contact.value;

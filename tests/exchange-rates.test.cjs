@@ -82,9 +82,9 @@ test('rental category is wired in directory, suggestion form, admin and mapping'
     assert.ok(Array.isArray(data.services.rental));
     const admin = read('admin.html');
     assert.ok(admin.includes('<option value="rental">'));
-    const rentalBranch = admin.indexOf("item.category.includes('إيجار')");
-    const printingBranch = admin.indexOf("item.category.includes('مكتب')");
-    assert.ok(rentalBranch > 0 && rentalBranch < printingBranch);
+    const rentalBranch = admin.indexOf("categoryFromLabel(item.category)");
+    assert.ok(rentalBranch > 0, 'approval delegates routing to categoryFromLabel');
+    assert.ok(!admin.includes("let cat = 'restaurants'"), 'stale per-branch fallback removed');
     const features = read('portal-features.js');
     const ctx = vm.createContext({});
     const fnStart = features.indexOf('function categoryFromLabel(');
@@ -101,4 +101,45 @@ test('rental category is wired in directory, suggestion form, admin and mapping'
     const yaml = read('.github/workflows/update-rates.yml');
     assert.ok(yaml.includes('scripts/update-rates.py') && yaml.includes('schedule') && yaml.includes('contents: write'));
     new vm.Script(read('rates.js'));
+});
+
+function loadFn(ctx, src, marker) {
+    const start = src.indexOf(marker);
+    let depth = 0;
+    let i = src.indexOf('{', start);
+    for (; i < src.length; i++) {
+        if (src[i] === '{') depth++;
+        if (src[i] === '}') { depth--; if (!depth) { vm.runInContext(src.slice(start, i + 1), ctx); return; } }
+    }
+    throw new Error('unbalanced ' + marker);
+}
+
+function approvalContext(data) {
+    const ctx = vm.createContext({ URL, adminData: data, showToast() {}, document: { addEventListener() {} } });
+    const shared = read('shared.js');
+    vm.runInContext(shared.slice(shared.indexOf('function normalizeContactInput('), shared.indexOf('function validatePortalData(')), ctx);
+    const features = read('portal-features.js');
+    loadFn(ctx, features, 'function categoryFromLabel(');
+    loadFn(ctx, features, 'function cleanSuggestionNotes(');
+    const admin = read('admin.html');
+    loadFn(ctx, admin, 'function checkItemExists(');
+    const buildStart = admin.indexOf('function buildApprovedItem(item) {');
+    vm.runInContext(admin.slice(buildStart, admin.indexOf('async function approveSuggestion(id) {')), ctx);
+    return ctx;
+}
+
+test('rental labels route to rental despite spelling and diacritic variants', () => {
+    const ctx = approvalContext({ services: {}, transport: [] });
+    for (const label of ['مكاتب الإيجار', 'مكاتب الايجار', 'مكتب إيجار', 'إيجارات شقق', 'مكاتب الإِيجَار', 'عقارات للإيجار']) {
+        assert.equal(ctx.categoryFromLabel(label), 'rental', label);
+    }
+    assert.equal(ctx.categoryFromLabel('مكتبة طباعة'), 'printing');
+    assert.equal(ctx.categoryFromLabel('مطعم في القدموس'), 'restaurants');
+});
+
+test('approving a rental suggestion builds a rental item, not restaurants', () => {
+    const ctx = approvalContext({ services: { rental: [] }, transport: [] });
+    const built = ctx.buildApprovedItem({ type: 'اقتراح جديد', category: 'مكاتب الإيجار', name: 'مكتب الحسن للإعمار', phone: '0944866328', notes: '', city: 'القدموس' });
+    assert.equal(built.cat, 'rental');
+    assert.equal(built.newItem.phone, '0944866328');
 });
