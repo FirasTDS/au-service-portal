@@ -23,19 +23,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=28">
-    <script src="portal-features.js?v=28"></script>
-    <script src="rates.js?v=28"></script>
+    <link rel="stylesheet" href="style.css?v=29">
+    <script src="portal-features.js?v=29"></script>
+    <script src="rates.js?v=29"></script>
 </head>
 <body>
 
 <!-- NAV -->
 <nav class="site-nav" role="navigation" aria-label="التنقل الرئيسي">
   <div class="container site-nav-inner">
-    <div class="brand-wrapper">
+    <div class="brand-wrapper partner-brand">
+      <div class="brand-emblems">
       <img src="Asset%201.png" alt="شعار اتحاد طلبة سوريا" class="brand-logo-img">
+      <img src="smsa-emblem.png" alt="شعار سمسا" class="brand-logo-img smsa-emblem" width="44" height="44">
+      </div>
       <div>
-        <div class="brand-title">اتحاد طلبة سوريا</div>
+        <div class="brand-title partner-names"><span>اتحاد طلبة سوريا</span><span class="partner-name">جمعية طلاب الطب السوريين - سمسا</span></div>
         <div class="brand-subtitle">فرع جامعة الأندلس — الفريق التطوعي</div>
       </div>
     </div>
@@ -431,11 +434,13 @@
 <!-- FOOTER -->
 <footer class="site-footer">
   <div class="container">
-    <img src="Horiszontal.png" alt="اتحاد طلبة سوريا - فرع جامعة الأندلس" class="footer-logo" id="footerLogo">
+    <div class="footer-partner-logos">
+      <img src="Horiszontal.png" alt="اتحاد طلبة سوريا - فرع جامعة الأندلس" class="footer-logo" id="footerLogo">
+      <img class="collaboration-logo" src="smsa-logo.png" width="1218" height="434" alt="شعار جمعية طلاب الطب السوريين - سمسا" loading="lazy">
+    </div>
     <p class="footer-team-title">الفريق التطوعي في جامعة الأندلس للعلوم الطبية</p>
     <div class="collaboration-credit">
       <p>هذا البرنامج بالتعاون مع <strong>جمعية طلاب الطب السوريين - سمسا</strong></p>
-      <img class="collaboration-logo" src="smsa-logo.png" width="1218" height="434" alt="شعار جمعية طلاب الطب السوريين - سمسا" loading="lazy">
     </div>
     <p class="developer-credit">المطوّر الرئيسي: <strong>فراس شماس</strong> · <bdi lang="en">Firas Shammas</bdi></p>
     <p class="footer-team-subtitle">نافذة خدمية لطلاب الجامعة في منطقة القدموس</p>
@@ -1907,7 +1912,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v28';
+    const APP_VERSION = 'v29';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.
