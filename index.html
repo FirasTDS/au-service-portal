@@ -71,7 +71,7 @@
       </div>
       <div>
         <div style="font-weight:800; font-size:0.95rem;">تثبيت دليل الأندلس على جهازك</div>
-        <div style="font-size:0.775rem; opacity:0.9;">تثبيت عبر المتصفح — تصفح البيانات المحفوظة دون إنترنت بعد أول زيارة ناجحة</div>
+        <div id="installSubtitle" style="font-size:0.775rem; opacity:0.9;">إضافة الدليل إلى جهازك بالطريقة المناسبة لمتصفحك</div>
       </div>
     </div>
     <div style="display:flex; gap:0.5rem; align-items:center;">
@@ -86,6 +86,13 @@
   <details id="installHelp" style="margin:0 0 1rem; padding:.75rem; border:1px solid var(--color-slate-200); border-radius:12px; background:var(--surface); color:var(--color-slate-700);">
     <summary style="cursor:pointer; font-weight:700;">تثبيت الدليل أو إنشاء اختصار للشاشة الرئيسية</summary>
     <div style="font-size:.85rem; line-height:1.9; margin-top:.75rem;">
+      <p id="installDeviceSteps" style="font-weight:700;"></p>
+      <div id="installAndroidActions" hidden style="display:flex; gap:.5rem; flex-wrap:wrap; margin:.75rem 0;">
+        <a id="installOpenChrome" class="btn-primary">فتح الدليل في Chrome</a>
+        <button id="installCurrentBrowser" type="button" class="btn-secondary" onclick="installFromCurrentBrowser(true)" hidden>التثبيت من المتصفح الحالي</button>
+        <a href="https://play.google.com/store/apps/details?id=com.android.chrome" class="btn-secondary" target="_blank" rel="noopener noreferrer">تحديث / تنزيل Chrome</a>
+      </div>
+      <button type="button" class="btn-secondary" onclick="copyNumber('https://firastds.github.io/au-service-portal/')">نسخ رابط الدليل</button>
       <p>التثبيت هنا يتم بواسطة المتصفح، وليس ملف APK يقدمه الموقع.</p>
       <p><strong>إذا ظهر تحذير Play Protect بأن التطبيق مخصص لإصدار Android قديم:</strong> حدّث Chrome من Google Play، ثم افتح الدليل فيه وأعد محاولة التثبيت. إصدار Android المستهدف للنسخة المثبتة يحدده المتصفح وخدمة التثبيت؛ لا يمكن للموقع تغييره.</p>
       <p><strong>بديل دون تثبيت حزمة تطبيق:</strong> من قائمة المتصفح ⋮ اختر «إضافة إلى الشاشة الرئيسية» ثم «إنشاء اختصار» إن توفر هذا الخيار. إذا ظهر «تثبيت» فقط فهو نفس مسار تثبيت التطبيق؛ يمكنك بدلاً منه حفظ الدليل في الإشارات المرجعية واستخدامه من المتصفح.</p>
@@ -1585,7 +1592,48 @@
     // --- PWA INSTALL PROMPT & SERVICE WORKER ---
     let deferredPrompt = null;
     let installInProgress = false;
+    let installReported = false;
+    function installPlatform() {
+        const ua = navigator.userAgent || '';
+        const ios = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
+        const android = /Android/i.test(ua);
+        const embedded = /FBAN|FBAV|Instagram|; wv\)/i.test(ua);
+        return { ios, android, embedded, samsung: android && /SamsungBrowser/i.test(ua),
+            safari: ios && /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS|FBAN|FBAV|Instagram/i.test(ua) };
+    }
+
+    function isInstalledDisplay() {
+        return installReported || navigator.standalone === true ||
+            window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches;
+    }
+
+    function updateInstallUI() {
+        const platform = installPlatform();
+        const installed = isInstalledDisplay();
+        const banner = document.getElementById('pwaBanner');
+        banner.style.display = !installed && !portalStorage.get('pwa_dismissed', true) ? 'flex' : 'none';
+        document.getElementById('btnPwaInstall').hidden = installed;
+        const steps = installed ? 'الدليل مفتوح كتطبيق بالفعل.' : platform.ios
+            ? (platform.safari ? 'في Safari: اضغط مشاركة ↑ ثم «إضافة إلى الشاشة الرئيسية» ثم «إضافة». إذا لم يظهر الخيار، مرّر قائمة المشاركة لأسفل أو اختر «تعديل الإجراءات».' : 'على iPhone أو iPad: افتح رابط الدليل في Safari، ثم مشاركة ↑ ← إضافة إلى الشاشة الرئيسية ← إضافة. يمكنك نسخ الرابط من الزر أدناه.')
+            : platform.samsung
+            ? 'أنت تستخدم Samsung Internet. لتجنب مسار التثبيت الذي ظهر فيه تحذير الإصدار القديم، افتح الدليل في Chrome مُحدّث من الزر أدناه ثم اضغط «تثبيت التطبيق» هناك. أو استخدم خيار إنشاء اختصار إن توفر في متصفحك.'
+            : platform.embedded
+            ? 'افتح قائمة هذا المتصفح واختر «فتح في المتصفح الخارجي». على Android استخدم Chrome، وعلى iPhone استخدم Safari.'
+            : platform.android
+            ? 'اضغط «تثبيت التطبيق» ثم أكمل نافذة المتصفح. إذا لم تظهر، افتح قائمة ⋮ ← إضافة إلى الشاشة الرئيسية أو تثبيت التطبيق. قد تختلف أسماء الخيارات حسب المتصفح.'
+            : 'استخدم زر التثبيت إن ظهر في شريط العنوان، أو خيار تثبيت التطبيق في قائمة المتصفح. يمكنك أيضاً حفظ الدليل في الإشارات المرجعية.';
+        document.getElementById('installDeviceSteps').textContent = steps;
+        document.getElementById('installSubtitle').textContent = platform.ios ? 'على iPhone وiPad: إضافة إلى الشاشة الرئيسية عبر Safari'
+            : platform.samsung ? 'على Samsung Internet: التثبيت عبر Chrome أو إنشاء اختصار'
+            : 'تثبيت عبر المتصفح — البيانات المحفوظة متاحة دون إنترنت بعد أول زيارة ناجحة';
+        document.getElementById('installAndroidActions').hidden = !platform.android || installed;
+        document.getElementById('installCurrentBrowser').hidden = !deferredPrompt || installed || platform.ios || platform.embedded;
+        document.getElementById('installOpenChrome').href = 'intent://firastds.github.io/au-service-portal/#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' +
+            encodeURIComponent('https://play.google.com/store/apps/details?id=com.android.chrome') + ';end';
+    }
+
     function showInstallHelp(message = '') {
+        updateInstallUI();
         const help = document.getElementById('installHelp');
         help.open = true;
         document.getElementById('installProgress').textContent = message;
@@ -1594,18 +1642,16 @@
     }
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
-        deferredPrompt = e;
-        document.getElementById('btnPwaInstall').hidden = false;
-        const banner = document.getElementById('pwaBanner');
-        if (banner && !portalStorage.get('pwa_dismissed', true)) {
-            banner.style.display = 'flex';
-        }
+        const platform = installPlatform();
+        deferredPrompt = platform.ios || platform.embedded ? null : e;
+        updateInstallUI();
     });
 
     const btnInstall = document.getElementById('btnPwaInstall');
-    if (btnInstall) {
-        btnInstall.addEventListener('click', async () => {
+    async function installFromCurrentBrowser(useCurrentBrowser = false) {
             if (installInProgress) return;
+            const platform = installPlatform();
+            if (isInstalledDisplay() || (platform.samsung && !useCurrentBrowser) || platform.ios || platform.embedded) return showInstallHelp();
             if (!deferredPrompt) return showInstallHelp('طلب التثبيت غير متاح حالياً. استخدم خيارات المتصفح الموضحة أعلاه.');
             const prompt = deferredPrompt;
             deferredPrompt = null;
@@ -1618,21 +1664,25 @@
                 if (outcome === 'accepted') {
                     showInstallHelp('تم قبول طلب التثبيت. أكمل الخطوات في المتصفح؛ إذا ظهر تحذير الإصدار القديم، اتبع الإرشادات أعلاه.');
                 }
-                if (!deferredPrompt) btnInstall.hidden = true;
+                updateInstallUI();
             } catch {
                 showInstallHelp('تعذر بدء التثبيت. يمكنك إنشاء اختصار أو استخدام الدليل في المتصفح.');
-                if (!deferredPrompt) btnInstall.hidden = true;
+                updateInstallUI();
             } finally {
                 installInProgress = false;
                 btnInstall.disabled = false;
             }
-        });
     }
+    if (btnInstall) btnInstall.addEventListener('click', () => installFromCurrentBrowser());
 
     window.addEventListener('appinstalled', () => {
+        installReported = true;
         deferredPrompt = null;
-        document.getElementById('pwaBanner').style.display = 'none';
+        updateInstallUI();
     });
+    window.addEventListener('DOMContentLoaded', updateInstallUI);
+    window.addEventListener('pageshow', updateInstallUI);
+    window.matchMedia('(display-mode: standalone)').addEventListener?.('change', updateInstallUI);
 
     function dismissPwaBanner() {
         document.getElementById('pwaBanner').style.display = 'none';
@@ -1821,7 +1871,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v20';
+    const APP_VERSION = 'v21';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.
