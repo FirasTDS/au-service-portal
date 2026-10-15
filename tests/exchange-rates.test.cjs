@@ -75,7 +75,9 @@ test('rental category is wired in directory, suggestion form, admin and mapping'
     assert.ok(rentalBranch > 0 && rentalBranch < printingBranch);
     const features = read('portal-features.js');
     const ctx = vm.createContext({});
-    vm.runInContext(features.slice(features.indexOf('function categoryFromLabel('), features.indexOf('\n}\n') + 3), ctx);
+    const fnStart = features.indexOf('function categoryFromLabel(');
+    const fnEnd = features.indexOf('}', features.indexOf("return 'restaurants'", fnStart)) + 1;
+    vm.runInContext(features.slice(fnStart, fnEnd), ctx);
     assert.equal(ctx.categoryFromLabel('مكاتب الإيجار'), 'rental');
     assert.ok(index.includes("id !== 'list-rental'"), 'empty rental category keeps its tile');
     const appVer = index.match(/APP_VERSION = '(v\d+)'/)[1];
