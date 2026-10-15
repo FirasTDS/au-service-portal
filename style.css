@@ -705,13 +705,13 @@ body {
 
 /* Directory tools */
 .brand-emblems { display:flex; align-items:center; gap:.4rem; flex-shrink:0; }
-.smsa-emblem { background:white; padding:3px; border-radius:50%; }
+.smsa-emblem { background:transparent; }
 .partner-brand { flex:1 1 auto; gap:.65rem; }
 .partner-names { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem .65rem; font-size:.95rem; line-height:1.5; }
 .partner-name { border-inline-start:1px solid var(--color-slate-300); padding-inline-start:.65rem; font-size:.8rem; color:var(--color-teal-dark); }
 .admin-partner-names { font-size:.8rem; font-weight:700; color:var(--color-teal-dark); margin:.2rem 0; }
 .footer-partner-logos { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:center; gap:1rem; max-width:620px; margin:0 auto 1rem; }
-.footer-partner-logos .footer-logo, .footer-partner-logos .collaboration-logo { width:100%; height:auto; max-height:110px; margin:0; object-fit:contain; background:white; border-radius:12px; padding:.5rem; }
+.footer-partner-logos .footer-logo, .footer-partner-logos .collaboration-logo { width:100%; height:auto; max-height:110px; margin:0; object-fit:contain; background:transparent; padding:.5rem; }
 @media (max-width:900px) {
   .site-nav-inner:has(.partner-brand) { flex-wrap:wrap; }
   .partner-brand { width:100%; }
@@ -726,7 +726,7 @@ body {
 .collaboration-credit { margin:.65rem auto; padding:.65rem 1rem; max-width:600px; color:var(--color-slate-700); font-size:.85rem; line-height:1.8; }
 .collaboration-credit strong { color:var(--color-teal-dark); }
 .developer-credit { margin:.5rem 0 .85rem; color:var(--color-slate-600); font-size:.8rem; line-height:1.8; }
-.collaboration-logo { display:block; width:min(100%, 260px); height:auto; margin:.65rem auto 0; padding:.6rem; background:#fff; border-radius:var(--radius-md); object-fit:contain; }
+.collaboration-logo { display:block; width:min(100%, 260px); height:auto; margin:.65rem auto 0; object-fit:contain; }
 .admin-reference-links { display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-start; gap:.75rem; padding-top:.75rem; border-top:1px solid var(--color-slate-200); }
 .admin-publish-actions { flex-wrap:wrap; align-items:stretch; }
 .admin-publish-card #publishStatus:not(.show) { display:none; }
@@ -2109,15 +2109,22 @@ html[data-theme="dark"] .pwa-banner { border: 1px solid #34524b; box-shadow: non
 html[data-theme="dark"] .notice-banner { background: #261f25; border-color: #51363c; }
 html[data-theme="dark"] .hero-title { color: #e4f2ed; }
 html[data-theme="dark"] .hero-subtitle { color: #b7c6d2; }
-html[data-theme="dark"] .brand-logo-img,
-html[data-theme="dark"] .hero-banner-img,
-html[data-theme="dark"] .footer-logo {
+html[data-theme="dark"] .hero-banner-img {
   background: #dce8e3;
   border-radius: 12px;
   padding: 8px;
   filter: none;
 }
-html[data-theme="dark"] .brand-logo-img { padding: 4px; border-radius: 8px; }
+/* Transparent brand artwork with theme-specific, legible ink colors. */
+:root { --brand-union-red:#c51a1b; --brand-smsa-red:#8b0000; --brand-union-teal:#134f47; }
+html[data-theme="dark"] { --brand-union-red:#f87171; --brand-smsa-red:#f28080; --brand-union-teal:#71cbbb; }
+.partner-names > span:first-child { color:var(--brand-union-red); }
+.partner-names .partner-name, .collaboration-credit strong { color:var(--brand-smsa-red); }
+.site-footer .footer-team-title { color:var(--brand-union-teal); }
+html[data-theme="dark"] .brand-emblems .brand-logo-img:not(.smsa-emblem) { content:url('union-emblem-dark.png'); }
+html[data-theme="dark"] .smsa-emblem { content:url('smsa-emblem-dark.png'); }
+html[data-theme="dark"] .footer-partner-logos .footer-logo { content:url('union-logo-horizontal-dark.png'); }
+html[data-theme="dark"] .footer-partner-logos .collaboration-logo { content:url('smsa-logo-dark.png'); }
 html[data-theme="dark"] .controls-card { box-shadow: 0 8px 24px rgb(0 0 0 / 12%); }
 html[data-theme="dark"] .tab-btn:not(.tab-active):hover,
 html[data-theme="dark"] .btn-secondary:hover,
