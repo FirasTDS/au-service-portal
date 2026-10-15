@@ -275,6 +275,14 @@
       {
         "name": "علي موتور توصيل",
         "phone": "0993160270"
+      },
+      {
+        "name": "علي موتور توصيل",
+        "phone": "0997645644"
+      },
+      {
+        "name": "علي العيسى موتور توصيل",
+        "phone": "0985386912"
       }
     ],
     "sweets": [
@@ -709,7 +717,9 @@
     "69d8789d266e174d3daa746497d606f93a02f2f2ff5a575779db1f03cbc5a0f6": "approved",
     "d8746df19a28b3a7e4f5195145961b5893aa3e656fb1d5db70a61ae6afcaf33e": "approved",
     "f23158d90f64ce66943c0ebe7be86621fd6d051da3e6bbc8c00430016f3179bd": "approved",
-    "dfda0f156a7114cef488ab884288df1cd47ed5bb6aecacedaa3106560d6bdb9b": "approved"
+    "dfda0f156a7114cef488ab884288df1cd47ed5bb6aecacedaa3106560d6bdb9b": "approved",
+    "996675386d32495bf7674169c6acc15b0135c19be804986a5151593b85d30f26": "approved",
+    "e6f334943bea42bc46f3d3342e7175a74a3a8afa4524afdc272d464aece6f8b2": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -717,6 +727,14 @@
       "updated": "2026-10-15"
     },
     "4492305f-d853-4924-ba00-0c059552deba": {
+      "status": "approved",
+      "updated": "2026-10-15"
+    },
+    "d1006687-37d7-4ddd-8abc-2bfd18faef1e": {
+      "status": "approved",
+      "updated": "2026-10-15"
+    },
+    "fa331dba-f254-4eeb-bd19-af02aa807dae": {
       "status": "approved",
       "updated": "2026-10-15"
     }
