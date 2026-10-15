@@ -468,6 +468,7 @@ body {
   .sy-hub-title { order: 1; flex: 1 1 auto; min-width: 0; }
   .exchange-strip { order: 2; }
   .sy-hub-chips { order: 3; flex: 1 1 100%; }
+}
 
 .sy-hub-title {
   display: flex;

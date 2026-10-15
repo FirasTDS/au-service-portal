@@ -44,6 +44,18 @@ test('shipped rates.js accepts fresh snapshots and rejects wrong source or city'
     assert.equal(context.validRates({...good, rates:{}}), false);
 });
 
+test('shipped style.css has balanced braces outside comments', () => {
+    const css = read('style.css').replace(/\/\*[\s\S]*?\*\//g, '');
+    let depth = 0, min = 0;
+    for (const ch of css) {
+        if (ch === '{') depth++;
+        if (ch === '}') { depth--; min = Math.min(min, depth); }
+    }
+    assert.equal(depth, 0, 'unclosed block in style.css');
+    assert.equal(min, 0, 'stray closing brace in style.css');
+    assert.ok(css.includes('.sy-hub-chips { order: 3;'), 'desktop hub ordering intact');
+});
+
 test('flight-packet fixtures decode Damascus USD without touching other cities', () => {
     // Fixture mirrors sp-today flight payloads; the Aleppo numbers are decoys.
     // JSON.parse resolves the escapes exactly like the python parser's decoder,
