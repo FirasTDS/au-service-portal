@@ -256,6 +256,10 @@
         "name": "صيانة كهرباء وتمديدات صحية ونت (سكن الطلاب)",
         "phone": "0940254845",
         "note": "صيانة فورية للغرف والسكنات بالقدموس"
+      },
+      {
+        "name": "علي الزير",
+        "phone": "0935411937"
       }
     ],
     "delivery": [
@@ -305,6 +309,10 @@
       {
         "name": "أبو سعيد موتور توصيل",
         "phone": "0985463697"
+      },
+      {
+        "name": "محمد معروف توصيل طلبات",
+        "phone": "0932083094"
       }
     ],
     "sweets": [
@@ -756,7 +764,9 @@
     "98ae5cd961188ed3a8d40dc175ebcc7c0ae3bd3b83efe3a250ec57bcc6cd95f6": "approved",
     "d9d216dcf813ce6e06b66fa3b498f738f5ddd8550a94ffaf1ce1113c2149690f": "approved",
     "baf161983120cc7088bfaefcdbebe8156a24134981d4cb4da6d95a8cc4fb3508": "approved",
-    "4f0dd34b67055351dd73ace2906baee8380f0d3c4243730aea6b7ed52e69d419": "approved"
+    "4f0dd34b67055351dd73ace2906baee8380f0d3c4243730aea6b7ed52e69d419": "approved",
+    "a56a3342659802c70b5b4468cbf81b1fdf2f08320d9167d7c7c0936634b7aeb4": "approved",
+    "2c19d6d36f91a4027341608f52c5212a9921afb5fba1a8a6f35304b079f6b607": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -796,6 +806,14 @@
       "updated": "2026-10-15"
     },
     "bbd5c079-8da2-40f8-a103-68525bf0697a": {
+      "status": "approved",
+      "updated": "2026-10-15"
+    },
+    "b147494e-8707-4333-81d7-80592edf356a": {
+      "status": "approved",
+      "updated": "2026-10-15"
+    },
+    "2faa7312-96bf-4d13-92e0-ddd8b1b61390": {
       "status": "approved",
       "updated": "2026-10-15"
     }
