@@ -37,7 +37,7 @@ function renderExchangeRates(cached = false) {
     const date = new Date(displayedRates.fetched_at);
     const stale = Date.now() - date.getTime() > 6 * 3600000;
     const when = new Intl.DateTimeFormat('ar-SY', {dateStyle:'short',timeStyle:'short',timeZone:'Asia/Damascus'}).format(date);
-    status.textContent = `${cached ? 'نسخة محفوظة · ' : ''}${stale ? 'سعر قديم — ' : ''}آخر جلب: ${when} (توقيت دمشق). تحديث مجدول كل ساعة، وقد يتأخر.`;
+    status.textContent = `${cached ? 'محفوظة · ' : ''}${stale ? 'قديم — ' : ''}آخر جلب ${when} · تحديث كل ساعة.`;
     status.classList.toggle('exchange-stale',stale || cached);
 }
 

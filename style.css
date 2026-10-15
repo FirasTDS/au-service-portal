@@ -761,7 +761,16 @@ body {
 .exchange-rate small { display:inline; }
 .exchange-status { margin:.35rem 0 .15rem; overflow-wrap:anywhere; }
 .exchange-status.exchange-stale { color:var(--color-red); }
-.exchange-disclaimer { font-size:.7rem; color:var(--color-slate-500); margin:0; overflow-wrap:anywhere; }.category-group + .category-group { border-top:1px solid var(--color-slate-200); padding-top:1.5rem; margin-top:2rem; }
+.exchange-disclaimer { font-size:.7rem; color:var(--color-slate-500); margin:0; overflow-wrap:anywhere; }
+@media (max-width:599px) {
+  .exchange-strip { padding:.45rem .55rem; }
+  .exchange-heading h2 { font-size:.8rem; }
+  .exchange-rate { gap:.1rem .6rem; padding:.35rem .5rem; }
+  .exchange-rate strong { font-size:.75rem; }
+  .exchange-rate-values { font-size:.78rem; gap:.15rem .7rem; }
+  .exchange-rate small, .exchange-status, .exchange-disclaimer { font-size:.66rem; }
+  .exchange-status, .exchange-disclaimer { line-height:1.5; }
+}.category-group + .category-group { border-top:1px solid var(--color-slate-200); padding-top:1.5rem; margin-top:2rem; }
 .category-group h3 { font-size:1.1rem; color:var(--color-teal-dark); }
 .category-group > p { color:var(--color-slate-500); font-size:.8rem; margin:.35rem 0 1rem; }
 .pharmacy-directory-hint { color:var(--color-slate-500); font-size:.75rem; margin:0 .9rem .5rem; }
