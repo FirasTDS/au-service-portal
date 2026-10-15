@@ -23,8 +23,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=19">
-    <script src="portal-features.js?v=19"></script>
+    <link rel="stylesheet" href="style.css?v=22">
+    <script src="portal-features.js?v=22"></script>
 </head>
 <body>
 
@@ -38,9 +38,10 @@
         <div class="brand-subtitle">فرع جامعة الأندلس — الفريق التطوعي</div>
       </div>
     </div>
-    <div class="nav-actions">
-      <button onclick="toggleDarkMode()" id="btnThemeToggle" class="btn-secondary" style="padding:0.45rem; border-radius:var(--radius-full);" aria-label="تبديل الوضع الليلي" title="تبديل الوضع الليلي">
+    <div class="nav-actions directory-nav-actions">
+      <button onclick="toggleDarkMode()" id="btnThemeToggle" class="btn-secondary" aria-label="تبديل الوضع الليلي" title="تبديل الوضع الليلي">
         <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <span>المظهر</span>
       </button>
       <button onclick="openModal('suggestModal')" class="btn-accent" aria-label="اقتراح رقم أو خدمة جديدة">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -48,7 +49,7 @@
       </button>
       <a href="https://t.me/studentandalus" target="_blank" rel="noopener noreferrer" class="btn-primary" aria-label="قناة الفريق على تلغرام">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
-        <span class="sr-only sm-show">قناة الفريق</span>
+        <span>تلغرام</span>
       </a>
     </div>
   </div>
@@ -64,7 +65,8 @@
 <main class="container" id="main" style="flex-grow:1;">
 
   <!-- PWA OFFLINE INSTALL BANNER -->
-  <div id="pwaBanner" class="pwa-banner" role="banner">
+  <section id="installCard" class="install-card" aria-label="تثبيت دليل الأندلس">
+  <div id="pwaBanner" class="pwa-banner">
     <div class="pwa-banner-content">
       <div class="pwa-banner-icon">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -74,17 +76,16 @@
         <div id="installSubtitle" style="font-size:0.775rem; opacity:0.9;">إضافة الدليل إلى جهازك بالطريقة المناسبة لمتصفحك</div>
       </div>
     </div>
-    <div style="display:flex; gap:0.5rem; align-items:center;">
+    <div class="install-actions">
       <button id="btnPwaInstall" class="btn-accent" style="font-size:0.75rem; padding:0.4rem 0.85rem;">تثبيت التطبيق</button>
-      <button type="button" class="btn-secondary" onclick="showInstallHelp()">تعذر التثبيت؟</button>
       <button onclick="dismissPwaBanner()" style="background:none; border:none; color:#ffffff; opacity:0.8; cursor:pointer; padding:0.25rem;" aria-label="إغلاق التنبيه">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
   </div>
 
-  <details id="installHelp" style="margin:0 0 1rem; padding:.75rem; border:1px solid var(--color-slate-200); border-radius:12px; background:var(--surface); color:var(--color-slate-700);">
-    <summary style="cursor:pointer; font-weight:700;">تثبيت الدليل أو إنشاء اختصار للشاشة الرئيسية</summary>
+  <details id="installHelp" class="install-help">
+    <summary>طرق التثبيت وإنشاء اختصار · مساعدة</summary>
     <div style="font-size:.85rem; line-height:1.9; margin-top:.75rem;">
       <p id="installDeviceSteps" style="font-weight:700;"></p>
       <div id="installAndroidActions" hidden style="display:flex; gap:.5rem; flex-wrap:wrap; margin:.75rem 0;">
@@ -100,6 +101,7 @@
       <p id="installProgress" role="status" aria-live="polite"></p>
     </div>
   </details>
+  </section>
 
   <!-- CONTROLS: Tabs + Search + Sort -->
   <div class="controls-card" role="search">
@@ -1064,7 +1066,7 @@
                     </button>
                     <button type="button" class="btn-secondary btn-report report-shortcut" data-action="report" data-name="${nameEscaped}" data-phone="${phoneEscaped}" title="إبلاغ عن رقم مقطوع أو تعديل" aria-label="إبلاغ عن رقم مقطوع">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
-                        <span>الرقم لا يعمل؟</span>
+                        <span class="sr-only">الرقم لا يعمل؟</span>
                     </button>
                 </div>
             </div>
@@ -1611,6 +1613,7 @@
         const platform = installPlatform();
         const installed = isInstalledDisplay();
         const banner = document.getElementById('pwaBanner');
+        document.getElementById('installCard').hidden = installed;
         banner.style.display = !installed && !portalStorage.get('pwa_dismissed', true) ? 'flex' : 'none';
         document.getElementById('btnPwaInstall').hidden = installed;
         const steps = installed ? 'الدليل مفتوح كتطبيق بالفعل.' : platform.ios
@@ -1871,7 +1874,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v21';
+    const APP_VERSION = 'v22';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.
