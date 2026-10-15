@@ -4,10 +4,14 @@ function cityListId(city) { return 'list-city-' + encodeURIComponent(city); }
 function categoryFromLabel(label) {
     label = String(label || '').normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640\u200B-\u200F\u202A-\u202E\u2066-\u2069]/g, '');
     if (/[إأآا]يجار|عقارات|rental/i.test(label)) return 'rental';
+    if (/جامعة الأندلس/.test(label)) return 'university';
+    if (/أطباء|عيادات|عيادة|طبيب|أسنان|دكتور|دكتورة/.test(label)) return 'clinics';
+    if (/مخابز|مخبز|فرن|فطائر|فطاير|معجنات/.test(label)) return 'bakeries';
+    if (/ملاحم|ملحمة|ملحم|لحوم|فروج|دواجن/.test(label)) return 'butchers';
     if (/صيدليات القدموس/.test(label)) return 'pharmacies';
     if (/ديليفري|ديلفري|توصيل/.test(label)) return 'delivery';
     if (/تكاسي|تاكسي|تكسي|موتور/.test(label)) return 'taxis';
-    if (/طوارئ|صيدلي|إسعاف|مشفى|صحي/.test(label)) return 'emergency';
+    if (/طوارئ|صيدلي|إسعاف|مشفى|مستشفى|مستوصف|صحي/.test(label)) return 'emergency';
     if (/سوبر|ماركت/.test(label)) return 'supermarkets';
     if (/مياه|صهريج|صهاريج|تعبئة/.test(label)) return 'water';
     if (/حوال|شحن|طرد|الهرم|الفؤاد/.test(label)) return 'transfers';

@@ -91,7 +91,7 @@ test('rental category is wired in directory, suggestion form, admin and mapping'
     const fnEnd = features.indexOf('}', features.indexOf("return 'restaurants'", fnStart)) + 1;
     vm.runInContext(features.slice(fnStart, fnEnd), ctx);
     assert.equal(ctx.categoryFromLabel('مكاتب الإيجار'), 'rental');
-    assert.ok(index.includes("id !== 'list-rental'"), 'empty rental category keeps its tile');
+    assert.ok(index.includes("['list-rental', 'list-university'].includes(id)"), 'empty rental and university categories keep their tiles');
     const appVer = index.match(/APP_VERSION = '(v\d+)'/)[1];
     const verNum = appVer.slice(1);
     for (const asset of ['style.css', 'portal-features.js', 'rates.js']) {
@@ -142,4 +142,38 @@ test('approving a rental suggestion builds a rental item, not restaurants', () =
     const built = ctx.buildApprovedItem({ type: 'اقتراح جديد', category: 'مكاتب الإيجار', name: 'مكتب الحسن للإعمار', phone: '0944866328', notes: '', city: 'القدموس' });
     assert.equal(built.cat, 'rental');
     assert.equal(built.newItem.phone, '0944866328');
+});
+
+test('clinics, bakeries, butchers and university labels route to their own categories', () => {
+    const ctx = approvalContext({ services: {}, transport: [] });
+    const cases = [
+        ['الأطباء والعيادات', 'clinics'], ['عيادة الدكتور حسام حمامة', 'clinics'],
+        ['طبيب أسنان', 'clinics'], ['مخابز', 'bakeries'], ['مخبز القدموس الآلي', 'bakeries'],
+        ['معجنات وفطائر', 'bakeries'], ['ملاحم', 'butchers'], ['فروج أبو علاء', 'butchers'],
+        ['ملحمة الدواجن', 'butchers'], ['عيادات جامعة الأندلس', 'university'],
+    ];
+    for (const [label, expected] of cases) assert.equal(ctx.categoryFromLabel(label), expected, label);
+    assert.equal(ctx.categoryFromLabel('مستشفى القدموس الوطني'), 'emergency');
+    assert.equal(ctx.categoryFromLabel('مكتبة طباعة'), 'printing');
+});
+
+test('new categories are wired in directory, forms, admin and duplicate checks', () => {
+    const index = read('index.html');
+    for (const key of ['clinics', 'bakeries', 'butchers', 'university']) {
+        assert.ok(index.includes(`list-${key}`) && index.includes(`count-${key}`), key + ' card');
+    }
+    for (const label of ['الأطباء والعيادات', 'مخابز', 'ملاحم', 'عيادات جامعة الأندلس']) {
+        assert.ok(index.includes(`<option value="${label}">`), 'suggestion option ' + label);
+    }
+    const data = JSON.parse(read('data.json'));
+    for (const key of ['clinics', 'bakeries', 'butchers', 'university']) {
+        assert.ok(Array.isArray(data.services[key]), 'data ' + key);
+    }
+    assert.ok(data.services.clinics.length >= 10 && data.services.bakeries.length >= 2 && data.services.butchers.length >= 3);
+    const admin = read('admin.html');
+    for (const [key, label] of [['clinics', 'الأطباء والعيادات'], ['bakeries', 'مخابز'], ['butchers', 'ملاحم'], ['university', 'عيادات جامعة الأندلس']]) {
+        assert.ok(admin.includes(`<option value="${key}">`), 'admin option ' + key);
+        assert.ok(admin.includes(`${key}: '${label}'`), 'admin label ' + key);
+    }
+    assert.ok(admin.includes("'sweets', 'rental', 'clinics', 'bakeries', 'butchers', 'university'"), 'duplicate-check covers new categories');
 });

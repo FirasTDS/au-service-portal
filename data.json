@@ -142,6 +142,34 @@
         "name": "صيدلية يارا",
         "phone": "0437555858",
         "address": "جانب مديرية المنطقة"
+      },
+      {
+        "name": "Jafra Pharma",
+        "phone": "0113315212",
+        "address": "4526+8GG، شارع الحمرا بقرب القدموس، القدموس, Al Qadmus, Syria"
+      },
+      {
+        "name": "Pharmacie Amal Sleimane",
+        "link": "https://www.google.com/maps/search/?api=1&query=Pharmacie%20Amal%20Sleimane&query_place_id=ChIJq6qqarPuIxURx1T01irCxtg",
+        "address": "35X6+WF9, Al Qadmus, Syria",
+        "note": "الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "صيدلية رانيا المحمد",
+        "phone": "0991514170",
+        "address": "35X6+P99, Unnamed Road, Al Qadmus, Syria"
+      },
+      {
+        "name": "صيدلية شادن",
+        "link": "https://www.google.com/maps/search/?api=1&query=%D8%B5%D9%8A%D8%AF%D9%84%D9%8A%D8%A9%20%D8%B4%D8%A7%D8%AF%D9%86&query_place_id=ChIJNXbkHmHvIxUR9Hax4GrzxEU",
+        "address": "4526+4R4, Al Qadmus, Syria",
+        "note": "الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "صيدلية عامر قداح",
+        "link": "https://www.google.com/maps/search/?api=1&query=%D8%B5%D9%8A%D8%AF%D9%84%D9%8A%D8%A9%20%D8%B9%D8%A7%D9%85%D8%B1%20%D9%82%D8%AF%D8%A7%D8%AD&query_place_id=ChIJmyiPf0vpIxUR6TJK284SonA",
+        "address": "35X5+3WX، Unnamed Road, Al Qadmus, Syria",
+        "note": "الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
       }
     ],
     "restaurants": [
@@ -199,6 +227,11 @@
       {
         "name": "مطعم سنمار برغر",
         "phone": "0939968007"
+      },
+      {
+        "name": "طرطوس القدموس",
+        "link": "https://www.google.com/maps/place/%D8%B7%D8%B1%D8%B7%D9%88%D8%B3+%D8%A7%D9%84%D9%82%D8%AF%D9%85%D9%88%D8%B3/@35.1012166,36.162192999999995,14z/data=!4m8!1m2!2m1!1s%D8%B7%D8%B1%D8%B7%D9%88%D8%B3+%D8%A7%D9%84%D9%82%D8%AF%D9%85%D9%88%D8%B3!3m4!1s0x1523ef0007ebc8d7:0x9cbd2f419495ce35!8m2!3d35.1012166!4d36.162192999999995",
+        "note": "4526+FVP, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
       }
     ],
     "supermarkets": [
@@ -232,6 +265,111 @@
         "name": "متجر القدموس(فروج حلال)",
         "phone": "0992336660",
         "note": "بجيب فروج من بانياس"
+      },
+      {
+        "name": "سوبرماركت مرعي",
+        "link": "https://www.google.com/maps/place/%D8%B3%D9%88%D8%A8%D8%B1%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%85%D8%B1%D8%B9%D9%8A/@35.1008676,36.1606573,14z/data=!4m8!1m2!2m1!1s%D8%B3%D9%88%D8%A8%D8%B1%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%85%D8%B1%D8%B9%D9%8A!3m4!1s0x1523ef53fa75e781:0x2b9ca087d608949f!8m2!3d35.1008676!4d36.1606573",
+        "note": "4526+87V, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "حسان وطفي",
+        "link": "https://www.google.com/maps/place/%D8%AD%D8%B3%D8%A7%D9%86+%D9%88%D8%B7%D9%81%D9%8A/@35.1026635,36.1623844,14z/data=!4m8!1m2!2m1!1s%D8%AD%D8%B3%D8%A7%D9%86+%D9%88%D8%B7%D9%81%D9%8A!3m4!1s0x1523ef56524875e7:0x9e6c23fc0d59914f!8m2!3d35.1026635!4d36.1623844",
+        "note": "4536+3X6, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "دكان رغداء خزام",
+        "link": "https://www.google.com/maps/place/%D8%AF%D9%83%D8%A7%D9%86+%D8%B1%D8%BA%D8%AF%D8%A7%D8%A1+%D8%AE%D8%B2%D8%A7%D9%85/@35.0961171,36.1882655,14z/data=!4m8!1m2!2m1!1s%D8%AF%D9%83%D8%A7%D9%86+%D8%B1%D8%BA%D8%AF%D8%A7%D8%A1+%D8%AE%D8%B2%D8%A7%D9%85!3m4!1s0x1523ed0016516a59:0x43e5c0823658a052!8m2!3d35.0961171!4d36.1882655",
+        "note": "35WQ+C8R, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "شركة معين خضور وفداء اسعد التجارية",
+        "link": "https://www.google.com/maps/place/%D8%B4%D8%B1%D9%83%D8%A9+%D9%85%D8%B9%D9%8A%D9%86+%D8%AE%D8%B6%D9%88%D8%B1+%D9%88%D9%81%D8%AF%D8%A7%D8%A1+%D8%A7%D8%B3%D8%B9%D8%AF+%D8%A7%D9%84%D8%AA%D8%AC%D8%A7%D8%B1%D9%8A%D8%A9/@35.1028137,36.162411999999996,14z/data=!4m8!1m2!2m1!1s%D8%B4%D8%B1%D9%83%D8%A9+%D9%85%D8%B9%D9%8A%D9%86+%D8%AE%D8%B6%D9%88%D8%B1+%D9%88%D9%81%D8%AF%D8%A7%D8%A1+%D8%A7%D8%B3%D8%B9%D8%AF+%D8%A7%D9%84%D8%AA%D8%AC%D8%A7%D8%B1%D9%8A%D8%A9!3m4!1s0x1523ef41b7757823:0xd310fc0cc073a6a6!8m2!3d35.1028137!4d36.162411999999996",
+        "note": "4536+4XF, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "محل ابوعلي بسام",
+        "phone": "0936577499",
+        "note": "4535+MCX, Al Qadmus, Syria"
+      },
+      {
+        "name": "محمود",
+        "link": "https://www.google.com/maps/place/%D9%85%D8%AD%D9%85%D9%88%D8%AF/@35.1041838,36.162799199999995,14z/data=!4m8!1m2!2m1!1s%D9%85%D8%AD%D9%85%D9%88%D8%AF!3m4!1s0x1523ef8d0a157c8d:0x70bf8d5d6cd4019e!8m2!3d35.1041838!4d36.162799199999995",
+        "note": "4537+M4, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "سوبر ماركت القصور",
+        "link": "https://www.google.com/maps/search/?api=1&query=%D8%B3%D9%88%D8%A8%D8%B1%20%D9%85%D8%A7%D8%B1%D9%83%D8%AA%20%D8%A7%D9%84%D9%82%D8%B5%D9%88%D8%B1&query_place_id=ChIJteas9t3vIxURq77n4Uh2mhA",
+        "note": "4536+9WJ، 4536+5VW، القدموس،،, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "Mini market italiano الطلياني",
+        "phone": "0934924715",
+        "note": "4526+897, Al Qadmus, Syria"
+      },
+      {
+        "name": "أبو علي سهيل",
+        "link": "https://www.google.com/maps/place/%D8%A3%D8%A8%D9%88+%D8%B9%D9%84%D9%8A+%D8%B3%D9%87%D9%8A%D9%84/@35.100808199999996,36.1613289,14z/data=!4m8!1m2!2m1!1s%D8%A3%D8%A8%D9%88+%D8%B9%D9%84%D9%8A+%D8%B3%D9%87%D9%8A%D9%84!3m4!1s0x1523eff9d4b60aa9:0x829c7722342430e5!8m2!3d35.100808199999996!4d36.1613289",
+        "note": "4526+8GG, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "ابوسمرة",
+        "link": "https://www.google.com/maps/place/%D8%A7%D8%A8%D9%88%D8%B3%D9%85%D8%B1%D8%A9/@35.1045121,36.1585764,14z/data=!4m8!1m2!2m1!1s%D8%A7%D8%A8%D9%88%D8%B3%D9%85%D8%B1%D8%A9!3m4!1s0x1523efadb501fd35:0x87e22235a3d606f7!8m2!3d35.1045121!4d36.1585764",
+        "note": "4535+QCM, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "الميدان العتيق",
+        "link": "https://www.google.com/maps/place/%D8%A7%D9%84%D9%85%D9%8A%D8%AF%D8%A7%D9%86+%D8%A7%D9%84%D8%B9%D8%AA%D9%8A%D9%82/@35.100808199999996,36.1613289,14z/data=!4m8!1m2!2m1!1s%D8%A7%D9%84%D9%85%D9%8A%D8%AF%D8%A7%D9%86+%D8%A7%D9%84%D8%B9%D8%AA%D9%8A%D9%82!3m4!1s0x1523efa86d1fe42f:0xf4ac9848b7a311bb!8m2!3d35.100808199999996!4d36.1613289",
+        "note": "4526+8GG, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "الوسام للضيافة",
+        "link": "https://www.google.com/maps/place/%D8%A7%D9%84%D9%88%D8%B3%D8%A7%D9%85+%D9%84%D9%84%D8%B6%D9%8A%D8%A7%D9%81%D8%A9/@35.1021992,36.1622327,14z/data=!4m8!1m2!2m1!1s%D8%A7%D9%84%D9%88%D8%B3%D8%A7%D9%85+%D9%84%D9%84%D8%B6%D9%8A%D8%A7%D9%81%D8%A9!3m4!1s0x1523ef52bdf46219:0x5f7660418c4aae81!8m2!3d35.1021992!4d36.1622327",
+        "note": "4526+VVH, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "سلامة",
+        "link": "https://www.google.com/maps/place/%D8%B3%D9%84%D8%A7%D9%85%D8%A9/@35.1000787,36.161031,14z/data=!4m8!1m2!2m1!1s%D8%B3%D9%84%D8%A7%D9%85%D8%A9!3m4!1s0x1523ef766a99093d:0xfeb58a632adf4af2!8m2!3d35.1000787!4d36.161031",
+        "note": "4526+3GC، القدموس،, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "سوبر ماركت جوليا",
+        "link": "https://www.google.com/maps/place/%D8%B3%D9%88%D8%A8%D8%B1+%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D8%AC%D9%88%D9%84%D9%8A%D8%A7/@35.1012166,36.162192999999995,14z/data=!4m8!1m2!2m1!1s%D8%B3%D9%88%D8%A8%D8%B1+%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D8%AC%D9%88%D9%84%D9%8A%D8%A7!3m4!1s0x1523ef0079c3a263:0x94276423944c727f!8m2!3d35.1012166!4d36.162192999999995",
+        "note": "4526+FVP بعد مفرق الميدان 200 متر, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "سوبر ماركت حمودة",
+        "link": "https://www.google.com/maps/place/%D8%B3%D9%88%D8%A8%D8%B1+%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D8%AD%D9%85%D9%88%D8%AF%D8%A9/@35.0962561,36.1565866,14z/data=!4m8!1m2!2m1!1s%D8%B3%D9%88%D8%A8%D8%B1+%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D8%AD%D9%85%D9%88%D8%AF%D8%A9!3m4!1s0x1523e90011adeb71:0x3ce17ec4285be2c6!8m2!3d35.0962561!4d36.1565866",
+        "note": "35W4+GJ4, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "سوبر ماركت روسيل",
+        "link": "https://www.google.com/maps/place/%D8%B3%D9%88%D8%A8%D8%B1+%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D8%B1%D9%88%D8%B3%D9%8A%D9%84/@35.1026185,36.1607063,14z/data=!4m8!1m2!2m1!1s%D8%B3%D9%88%D8%A8%D8%B1+%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D8%B1%D9%88%D8%B3%D9%8A%D9%84!3m4!1s0x1523ef5b4742f09b:0xb1d54f6db2ab79e!8m2!3d35.1026185!4d36.1607063",
+        "note": "4536+27W, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "سوبر ماركت لؤي سلمون",
+        "phone": "0936676948",
+        "note": "445V+637, Baniyas, Syria"
+      },
+      {
+        "name": "ماركت زينب",
+        "link": "https://www.google.com/maps/place/%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D8%B2%D9%8A%D9%86%D8%A8/@35.1096315,36.1489376,14z/data=!4m8!1m2!2m1!1s%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D8%B2%D9%8A%D9%86%D8%A8!3m4!1s0x1523ef45a196b83d:0x2a4d96a08ddd8444!8m2!3d35.1096315!4d36.1489376",
+        "note": "445X+VH4, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "محمصه وضيافه تالا",
+        "link": "https://www.google.com/maps/place/%D9%85%D8%AD%D9%85%D8%B5%D9%87+%D9%88%D8%B6%D9%8A%D8%A7%D9%81%D9%87+%D8%AA%D8%A7%D9%84%D8%A7/@35.107611,36.141396199999996,14z/data=!4m8!1m2!2m1!1s%D9%85%D8%AD%D9%85%D8%B5%D9%87+%D9%88%D8%B6%D9%8A%D8%A7%D9%81%D9%87+%D8%AA%D8%A7%D9%84%D8%A7!3m4!1s0x1523ef720ac631cf:0x67244363e77a3b6f!8m2!3d35.107611!4d36.141396199999996",
+        "note": "445R+2HR, Baniyas, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "ميني ماركت علوشي",
+        "link": "https://www.google.com/maps/place/%D9%85%D9%8A%D9%86%D9%8A+%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D8%B9%D9%84%D9%88%D8%B4%D9%8A/@35.094946,36.158994199999995,14z/data=!4m8!1m2!2m1!1s%D9%85%D9%8A%D9%86%D9%8A+%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D8%B9%D9%84%D9%88%D8%B4%D9%8A!3m4!1s0x1523e9003bb19c3d:0xe14ad6bd5ab927f0!8m2!3d35.094946!4d36.158994199999995",
+        "note": "35V5+WHH, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "ميني ماركت واستراحة خضر",
+        "link": "https://www.google.com/maps/place/%D9%85%D9%8A%D9%86%D9%8A+%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%88%D8%A7%D8%B3%D8%AA%D8%B1%D8%A7%D8%AD%D8%A9+%D8%AE%D8%B6%D8%B1/@35.1012166,36.162192999999995,14z/data=!4m8!1m2!2m1!1s%D9%85%D9%8A%D9%86%D9%8A+%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%88%D8%A7%D8%B3%D8%AA%D8%B1%D8%A7%D8%AD%D8%A9+%D8%AE%D8%B6%D8%B1!3m4!1s0x1523ef007ac2f327:0x806c4182160f0ce8!8m2!3d35.1012166!4d36.162192999999995",
+        "note": "4526+FVP، الحطانية طريق عام بانياس القدموس, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
       },
       {
         "name": "ماركت ذوالفقار",
@@ -280,6 +418,11 @@
       {
         "name": "مكتبة الجامعة",
         "phone": "0954640059"
+      },
+      {
+        "name": "مركز PIXEL - للخدمات الجامعية والصور الشخصية",
+        "phone": "0941896288",
+        "note": "4526+QV8, Al Qadmus, Syria"
       }
     ],
     "maintenance": [
@@ -382,6 +525,71 @@
         "name": "Friends  cafe",
         "phone": "0983162723",
         "note": "الموقع: القصور_تحت مشفى الحياة _مقابل المركز الثقافي"
+      },
+      {
+        "name": "MA Donut shop",
+        "link": "https://www.google.com/maps/place/MA+Donut+shop/@35.103549,36.162327,14z/data=!4m8!1m2!2m1!1sMA+Donut+shop!3m4!1s0x1523ef003039bd1b:0xdb0b9334ac978873!8m2!3d35.103549!4d36.162327",
+        "note": "4536+CXW, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "كنافة السلطان",
+        "phone": "0932908124",
+        "note": "4536+FWR، Unnamed Road, Al Qadmus, Syria"
+      },
+      {
+        "name": "كنافة الشيخ 2",
+        "link": "https://www.google.com/maps/place/%D9%83%D9%86%D8%A7%D9%81%D8%A9+%D8%A7%D9%84%D8%B4%D9%8A%D8%AE+2/@35.098611399999996,36.1605056,14z/data=!4m8!1m2!2m1!1s%D9%83%D9%86%D8%A7%D9%81%D8%A9+%D8%A7%D9%84%D8%B4%D9%8A%D8%AE+2!3m4!1s0x1523e9002a7812e7:0x9678ab7a827b482!8m2!3d35.098611399999996!4d36.1605056",
+        "note": "35X6+C68, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "كنافة الشيخ1",
+        "link": "https://www.google.com/maps/place/%D9%83%D9%86%D8%A7%D9%81%D8%A9+%D8%A7%D9%84%D8%B4%D9%8A%D8%AE1/@35.105153099999995,36.1570813,14z/data=!4m8!1m2!2m1!1s%D9%83%D9%86%D8%A7%D9%81%D8%A9+%D8%A7%D9%84%D8%B4%D9%8A%D8%AE1!3m4!1s0x1523ef00202949db:0x39db2deca325b863!8m2!3d35.105153099999995!4d36.1570813",
+        "note": "4544+3R5, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "Cafe alnaser",
+        "phone": "0937657880",
+        "note": "35X6+G86، Unnamed Road, Al Qadmus, Syria"
+      },
+      {
+        "name": "Kings caffe",
+        "phone": "0930624802",
+        "note": "4526+G42, Al Qadmus, Syria"
+      },
+      {
+        "name": "كازية القهوة",
+        "link": "https://www.google.com/maps/place/%D9%83%D8%A7%D8%B2%D9%8A%D8%A9+%D8%A7%D9%84%D9%82%D9%87%D9%88%D8%A9/@35.1006789,36.1621491,14z/data=!4m8!1m2!2m1!1s%D9%83%D8%A7%D8%B2%D9%8A%D8%A9+%D8%A7%D9%84%D9%82%D9%87%D9%88%D8%A9!3m4!1s0x1523ef0051129839:0x2fe259a3e234dbd6!8m2!3d35.1006789!4d36.1621491",
+        "note": "4526+7R7, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "كافي بري لينس",
+        "phone": "0935420995",
+        "note": "4526+8JJ, Al Qadmus, Syria"
+      },
+      {
+        "name": "كافية الست لميا",
+        "link": "https://www.google.com/maps/search/?api=1&query=%D9%83%D8%A7%D9%81%D9%8A%D8%A9%20%D8%A7%D9%84%D8%B3%D8%AA%20%D9%84%D9%85%D9%8A%D8%A7&query_place_id=ChIJrz6KXwDtIxURg7dMkNh0l58",
+        "note": "35WQ+V3J, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "كافيتريا شهد العسلhoney comb",
+        "link": "https://www.google.com/maps/place/%D9%83%D8%A7%D9%81%D9%8A%D8%AA%D8%B1%D9%8A%D8%A7+%D8%B4%D9%87%D8%AF+%D8%A7%D9%84%D8%B9%D8%B3%D9%84honey+comb/@35.1029811,36.1646382,14z/data=!4m8!1m2!2m1!1s%D9%83%D8%A7%D9%81%D9%8A%D8%AA%D8%B1%D9%8A%D8%A7+%D8%B4%D9%87%D8%AF+%D8%A7%D9%84%D8%B9%D8%B3%D9%84honey+comb!3m4!1s0x1523ef0075b6b5bf:0xdd82dc60d5dfcd67!8m2!3d35.1029811!4d36.1646382",
+        "note": "4528+X93, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "كافيه شام",
+        "link": "https://www.google.com/maps/search/?api=1&query=%D9%83%D8%A7%D9%81%D9%8A%D9%87%20%D8%B4%D8%A7%D9%85&query_place_id=ChIJD3awJwDvIxURhSY3z96ULco",
+        "note": "4526+F22، 4526+F22القدموس, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "نيسان café",
+        "link": "https://www.google.com/maps/place/%D9%86%D9%8A%D8%B3%D8%A7%D9%86+caf%C3%A9/@35.101242,36.159911,14z/data=!4m8!1m2!2m1!1s%D9%86%D9%8A%D8%B3%D8%A7%D9%86+caf%C3%A9!3m4!1s0x1523ef00679968bf:0xb5719422aff4db12!8m2!3d35.101242!4d36.159911",
+        "note": "4525+GWP, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "حلويات قداح اخوان",
+        "phone": "0988945773",
+        "note": "35W5+9QR السوق القديم, Al Qadmus, Syria"
       }
     ],
     "rental": [
@@ -394,7 +602,89 @@
         "phone": "0988929432",
         "note": "المكتب قرب الكراجات"
       }
-    ]
+    ],
+    "clinics": [
+      {
+        "name": "الدكتور احمد ماريا",
+        "link": "https://www.google.com/maps/search/?api=1&query=%D8%A7%D9%84%D8%AF%D9%83%D8%AA%D9%88%D8%B1%20%D8%A7%D8%AD%D9%85%D8%AF%20%D9%85%D8%A7%D8%B1%D9%8A%D8%A7&query_place_id=ChIJA3YbMwDvIxURScAOOm4n5Uw",
+        "note": "4526+C4J, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "الدكتور حسن ابراهيم أحمد",
+        "phone": "0992291716",
+        "note": "35X6+RH6, Al Qadmus, Syria"
+      },
+      {
+        "name": "Pure Dental clinic",
+        "link": "https://www.google.com/maps/place/Pure+Dental+clinic/@35.1003664,36.1611601,14z/data=!4m8!1m2!2m1!1sPure+Dental+clinic!3m4!1s0x1523ef3e7d7f9795:0x1800a9bc8d024442!8m2!3d35.1003664!4d36.1611601",
+        "note": "4526+4FV, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "Dr.Yazan.bashar.donia",
+        "phone": "0968425833",
+        "note": "35X6+Q97, Al Qadmus, Syria"
+      },
+      {
+        "name": "الدكتور علي أحمد الجردي",
+        "link": "https://www.google.com/maps/place/%D8%A7%D9%84%D8%AF%D9%83%D8%AA%D9%88%D8%B1+%D8%B9%D9%84%D9%8A+%D8%A3%D8%AD%D9%85%D8%AF+%D8%A7%D9%84%D8%AC%D8%B1%D8%AF%D9%8A/@35.0997509,36.161228099999995,14z/data=!4m8!1m2!2m1!1s%D8%A7%D9%84%D8%AF%D9%83%D8%AA%D9%88%D8%B1+%D8%B9%D9%84%D9%8A+%D8%A3%D8%AD%D9%85%D8%AF+%D8%A7%D9%84%D8%AC%D8%B1%D8%AF%D9%8A!3m4!1s0x1523ef8ba9318db9:0xa7e8801b2107ac7!8m2!3d35.0997509!4d36.161228099999995",
+        "note": "35X6+WF5, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "عيادة الدكتور اياد ابراهيم",
+        "link": "https://www.google.com/maps/place/%D8%B9%D9%8A%D8%A7%D8%AF%D8%A9+%D8%A7%D9%84%D8%AF%D9%83%D8%AA%D9%88%D8%B1+%D8%A7%D9%8A%D8%A7%D8%AF+%D8%A7%D8%A8%D8%B1%D8%A7%D9%87%D9%8A%D9%85/@35.1000235,36.161521199999996,14z/data=!4m8!1m2!2m1!1s%D8%B9%D9%8A%D8%A7%D8%AF%D8%A9+%D8%A7%D9%84%D8%AF%D9%83%D8%AA%D9%88%D8%B1+%D8%A7%D9%8A%D8%A7%D8%AF+%D8%A7%D8%A8%D8%B1%D8%A7%D9%87%D9%8A%D9%85!3m4!1s0x1523ef259b0ed3dd:0x482e1508f5483e30!8m2!3d35.1000235!4d36.161521199999996",
+        "note": "4526+2JG, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "عيادة الدكتور حسام حمامة",
+        "link": "https://www.google.com/maps/place/%D8%B9%D9%8A%D8%A7%D8%AF%D8%A9+%D8%A7%D9%84%D8%AF%D9%83%D8%AA%D9%88%D8%B1+%D8%AD%D8%B3%D8%A7%D9%85+%D8%AD%D9%85%D8%A7%D9%85%D8%A9/@35.1007704,36.1608582,14z/data=!4m8!1m2!2m1!1s%D8%B9%D9%8A%D8%A7%D8%AF%D8%A9+%D8%A7%D9%84%D8%AF%D9%83%D8%AA%D9%88%D8%B1+%D8%AD%D8%B3%D8%A7%D9%85+%D8%AD%D9%85%D8%A7%D9%85%D8%A9!3m4!1s0x1523ef007edc275f:0xdb227cd122e80146!8m2!3d35.1007704!4d36.1608582",
+        "note": "4526+885, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "غيث يوسف",
+        "link": "https://www.google.com/maps/place/%D8%BA%D9%8A%D8%AB+%D9%8A%D9%88%D8%B3%D9%81/@35.0980872,36.159715399999996,14z/data=!4m8!1m2!2m1!1s%D8%BA%D9%8A%D8%AB+%D9%8A%D9%88%D8%B3%D9%81!3m4!1s0x1523e94b7c1f574d:0xdf467b23388da467!8m2!3d35.0980872!4d36.159715399999996",
+        "note": "35X5+6VP, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "العيادة الجراحية وعيادة طب الأسر التخصصية",
+        "link": "https://www.google.com/maps/search/?api=1&query=%D8%A7%D9%84%D8%B9%D9%8A%D8%A7%D8%AF%D8%A9%20%D8%A7%D9%84%D8%AC%D8%B1%D8%A7%D8%AD%D9%8A%D8%A9%20%D9%88%D8%B9%D9%8A%D8%A7%D8%AF%D8%A9%20%D8%B7%D8%A8%20%D8%A7%D9%84%D8%A3%D8%B3%D8%B1%20%D8%A7%D9%84%D8%AA%D8%AE%D8%B5%D8%B5%D9%8A%D8%A9&query_place_id=ChIJxdnRXSjvIxURjUSOC2BesRU",
+        "note": "4526+825, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "عيادة الدكتورة وصال شحود",
+        "link": "https://www.google.com/maps/search/?api=1&query=%D8%B9%D9%8A%D8%A7%D8%AF%D8%A9%20%D8%A7%D9%84%D8%AF%D9%83%D8%AA%D9%88%D8%B1%D8%A9%20%D9%88%D8%B5%D8%A7%D9%84%20%D8%B4%D8%AD%D9%88%D8%AF&query_place_id=ChIJDXsDdiDvIxUR2xRG-OoXZA8",
+        "note": "4526+99M, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      }
+    ],
+    "bakeries": [
+      {
+        "name": "فطاير الغدير",
+        "link": "https://www.google.com/maps/place/%D9%81%D8%B7%D8%A7%D9%8A%D8%B1+%D8%A7%D9%84%D8%BA%D8%AF%D9%8A%D8%B1/@35.102399399999996,36.1591956,14z/data=!4m8!1m2!2m1!1s%D9%81%D8%B7%D8%A7%D9%8A%D8%B1+%D8%A7%D9%84%D8%BA%D8%AF%D9%8A%D8%B1!3m4!1s0x1523ef21f26b8a1b:0xb4414ac38e7c86fe!8m2!3d35.102399399999996!4d36.1591956",
+        "note": "4525+XM4, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "مخبز القدموس الآلي",
+        "link": "https://www.google.com/maps/place/%D9%85%D8%AE%D8%A8%D8%B2+%D8%A7%D9%84%D9%82%D8%AF%D9%85%D9%88%D8%B3+%D8%A7%D9%84%D8%A2%D9%84%D9%8A/@35.1066645,36.136270499999995,14z/data=!4m8!1m2!2m1!1s%D9%85%D8%AE%D8%A8%D8%B2+%D8%A7%D9%84%D9%82%D8%AF%D9%85%D9%88%D8%B3+%D8%A7%D9%84%D8%A2%D9%84%D9%8A!3m4!1s0x1523e92b10bc2475:0x6b68b8efbf6f9844!8m2!3d35.1066645!4d36.136270499999995",
+        "note": "444P+MG6, Baniyas, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      }
+    ],
+    "butchers": [
+      {
+        "name": "فروج أبو حربا",
+        "link": "https://www.google.com/maps/place/%D9%81%D8%B1%D9%88%D8%AC+%D8%A3%D8%A8%D9%88+%D8%AD%D8%B1%D8%A8%D8%A7/@35.0949452,36.1593243,14z/data=!4m8!1m2!2m1!1s%D9%81%D8%B1%D9%88%D8%AC+%D8%A3%D8%A8%D9%88+%D8%AD%D8%B1%D8%A8%D8%A7!3m4!1s0x1523e964b59c698f:0x2ee27e408cd47658!8m2!3d35.0949452!4d36.1593243",
+        "note": "35V5+XPG، Unnamed Road, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "فروج أبو علاء",
+        "link": "https://www.google.com/maps/place/%D9%81%D8%B1%D9%88%D8%AC+%D8%A3%D8%A8%D9%88+%D8%B9%D9%84%D8%A7%D8%A1/@35.102309,36.162441799999996,14z/data=!4m8!1m2!2m1!1s%D9%81%D8%B1%D9%88%D8%AC+%D8%A3%D8%A8%D9%88+%D8%B9%D9%84%D8%A7%D8%A1!3m4!1s0x1523ef003ebab803:0x6e79c22abe6d139c!8m2!3d35.102309!4d36.162441799999996",
+        "note": "4526+WXG, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "شركة الحمزة لتجارة الدواجن",
+        "link": "https://www.google.com/maps/search/?api=1&query=%D8%B4%D8%B1%D9%83%D8%A9%20%D8%A7%D9%84%D8%AD%D9%85%D8%B2%D8%A9%20%D9%84%D8%AA%D8%AC%D8%A7%D8%B1%D8%A9%20%D8%A7%D9%84%D8%AF%D9%88%D8%A7%D8%AC%D9%86&query_place_id=ChIJn70NHwDvIxURBgmOB403BDo",
+        "note": "4582+HM4, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      }
+    ],
+    "university": []
   },
   "transport": [
     {
@@ -842,9 +1132,7 @@
     "b279e11c9efa2962f75dd6e3a6b2c7f356ca925900a3169bb8876387cc866f41": "approved",
     "461f672fa4d1cb50367fb233100eb1b779b88d3c0af931e00173246be2931462": "approved",
     "719fcdd2fbd46b5904db1a58928ea3ffb8ab7ed5d3bdae268563c41e00fd97cf": "approved",
-    "f87f8f6b123e3d70c65628e49cd66c06420bf2a61f8331c5a221f8139cee625a": "approved",
-    "d002335b867e32370211568666f7e3f33fabc27a2b0a997dde884bac77a1e346": "approved",
-    "d64a4f3dbfd618b2066ca5c6c740e58711dbdc30b7ad0639cc602b5768624cec": "approved"
+    "f87f8f6b123e3d70c65628e49cd66c06420bf2a61f8331c5a221f8139cee625a": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -932,14 +1220,6 @@
       "updated": "2026-10-15"
     },
     "4f983f47-d4ad-4564-a46d-2c0d6f4bf5f4": {
-      "status": "approved",
-      "updated": "2026-10-15"
-    },
-    "a1a0c702-dad6-40ce-8dab-84c3dd56ed1d": {
-      "status": "approved",
-      "updated": "2026-10-15"
-    },
-    "d230c04c-7197-4220-aca2-6544ec034b38": {
       "status": "approved",
       "updated": "2026-10-15"
     }

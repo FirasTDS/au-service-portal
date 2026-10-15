@@ -97,12 +97,13 @@ test('pharmacies directory lists every duty pharmacy once with address and phone
     const pharmacies = data.services.pharmacies || [];
     const schedule = data.pharmacies_duty.schedule || [];
     const names = new Set(schedule.map(item => item.pharmacy));
-    assert.equal(pharmacies.length, names.size);
+    assert.ok(pharmacies.length >= names.size);
     assert.equal(new Set(pharmacies.map(item => item.name)).size, pharmacies.length);
     const ctx = setup({services:{},transport:[]});
     for (const item of pharmacies) {
         assert.ok(item.address && item.address.trim(), item.name);
-        assert.equal(ctx.normalizeContactInput(item.phone).error, '', item.phone);
+        if (item.phone) assert.equal(ctx.normalizeContactInput(item.phone).error, '', item.phone);
+        else assert.ok(/^https?:\/\//i.test(item.link || ''), item.name + ' needs phone or link');
     }
     for (const name of names) {
         assert.ok(pharmacies.some(item => item.name === name), name);

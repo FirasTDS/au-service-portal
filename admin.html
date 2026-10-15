@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=31">
-    <script src="portal-features.js?v=32"></script>
+    <script src="portal-features.js?v=33"></script>
 </head>
 <body>
 
@@ -208,6 +208,10 @@
                             <option value="maintenance">خدمات وصيانة (كهرباء، صحية، اتصالات)</option>
                             <option value="sweets">حلويات وكافيه (القدموس)</option>
                             <option value="rental">مكاتب الإيجار (شقق وسكن)</option>
+                            <option value="clinics">الأطباء والعيادات</option>
+                            <option value="bakeries">مخابز</option>
+                            <option value="butchers">ملاحم</option>
+                            <option value="university">عيادات جامعة الأندلس</option>
                             <option value="taxis">تكاسي وموتورات داخل القدموس</option>
                             <option value="delivery">ديليفري وتوصيل طلبات (أكل ومشاوير)</option>
                             <option value="transport">شركات النقل والمواصلات بين المحافظات</option>
@@ -525,7 +529,11 @@
             taxis: 'تكاسي وموتورات داخل القدموس',
             delivery: 'ديليفري وتوصيل طلبات',
             sweets: 'حلويات وكافيه (القدموس)',
-            rental: 'مكاتب الإيجار (شقق وسكن)'
+            rental: 'مكاتب الإيجار (شقق وسكن)',
+            clinics: 'الأطباء والعيادات',
+            bakeries: 'مخابز',
+            butchers: 'ملاحم',
+            university: 'عيادات جامعة الأندلس'
         };
 
         function renderAdminLists() {
@@ -1383,7 +1391,7 @@
             const contact = normalizeContactInput(phone);
             if (contact.error) return false;
             const existingContacts = [];
-            for (const cat of ['emergency', 'pharmacies', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'taxis', 'delivery', 'sweets', 'rental']) {
+            for (const cat of ['emergency', 'pharmacies', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'taxis', 'delivery', 'sweets', 'rental', 'clinics', 'bakeries', 'butchers', 'university']) {
                 if (category && categoryFromLabel(category) !== cat) continue;
                 const list = adminData.services[cat] || [];
                 existingContacts.push(...list.map(item => normalizeContactInput(item.phone || item.link)));
