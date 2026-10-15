@@ -10,7 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=14">
+    <link rel="stylesheet" href="style.css?v=17">
+    <script src="portal-features.js?v=17"></script>
 </head>
 <body>
 
@@ -139,7 +140,7 @@
                             <input type="checkbox" id="bulkSelectAll" onchange="toggleBulkSelectAll(this.checked)"> تحديد الكل
                         </label>
                         <button type="button" onclick="bulkApprove()" id="btnBulkApprove" class="btn-primary" style="font-size:0.75rem; padding:0.4rem 0.8rem;">اعتماد المحدد ونشر</button>
-                        <button type="button" onclick="bulkIgnore()" id="btnBulkIgnore" class="btn-secondary" style="font-size:0.75rem; padding:0.4rem 0.8rem;">تجاهل المحدد</button>
+                        <button type="button" onclick="bulkIgnore()" id="btnBulkIgnore" class="btn-secondary" style="font-size:0.75rem; padding:0.4rem 0.8rem;">رفض / تجاهل المحدد</button>
                         <button type="button" onclick="reloadAdminFromGitHub()" id="btnSyncGitHub" class="btn-secondary" style="font-size:0.75rem; padding:0.4rem 0.8rem;">مزامنة من GitHub</button>
                         <span id="bulkCount" style="font-size:0.75rem; color:var(--color-slate-500);"></span>
                     </div>
@@ -655,6 +656,7 @@
             }
 
             container.innerHTML = html;
+            enhanceAdminDirectory();
             document.getElementById('totalItemsCount').textContent = `${total} عنصر متاح`;
         }
 
@@ -668,7 +670,7 @@
                 const cat = btn.getAttribute('data-cat');
                 const idx = parseInt(btn.getAttribute('data-idx'), 10);
                 if (confirm('هل أنت متأكد من رغبتك في حذف هذا العنصر؟')) {
-                    adminData.services[cat].splice(idx, 1);
+                    trashEntry('service', cat, idx);
                     renderAdminLists();
                     showToast('تم حذف العنصر من القائمة المؤقتة (اضغط حفظ ونشر لاعتماد التعديل).');
                 }
@@ -720,10 +722,7 @@
                 const gIdx = parseInt(btn.getAttribute('data-gidx'), 10);
                 const iIdx = parseInt(btn.getAttribute('data-iidx'), 10);
                 if (confirm('هل أنت متأكد من حذف هذا السرفيس/الشركة؟')) {
-                    adminData.transport[gIdx].items.splice(iIdx, 1);
-                    if (adminData.transport[gIdx].items.length === 0) {
-                        adminData.transport.splice(gIdx, 1);
-                    }
+                    trashEntry('transport', gIdx, iIdx);
                     renderAdminLists();
                     showToast('تم حذف العنصر من القائمة المؤقتة (اضغط حفظ ونشر لاعتماد التعديل).');
                 }
@@ -776,6 +775,7 @@
             }
 
             modal.classList.add('modal-open');
+            fillExtraFields('edit', type === 'service' ? adminData.services[p1][p2] : adminData.transport[p1].items[p2]);
             setTimeout(() => { if (modal.classList.contains('modal-open')) editName.focus(); }, 0);
         }
 
@@ -808,6 +808,7 @@
                 const idx = parseInt(document.getElementById('editGIdx').value, 10);
                 const target = adminData.services[cat][idx];
                 if (target) {
+                    applyExtraFields('edit', target);
                     target.name = name;
                     if (isUrl) {
                         target.link = val;
@@ -832,6 +833,7 @@
                 const iIdx = parseInt(document.getElementById('editIIdx').value, 10);
                 const target = adminData.transport[gIdx].items[iIdx];
                 if (target) {
+                    applyExtraFields('edit', target);
                     target.name = name;
                     if (isUrl) {
                         target.link = val;
@@ -909,6 +911,7 @@
 
             const isUrl = /^https?:\/\//i.test(val);
             const newItem = isUrl ? { name, link: val } : { name, phone: val };
+            applyExtraFields('new', newItem);
             if (note) newItem.note = note;
             const hours = collectHours('new');
             if (hours === 'ERROR') return;
@@ -936,6 +939,7 @@
             if (noteInput) noteInput.value = '';
             if (schedInput) schedInput.value = '';
             fillHours('new', null);
+            fillExtraFields('new', {});
             renderAdminLists();
             showToast('✅ تمت الإضافة بنجاح إلى القائمة المؤقتة!');
         }
@@ -1039,6 +1043,7 @@
         // Single PUT for one or many decisions — avoids a commit per approval.
         async function persistSuggestionDecisions(statusMap, previousData) {
             adminData.suggestion_reviews = { ...adminData.suggestion_reviews, ...statusMap };
+            updateTrackingDecisions(statusMap);
             const saved = await saveAndPushToGitHub();
             if (!saved) adminData = previousData;
             renderAdminLists();
@@ -1091,7 +1096,7 @@
         // Shared insert logic (no save) so single + bulk approvals behave identically.
         function buildApprovedItem(item) {
             if (item.type.includes('تقييم') || item.category.includes('إبلاغ') || item.notes.includes('[بلاغ')) return null;
-            if (!item.name.trim() || !item.phone.trim() || checkItemExists(item.name, item.phone)) return null;
+            if (!item.name.trim() || !item.phone.trim() || checkItemExists(item.name, item.phone, item.category)) return null;
             let cat = 'restaurants';
             if (/ديليفري|ديلفري|توصيل/.test(item.category)) {
                 cat = 'delivery';
@@ -1118,7 +1123,16 @@
             if (contact.error) { showToast(contact.error, 'error'); return null; }
             const val = contact.value;
             const newItem = /^https?:\/\//i.test(val) ? { name: item.name.trim(), link: val } : { name: item.name.trim(), phone: val };
-            if (item.notes.trim()) newItem.note = item.notes.trim();
+            const cleanedNotes = cleanSuggestionNotes(item.notes);
+            if (cleanedNotes) newItem.note = cleanedNotes;
+            if (cat === 'delivery') {
+                const delivery = {};
+                for (const [key, label] of [['areas','مناطق التوصيل'],['fee','أجرة التوصيل'],['kind','نوع الطلبات']]) {
+                    const line = cleanedNotes.split('\n').find(text => text.startsWith(label + ':'));
+                    if (line) delivery[key] = line.slice(label.length + 1).trim();
+                }
+                if (Object.keys(delivery).length) newItem.delivery = delivery;
+            }
             return { cat, newItem, city: item.city.trim() };
         }
 
@@ -1168,35 +1182,11 @@
         // --- REPORT RESOLUTION LOOP ---
         // Finds a directory entry matching the reported contact (contact match first, name fallback only if phone is unusable).
         function findAndDeleteEntry(name, phone) {
-            const contact = normalizeContactInput(phone);
-            const contactMatch = item => {
-                if (contact.error || contact.link) return false;
-                const c = normalizeContactInput(item.phone || item.link);
-                return !c.error && !c.link && contact.phones.every(p => c.phones.includes(p));
-            };
-            const nameMatch = item => contact.error && item.name.trim() === String(name || '').trim();
-            for (const cat of Object.keys(adminData.services || {})) {
-                const list = adminData.services[cat] || [];
-                const idx = list.findIndex(contactMatch);
-                if (idx > -1) { list.splice(idx, 1); return true; }
-                const nameIdx = list.findIndex(nameMatch);
-                if (nameIdx > -1) { list.splice(nameIdx, 1); return true; }
-            }
-            for (const group of (adminData.transport || [])) {
-                const idx = group.items.findIndex(contactMatch);
-                if (idx > -1) {
-                    group.items.splice(idx, 1);
-                    if (!group.items.length) adminData.transport.splice(adminData.transport.indexOf(group), 1);
-                    return true;
-                }
-                const nameIdx = group.items.findIndex(nameMatch);
-                if (nameIdx > -1) {
-                    group.items.splice(nameIdx, 1);
-                    if (!group.items.length) adminData.transport.splice(adminData.transport.indexOf(group), 1);
-                    return true;
-                }
-            }
-            return false;
+            const matches = directoryEntries(adminData).filter(e => e.item.name === name && contactsOverlap(e.item.phone || e.item.link, phone));
+            if (matches.length !== 1) return false;
+            const e = matches[0];
+            trashEntry(e.type, e.a, e.b);
+            return true;
         }
 
         async function resolveReport(id) {
@@ -1212,10 +1202,10 @@
             if (!sessionToken || document.getElementById('btnPushGitHub').disabled) return;
             const item = liveSuggestions.find(s => s.id === id);
             if (!item) return;
-            if (!confirm(`حذف (${item.name} — ${item.phone}) من الدليل نهائياً ووضع البلاغ كمحلول؟`)) return;
+            if (!confirm(`نقل (${item.name} — ${item.phone}) إلى سلة المحذوفات ووضع البلاغ كمحلول؟`)) return;
             const previousData = structuredClone(adminData);
             if (!findAndDeleteEntry(item.name, item.phone)) {
-                showToast('تعذر العثور على هذا الرقم في الدليل — ربما حُذف مسبقاً.', 'error');
+                showToast('لا توجد مطابقة وحيدة للاسم والرقم — راجع الإدخالات يدوياً قبل الحذف.', 'error');
                 return;
             }
             const ok = await persistSuggestionDecisions({ [item.reviewKey]: 'resolved' }, previousData);
@@ -1265,58 +1255,16 @@
             return index;
         }
 
-        let lastDupGroups = [];
-
         function scanDuplicates() {
-            const box = document.getElementById('duplicatesResult');
-            const known = adminData.known_duplicates || [];
-            lastDupGroups = [...collectContactIndex().values()].filter(g => g.entries.length > 1 && !known.includes(g.key));
-            if (!lastDupGroups.length) {
-                box.innerHTML = '<div style="font-size: 0.8rem; color: var(--color-slate-500); text-align: center; padding: 0.5rem;">لا يوجد تكرار جديد — كل الأرقام فريدة أو تم تجاهلها مسبقاً ✓</div>';
-                return;
-            }
-            box.innerHTML = lastDupGroups.map((g, gi) => `
-                <div style="background-color: var(--color-slate-50); border: 1px solid var(--color-slate-200); border-radius: var(--radius-md); padding: 0.75rem;">
-                    <div style="font-weight: 800; font-size: 0.85rem; margin-bottom: 0.5rem;" dir="ltr">${escapeHtml(g.display)}</div>
-                    ${g.entries.map(e => `
-                        <div class="admin-item-row">
-                            <div class="admin-item-meta" style="flex: 1 1 auto;"><span>${escapeHtml(e.label)}</span></div>
-                            <button type="button" class="btn-icon btn-report" onclick="deleteDuplicateEntry('${e.type}','${e.type === 'service' ? e.cat : e.gIdx}',${e.type === 'service' ? e.idx : e.iIdx})" title="حذف هذا الإدخال" aria-label="حذف">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                            </button>
-                        </div>
-                    `).join('')}
-                    <button type="button" onclick="ignoreDuplicateGroup(${gi})" class="btn-secondary" style="font-size: 0.725rem; padding: 0.35rem 0.65rem; margin-top: 0.5rem;">ليس خطأ — تجاهل مستقبلاً</button>
-                </div>
-            `).join('');
+            renderDuplicateReview();
         }
 
         function deleteDuplicateEntry(type, a, b) {
             if (!confirm('حذف هذا الإدخال المكرر؟ (تحتاج "حفظ ونشر" بعدها)')) return;
-            if (type === 'service') {
-                (adminData.services[a] || []).splice(b, 1);
-            } else {
-                const group = (adminData.transport || [])[parseInt(a, 10)];
-                if (group) {
-                    group.items.splice(b, 1);
-                    if (!group.items.length) adminData.transport.splice(parseInt(a, 10), 1);
-                }
-            }
+            trashEntry(type, type === 'service' ? a : Number(a), b);
             renderAdminLists();
             scanDuplicates();
             showToast('تم حذف الإدخال مؤقتاً — اضغط "حفظ ونشر" لاعتماده.');
-        }
-
-        async function ignoreDuplicateGroup(gi) {
-            if (!sessionToken) return;
-            const key = lastDupGroups[gi] && lastDupGroups[gi].key;
-            if (!key) return;
-            const previousData = structuredClone(adminData);
-            adminData.known_duplicates = [...(adminData.known_duplicates || []), key];
-            const saved = await saveAndPushToGitHub();
-            if (!saved) adminData = previousData;
-            renderAdminLists();
-            scanDuplicates();
         }
 
         async function ignoreSuggestion(id) {
@@ -1383,8 +1331,9 @@
                     const badgeText = isReport ? 'بلاغ مشكلة' : isRating ? `تقييم: ${escapeHtml(item.rating)}/5` : 'اقتراح جديد';
 
                     // Check if already in adminData
-                    const alreadyExists = checkItemExists(item.name, item.phone);
-                    const decision = adminData.suggestion_reviews?.[item.reviewKey];
+                    const alreadyExists = checkItemExists(item.name, item.phone, item.category);
+                    const storedDecision = adminData.suggestion_reviews?.[item.reviewKey];
+                    const decision = storedDecision === 'pending' ? undefined : storedDecision;
                     const contact = normalizeContactInput(item.phone);
 
                     return `
@@ -1412,7 +1361,7 @@
                                 ${escapeHtml(item.notes || '—')}
                             </td>
                             <td style="padding: 0.65rem 0.75rem; text-align: center;">
-                                ${decision === 'ignored' ? '<span class="admin-badge admin-badge-amber">تم التجاهل</span>' : decision === 'approved' ? '<span class="admin-badge admin-badge-teal">تم الاعتماد والنشر ✓</span>' : decision === 'resolved' ? '<span class="admin-badge admin-badge-teal">تم الحل ✓</span>' : isReport ? `
+                                ${decision === 'ignored' ? '<span class="admin-badge admin-badge-amber">لم يُعتمد / تم التجاهل</span>' : decision === 'approved' ? '<span class="admin-badge admin-badge-teal">تم الاعتماد والنشر ✓</span>' : decision === 'resolved' ? '<span class="admin-badge admin-badge-teal">تم الحل ✓</span>' : isReport ? `
                                     <button type="button" onclick="resolveReport(${item.id})" class="btn-primary" style="font-size: 0.725rem; padding: 0.35rem 0.65rem;">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                                         <span>تم الحل</span>
@@ -1426,7 +1375,7 @@
                                         <span>اعتماد ونشر</span>
                                     </button>
                                 `}
-                                ${decision === 'resolved' ? `<button type="button" onclick="reopenReport(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">إعادة فتح</button>` : decision === 'ignored' ? `<button type="button" onclick="ignoreSuggestion(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">إلغاء التجاهل</button>` : !decision ? `<button type="button" onclick="ignoreSuggestion(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">تجاهل</button>` : ''}
+                                ${decision === 'resolved' ? `<button type="button" onclick="reopenReport(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">إعادة فتح</button>` : decision === 'ignored' ? `<button type="button" onclick="ignoreSuggestion(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">إعادة للمراجعة</button>` : !decision ? `<button type="button" onclick="ignoreSuggestion(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">${isReport || isRating ? 'تجاهل' : 'رفض الاقتراح'}</button>` : ''}
                             </td>
                         </tr>
                     `;
@@ -1443,15 +1392,17 @@
         }
 
         // Check if an item already exists in portal data
-        function checkItemExists(name, phone) {
+        function checkItemExists(name, phone, category) {
             const contact = normalizeContactInput(phone);
             if (contact.error) return false;
             const existingContacts = [];
             for (const cat of ['emergency', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'taxis', 'delivery', 'sweets']) {
+                if (category && categoryFromLabel(category) !== cat) continue;
                 const list = adminData.services[cat] || [];
                 existingContacts.push(...list.map(item => normalizeContactInput(item.phone || item.link)));
             }
             for (const group of (adminData.transport || [])) {
+                if (category && categoryFromLabel(category) !== 'transport') continue;
                 existingContacts.push(...group.items.map(item => normalizeContactInput(item.phone || item.link)));
             }
             if (contact.link) return existingContacts.some(existing => existing.link === contact.link);

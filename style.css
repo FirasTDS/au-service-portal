@@ -699,6 +699,46 @@ body {
   background-color: var(--color-teal-soft);
 }
 
+/* Directory tools */
+.compact-heading { display:flex; justify-content:space-between; align-items:center; gap:.75rem; padding-top:1rem; padding-bottom:1rem; flex-wrap:wrap; }
+.compact-heading h1 { font-size:clamp(1.1rem, 3vw, 1.6rem); color:var(--color-teal-dark); margin:0; }
+.feature-actions { display:flex; align-items:center; flex-wrap:wrap; gap:.5rem; padding:.5rem 0; }
+.feature-actions > span { flex:1 1 160px; overflow-wrap:anywhere; }
+.feature-actions button, .review-row button { min-height:40px; }
+.extra-fields { border:1px solid var(--color-slate-200); border-radius:12px; padding:.75rem; display:grid; gap:.75rem; margin:.75rem 0; min-width:0; }
+.extra-fields { grid-column:1 / -1; }
+.admin-navigation { display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem; }
+.admin-navigation button { flex:1 1 120px; min-height:44px; }
+.admin-navigation button[aria-pressed="true"] { background:var(--color-teal); color:white; border-color:var(--color-teal); }
+.admin-group { border:1px solid var(--color-slate-200); background:var(--surface); border-radius:12px; padding:.75rem; min-width:0; }
+.admin-group > summary { cursor:pointer; color:var(--color-teal); min-height:44px; padding:.25rem; }
+.admin-group > summary > div { display:inline-flex !important; width:calc(100% - 1.5rem); gap:.75rem; vertical-align:middle; margin-bottom:0 !important; }
+.admin-group[open] > summary { border-bottom:1px solid var(--color-slate-200); margin-bottom:.75rem; }
+#dashboardSection .admin-item-row { gap:.5rem; }
+#dashboardSection .admin-item-meta { min-width:0; overflow-wrap:anywhere; }
+#dashboardSection .admin-item-row > div:last-of-type { flex-wrap:wrap; }
+#dashboardSection .admin-card { min-width:0; }
+@media (min-width:700px) { .extra-fields { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:500px) {
+  #dashboardSection .admin-card { padding:.85rem; }
+  #dashboardSection .admin-card > div { max-width:100%; }
+  #btnPushGitHub { font-size:.75rem; white-space:normal; }
+  #repoNameBadge { overflow-wrap:anywhere; }
+  .admin-group > summary > div { flex-wrap:wrap; }
+}
+.extra-fields legend { color:var(--color-teal-dark); font-size:.85rem; }
+.extra-fields input { display:block; margin-top:.25rem; }
+.review-row, .tracker-panel { border:1px solid var(--color-slate-200); border-radius:12px; padding:1rem; background:var(--surface); margin:.75rem 0; overflow-wrap:anywhere; }
+.tracker-panel { display:flex; flex-direction:column; gap:.75rem; }
+.tracker-panel h2, #directoryTools h3 { font-size:1rem; margin:.5rem 0; }
+.tracker-panel p, .review-row p { font-size:.8rem; color:var(--color-slate-600); }
+.drag-handle { touch-action:none; cursor:grab; flex-shrink:0; font-size:1.2rem; min-width:44px; min-height:44px; }
+.dragging { opacity:.65; }
+.report-shortcut { font-size:.7rem; padding:.35rem .5rem; gap:.25rem; }
+.report-shortcut svg { width:14px; height:14px; }
+.drop-target { outline:2px dashed var(--color-teal); outline-offset:2px; }
+#directoryTools { margin-bottom:1rem; }
+
 /* Category-first directory */
 [hidden] { display: none !important; }
 #categoryBrowser { margin: 1.5rem 0 2rem; }

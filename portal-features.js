@@ -1,0 +1,381 @@
+// Shared directory features. Data changes stay in the admin draft until publishing.
+function cityListId(city) { return 'list-city-' + encodeURIComponent(city); }
+
+function categoryFromLabel(label) {
+    if (/ديليفري|ديلفري|توصيل/.test(label)) return 'delivery';
+    if (/تكاسي|تاكسي|تكسي|موتور/.test(label)) return 'taxis';
+    if (/طوارئ|صيدلي|إسعاف|مشفى|صحي/.test(label)) return 'emergency';
+    if (/سوبر|ماركت/.test(label)) return 'supermarkets';
+    if (/مياه|صهريج|صهاريج|تعبئة/.test(label)) return 'water';
+    if (/حوال|شحن|طرد|الهرم|الفؤاد/.test(label)) return 'transfers';
+    if (/مكتب|طباعة|قرطاسية/.test(label)) return 'printing';
+    if (/صيانة|كهرباء|سكن/.test(label)) return 'maintenance';
+    if (/حلو|كافيه/.test(label)) return 'sweets';
+    if (/مواصلات|سرفيس|بولمان/.test(label)) return 'transport';
+    return 'restaurants';
+}
+
+function directoryEntries(data) {
+    const entries = [];
+    Object.entries(data.services || {}).forEach(([cat, list]) => list.forEach((item, idx) => entries.push({type:'service', a:cat, b:idx, item, label:cat})));
+    (data.transport || []).forEach((group, gi) => group.items.forEach((item, ii) => entries.push({type:'transport', a:gi, b:ii, item, label:group.city})));
+    return entries;
+}
+
+function contactsOverlap(a, b) {
+    const x = normalizeContactInput(a), y = normalizeContactInput(b);
+    if (x.error || y.error) return false;
+    return x.link || y.link ? Boolean(x.link && x.link === y.link) : x.phones.some(p => y.phones.includes(p));
+}
+
+function contactDetailsHtml(item) {
+    const d = item.delivery || {};
+    return `<div class="contact-note">${item.last_verified ? `آخر تحقق: ${escapeHtml(item.last_verified)}` : 'لم يُسجّل تاريخ تحقق بعد'}</div>` +
+        [d.areas && `مناطق التوصيل: ${d.areas}`, d.fee && `أجرة التوصيل: ${d.fee}`, d.kind && `نوع الطلبات: ${d.kind}`]
+        .filter(Boolean).map(text => `<div class="contact-note">${escapeHtml(text)}</div>`).join('');
+}
+
+function featureButton(text, onClick) {
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'btn-secondary'; button.textContent = text; button.onclick = onClick;
+    return button;
+}
+
+function extraFields(prefix, anchor, includeDate = true) {
+    if (!anchor || document.getElementById(prefix + 'Extras')) return;
+    const box = document.createElement('fieldset'); box.id = prefix + 'Extras'; box.className = 'extra-fields';
+    const legend = document.createElement('legend'); legend.textContent = includeDate ? 'التحقق وتفاصيل التوصيل (اختياري)' : 'تفاصيل التوصيل (اختياري)'; box.append(legend);
+    const fields = [['Areas','مناطق التوصيل'], ['Fee','أجرة التوصيل (مثال: حسب المسافة)'], ['Kind','نوع الطلبات (أكل / مشاوير / كلاهما)']];
+    if (includeDate) fields.unshift(['Verified','تاريخ آخر تحقق فعلي من الرقم']);
+    fields.forEach(([key, text]) => {
+        const label = document.createElement('label'); label.className = 'form-label'; label.textContent = text;
+        const input = document.createElement('input'); input.id = prefix + key; input.className = 'form-input'; input.type = key === 'Verified' ? 'date' : 'text';
+        if (key === 'Verified') input.max = new Date().toISOString().slice(0,10);
+        label.append(input); box.append(label);
+    });
+    anchor.after(box);
+}
+
+function fillExtraFields(prefix, item) {
+    const values = {Verified:item.last_verified || '', Areas:item.delivery?.areas || '', Fee:item.delivery?.fee || '', Kind:item.delivery?.kind || ''};
+    Object.entries(values).forEach(([key, value]) => { const el = document.getElementById(prefix + key); if (el) el.value = value; });
+}
+
+function applyExtraFields(prefix, item) {
+    const value = key => document.getElementById(prefix + key)?.value.trim() || '';
+    if (value('Verified')) item.last_verified = value('Verified'); else delete item.last_verified;
+    const delivery = {areas:value('Areas'), fee:value('Fee'), kind:value('Kind')};
+    if (Object.values(delivery).some(Boolean)) item.delivery = delivery; else delete item.delivery;
+}
+
+function suggestionDeliveryNotes() {
+    if (document.getElementById('sugCategory').value !== 'ديليفري وتوصيل طلبات') return '';
+    return [['Areas','مناطق التوصيل'],['Fee','أجرة التوصيل'],['Kind','نوع الطلبات']].map(([key,label]) => {
+        const value = document.getElementById('sug' + key)?.value.trim(); return value ? `\n${label}: ${value}` : '';
+    }).join('');
+}
+
+function cleanSuggestionNotes(notes) { return String(notes || '').replace(/\[طلب:[a-f0-9-]{36}\]/g, '').trim(); }
+
+function trackingIdFromNotes(notes) { return String(notes || '').match(/\[طلب:([a-f0-9-]{36})\]/)?.[1]; }
+
+function updateTrackingDecisions(statusMap) {
+    adminData.suggestion_status = adminData.suggestion_status || {};
+    liveSuggestions.forEach(item => {
+        const id = trackingIdFromNotes(item.notes), status = statusMap[item.reviewKey];
+        if (id && status) adminData.suggestion_status[id] = {status:status === 'ignored' ? 'rejected' : status, updated:new Date().toISOString().slice(0,10)};
+    });
+}
+
+function rememberSuggestion(id, name) {
+    let list = [];
+    try { list = JSON.parse(portalStorage.get('portal_suggestions') || '[]'); } catch {}
+    if (!Array.isArray(list)) list = [];
+    list.push({id, name, date:new Date().toISOString().slice(0,10)});
+    portalStorage.set('portal_suggestions', JSON.stringify(list));
+}
+
+function toggleSuggestionTracker() {
+    const box = document.getElementById('suggestionTracker'); box.hidden = !box.hidden;
+    if (!box.hidden) renderSuggestionTracker();
+}
+
+function renderSuggestionTracker() {
+    const box = document.getElementById('suggestionTracker'); if (!box) return;
+    box.replaceChildren();
+    const title = document.createElement('h2'); title.textContent = 'متابعة اقتراحاتي'; box.append(title);
+    const note = document.createElement('p'); note.textContent = 'تُحفظ أرقام المتابعة على هذا الجهاز. أرسل النموذج مرة واحدة؛ Google Form لا يؤكد الاستلام للتطبيق. تظهر قرارات المشرف بعد نشرها.'; box.append(note);
+    const lookup = document.createElement('input'); lookup.className = 'form-input'; lookup.placeholder = 'رقم متابعة من جهاز آخر'; lookup.setAttribute('aria-label','رقم المتابعة');
+    const result = document.createElement('p');
+    const statusText = id => ({approved:'تم القبول والنشر ✓', rejected:'لم يُعتمد / مرفوض', pending:'قيد المراجعة'}[portalData.suggestion_status?.[id]?.status] || 'بانتظار المراجعة — الاستلام غير مؤكد');
+    box.append(lookup, featureButton('عرض الحالة', () => { result.textContent = statusText(lookup.value.trim()); }), result,
+        featureButton('تحديث الحالات', async () => {
+            try {
+                const response = await fetch('data.json?t=' + Date.now(), {cache:'no-store'});
+                if (!response.ok) throw new Error();
+                const data = await response.json();
+                if (!validatePortalData(data)) throw new Error();
+                portalData.suggestion_status = data.suggestion_status || {}; renderSuggestionTracker();
+            } catch { showToast('تعذر التحديث. حاول عند توفر الإنترنت.', 'error'); }
+        }));
+    let list = []; try { list = JSON.parse(portalStorage.get('portal_suggestions') || '[]'); } catch {}
+    if (!Array.isArray(list)) list = [];
+    list.slice().reverse().forEach(item => {
+        const row = document.createElement('div'); row.className = 'review-row';
+        const text = document.createElement('p'); text.textContent = `${item.name} · ${item.date} — ${statusText(item.id)}`;
+        row.append(text, featureButton('نسخ رقم المتابعة', () => copyNumber(item.id))); box.append(row);
+    });
+}
+
+function navigateCategory(id, push = true) {
+    selectedCategory = id;
+    document.getElementById('searchInput').value = '';
+    if (push) history.pushState(null, '', '#category=' + encodeURIComponent(id));
+    else history.replaceState(null, '', '#category=' + encodeURIComponent(id));
+    filterItems();
+}
+
+function readCategoryLink() {
+    const id = new URLSearchParams(location.hash.slice(1)).get('category');
+    const tile = [...document.querySelectorAll('.category-tile')].find(t => t.dataset.list === id);
+    if (tile) { switchTab('all'); navigateCategory(id, false); }
+    else if (!id) { selectedCategory = null; filterItems(); }
+}
+
+function enhancePublicDirectory() {
+    const tiles = document.getElementById('categoryTiles');
+    // Put configured categories first and append new categories without losing them.
+    const order = portalData.category_order || [];
+    [...tiles.children].sort((a,b) => {
+        const x = order.indexOf(a.dataset.list), y = order.indexOf(b.dataset.list);
+        return (x < 0 ? order.length : x) - (y < 0 ? order.length : y);
+    }).forEach(tile => tiles.append(tile));
+    if (!document.getElementById('shareCategory')) {
+        const button = featureButton('مشاركة القسم', async () => {
+            if (!selectedCategory) return showToast('افتح قسماً أولاً.');
+            const url = new URL(location.href); url.hash = 'category=' + encodeURIComponent(selectedCategory);
+            if (navigator.share) { try { await navigator.share({title:document.getElementById('browseStatus').textContent, url:url.href}); return; } catch (err) { if (err.name === 'AbortError') return; } }
+            await copyNumber(url.href);
+        });
+        button.id = 'shareCategory'; document.getElementById('browseToolbar').append(button);
+    }
+    // The initial fallback may not contain a category that arrives with fresh data.
+    if (location.hash.startsWith('#category=') && !selectedCategory) readCategoryLink();
+    renderSuggestionTracker();
+}
+
+function trashEntry(type, a, b) {
+    const group = type === 'service' ? null : adminData.transport[a];
+    const list = type === 'service' ? adminData.services[a] : group?.items;
+    if (!list?.[b]) return null;
+    const record = {id:crypto.randomUUID(), type, category:type === 'service' ? a : null, city:group?.city || null, position:b, deleted_at:new Date().toISOString(), item:structuredClone(list[b])};
+    (adminData.trash ||= []).push(record); list.splice(b,1);
+    if (group && !list.length) adminData.transport.splice(a,1);
+    return record;
+}
+
+function restoreTrash(id) {
+    const index = (adminData.trash || []).findIndex(r => r.id === id); if (index < 0) return;
+    const record = adminData.trash[index];
+    let list;
+    if (record.type === 'service') list = adminData.services[record.category] ||= [];
+    else {
+        let group = adminData.transport.find(g => g.city === record.city);
+        if (!group) { group = {city:record.city, items:[]}; adminData.transport.push(group); }
+        list = group.items;
+    }
+    if (record.merge) {
+        const target = directoryEntries(adminData).find(e => JSON.stringify(e.item) === record.merge.after);
+        if (target) { Object.keys(target.item).forEach(k => delete target.item[k]); Object.assign(target.item, record.merge.before); }
+    }
+    list.splice(Math.min(record.position, list.length),0,record.item);
+    adminData.trash.splice(index,1); renderAdminLists();
+    showToast('تمت الاستعادة — اضغط حفظ ونشر.');
+}
+
+function duplicateFingerprint(group) {
+    return JSON.stringify([group.key, group.entries.map(e => {
+        const item = e.type === 'service' ? adminData.services[e.cat][e.idx] : adminData.transport[e.gIdx].items[e.iIdx];
+        return [e.type, e.type === 'service' ? e.cat : adminData.transport[e.gIdx].city, item.name, normalizeContactInput(item.phone || item.link).value];
+    }).sort((a,b) => JSON.stringify(a).localeCompare(JSON.stringify(b)))]);
+}
+
+function renderDuplicateReview() {
+    const box = document.getElementById('duplicatesResult'); if (!box) return;
+    box.replaceChildren();
+    const groups = [...collectContactIndex().values()].filter(g => g.entries.length > 1);
+    const intro = document.createElement('p'); intro.textContent = 'عدّل الإدخال، أو ادمج الخطأ في الجهة الأولى، أو علّمه كخدمة متعددة. كل التعديلات تحتاج حفظ ونشر.'; box.append(intro);
+    groups.forEach(group => {
+        const fingerprint = duplicateFingerprint(group);
+        const known = (adminData.duplicate_reviews || []).includes(fingerprint);
+        const panel = document.createElement('div'); panel.className = 'review-row';
+        const title = document.createElement('strong'); title.textContent = group.display + (known ? ' — خدمة متعددة مؤكدة ✓' : ' — يحتاج مراجعة'); panel.append(title);
+        group.entries.forEach((entry, index) => {
+            const a = entry.type === 'service' ? entry.cat : entry.gIdx, b = entry.type === 'service' ? entry.idx : entry.iIdx;
+            const row = document.createElement('div'); row.className = 'feature-actions';
+            const label = document.createElement('span'); label.textContent = entry.label;
+            row.append(label, featureButton('تعديل', () => openAdminEditModal(entry.type,a,b)), featureButton('حذف', () => deleteDuplicateEntry(entry.type,a,b)));
+            if (index > 0) row.append(featureButton('دمج في الجهة الأولى', () => mergeDuplicateEntries(group.entries[0], entry)));
+            panel.append(row);
+        });
+        panel.append(featureButton(known ? 'إلغاء علامة الخدمة المتعددة' : 'ليست خطأ — خدمة متعددة', () => {
+            adminData.duplicate_reviews = known ? (adminData.duplicate_reviews || []).filter(k => k !== fingerprint) : [...(adminData.duplicate_reviews || []),fingerprint];
+            renderDuplicateReview(); showToast('تم تحديث القرار — اضغط حفظ ونشر.');
+        })); box.append(panel);
+    });
+    if (!groups.length) box.append('لا يوجد تكرار بالأرقام أو الروابط.');
+    if (adminData.known_duplicates?.length) box.append(featureButton('إلغاء التجاهلات القديمة وإعادة مراجعتها', () => { adminData.known_duplicates = []; renderDuplicateReview(); }));
+}
+
+function mergeDuplicateEntries(keep, remove) {
+    if (!confirm('دمج بيانات الإدخال الثاني في الأول؟ سيُنقل الأصل إلى سلة المحذوفات ويمكن استعادته.')) return;
+    const get = e => e.type === 'service' ? adminData.services[e.cat][e.idx] : adminData.transport[e.gIdx].items[e.iIdx];
+    const target = get(keep), source = get(remove), before = structuredClone(target);
+    const x = normalizeContactInput(target.phone || target.link), y = normalizeContactInput(source.phone || source.link);
+    if (!x.link && !y.link) target.phone = [...new Set([...x.phones,...y.phones])].join(' / ');
+    const notes = [target.note, source.note, source.name !== target.name ? `اسم إضافي: ${source.name}` : ''].filter(Boolean);
+    for (const key of ['schedule','hours','delivery','last_verified']) {
+        if (!target[key] && source[key]) target[key] = structuredClone(source[key]);
+        else if (source[key] && JSON.stringify(target[key]) !== JSON.stringify(source[key])) notes.push(`بيانات الإدخال المدموج (${key}): ${JSON.stringify(source[key])}`);
+    }
+    target.note = [...new Set(notes)].join(' | ');
+    const record = trashEntry(remove.type, remove.type === 'service' ? remove.cat : remove.gIdx, remove.type === 'service' ? remove.idx : remove.iIdx);
+    record.merge = {before, after:JSON.stringify(target)};
+    renderAdminLists(); showToast('تم الدمج — راجع البيانات ثم احفظ وانشر.');
+}
+
+// Pointer handles support mouse, pen and touch; arrow buttons remain keyboard alternatives.
+function reorderControls(row, group, index, move) {
+    row.dataset.reorderGroup = group; row.dataset.reorderIndex = index;
+    const handle = featureButton('⠿', () => {}); handle.classList.add('drag-handle');
+    handle.title = 'اسحب لإعادة الترتيب'; handle.setAttribute('aria-label', 'اسحب لإعادة الترتيب، أو استخدم أسهم التحريك');
+    handle.onpointerdown = event => {
+        if (event.button !== 0) return;
+        event.preventDefault(); handle.setPointerCapture(event.pointerId); row.classList.add('dragging');
+    };
+    handle.onpointermove = event => {
+        if (!handle.hasPointerCapture(event.pointerId)) return;
+        document.querySelectorAll('.drop-target').forEach(el => el.classList.remove('drop-target'));
+        const target = document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-reorder-group]');
+        if (target?.dataset.reorderGroup === group) target.classList.add('drop-target');
+        if (event.clientY < 70) window.scrollBy(0,-24);
+        if (event.clientY > innerHeight - 70) window.scrollBy(0,24);
+    };
+    const finish = event => {
+        if (!handle.hasPointerCapture(event.pointerId)) return;
+        handle.releasePointerCapture(event.pointerId); row.classList.remove('dragging');
+        document.querySelectorAll('.drop-target').forEach(el => el.classList.remove('drop-target'));
+        if (event.type === 'pointercancel') return;
+        const target = document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-reorder-group]');
+        if (target?.dataset.reorderGroup === group) move(index, Number(target.dataset.reorderIndex));
+    };
+    handle.onpointerup = finish; handle.onpointercancel = finish; row.prepend(handle);
+}
+
+function moveDirectoryItem(list, from, to) {
+    if (!list || from === to || !list[from] || to < 0 || to >= list.length) return;
+    list.splice(to,0,list.splice(from,1)[0]);
+    renderAdminLists(); showToast('تم تغيير الترتيب — اضغط حفظ ونشر.');
+}
+
+function enhanceAdminDirectory() {
+    const container = document.getElementById('adminListsContainer');
+    container.querySelectorAll('[data-action="edit-service"], [data-action="edit-transport"]').forEach(button => {
+        const service = button.dataset.action === 'edit-service';
+        const a = service ? button.dataset.cat : Number(button.dataset.gidx), b = Number(service ? button.dataset.idx : button.dataset.iidx);
+        const list = service ? adminData.services[a] : adminData.transport[a].items;
+        const row = button.closest('.admin-item-row');
+        reorderControls(row, (service ? 'service:' : 'transport:') + a, b, (from,to) => moveDirectoryItem(list,from,to));
+        const verify = featureButton('تحققت اليوم ✓', () => { list[b].last_verified = new Date().toISOString().slice(0,10); renderAdminLists(); showToast('تم تسجيل تاريخ التحقق — احفظ وانشر.'); });
+        row.append(verify);
+        if (list[b].last_verified) { const date = document.createElement('small'); date.textContent = 'آخر تحقق: ' + list[b].last_verified; row.append(date); }
+    });
+    let panel = document.getElementById('directoryTools');
+    if (!panel) { panel = document.createElement('section'); panel.id = 'directoryTools'; panel.className = 'admin-card'; document.getElementById('dashboardSection').append(panel); }
+    panel.replaceChildren();
+    const heading = document.createElement('h3'); heading.textContent = 'ترتيب الأقسام — اسحب المقبض ⠿ أو استخدم الأسهم'; panel.append(heading);
+    const categories = Object.entries(SERVICE_LABELS).map(([key,label]) => ({id:'list-' + key,label})).concat((adminData.transport || []).map(group => ({id:cityListId(group.city), label:group.city})));
+    const valid = new Set(categories.map(c => c.id));
+    const order = [...new Set([...(adminData.category_order || []).filter(id => valid.has(id)), ...categories.map(c => c.id)])];
+    order.forEach((id,idx) => {
+        const row = document.createElement('div'); row.className = 'feature-actions';
+        const label = document.createElement('span'); label.textContent = categories.find(c => c.id === id).label; row.append(label);
+        const move = (from,to) => { adminData.category_order = [...order]; moveDirectoryItem(adminData.category_order,from,to); };
+        const up = featureButton('↑', () => move(idx,idx-1)); up.disabled = idx === 0; up.setAttribute('aria-label','تحريك القسم لأعلى');
+        const down = featureButton('↓', () => move(idx,idx+1)); down.disabled = idx === order.length-1; down.setAttribute('aria-label','تحريك القسم لأسفل');
+        row.append(up,down); reorderControls(row,'categories',idx,move); panel.append(row);
+    });
+    const trashTitle = document.createElement('h3'); trashTitle.textContent = `سلة المحذوفات (${(adminData.trash || []).length})`; panel.append(trashTitle);
+    (adminData.trash || []).forEach(record => {
+        const row = document.createElement('div'); row.className = 'feature-actions'; const label = document.createElement('span');
+        label.textContent = `${record.item.name} — ${record.city || SERVICE_LABELS[record.category] || record.category} — ${record.deleted_at.slice(0,10)}`;
+        row.append(label, featureButton(record.merge ? 'استعادة / تراجع عن الدمج' : 'استعادة', () => restoreTrash(record.id))); panel.append(row);
+    });
+    renderDuplicateReview();
+    decorateAdminGroups(container);
+    initAdminNavigation();
+}
+
+const adminOpenGroups = new Set();
+let activeAdminPanel = 'records';
+function decorateAdminGroups(container) {
+    [...container.children].forEach((block,index) => {
+        const heading = block.firstElementChild;
+        if (!heading) return;
+        const details = document.createElement('details'); details.className = 'admin-group';
+        const summary = document.createElement('summary'); summary.append(heading);
+        details.append(summary);
+        while (block.firstChild) details.append(block.firstChild);
+        details.open = adminOpenGroups.has(index);
+        details.addEventListener('toggle', () => {
+            if (!details.isConnected) return;
+            if (details.open) adminOpenGroups.add(index); else adminOpenGroups.delete(index);
+        });
+        block.replaceWith(details);
+    });
+}
+
+function initAdminNavigation() {
+    const dashboard = document.getElementById('dashboardSection');
+    const panels = [
+        ['records','البيانات',document.getElementById('adminListsContainer').closest('.admin-card')],
+        ['add','إضافة جهة',document.getElementById('newName').closest('.admin-card')],
+        ['inbox','الوارد',document.getElementById('suggestionsTableBody').closest('.admin-card')],
+        ['duplicates','مراجعة التكرار',document.getElementById('duplicatesResult').closest('.admin-card')],
+        ['tools','الترتيب والاستعادة',document.getElementById('directoryTools')]
+    ];
+    let nav = document.getElementById('adminNavigation');
+    if (!nav) {
+        nav = document.createElement('nav'); nav.id = 'adminNavigation'; nav.className = 'admin-navigation'; nav.setAttribute('aria-label','أقسام لوحة المشرف');
+        dashboard.firstElementChild.after(nav);
+        panels.forEach(([id,label]) => {
+            const button = featureButton(label, () => { activeAdminPanel = id; initAdminNavigation(); });
+            button.dataset.panel = id; button.setAttribute('aria-controls','admin-panel-' + id); nav.append(button);
+        });
+    }
+    panels.forEach(([id,,panel]) => {
+        if (id !== 'tools') panel.id = 'admin-panel-' + id;
+        panel.hidden = activeAdminPanel !== id;
+        const button = [...nav.children].find(b => b.dataset.panel === id);
+        button.setAttribute('aria-controls',panel.id);
+        button.setAttribute('aria-pressed', String(activeAdminPanel === id));
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('adminListsContainer')) {
+        extraFields('new', document.getElementById('newNote').parentElement);
+        extraFields('edit', document.getElementById('editNote').parentElement);
+        document.getElementById('newNote').parentElement.style.gridColumn = '1 / -1';
+    } else {
+        const main = document.getElementById('main');
+        const pharmacy = document.getElementById('section-duty-pharmacy');
+        if (main && pharmacy) main.prepend(pharmacy);
+        const tracker = document.createElement('section'); tracker.id = 'suggestionTracker'; tracker.className = 'tracker-panel'; tracker.hidden = true; pharmacy.after(tracker);
+        extraFields('sug', document.getElementById('sugNotes').parentElement, false);
+        const update = () => { document.getElementById('sugExtras').hidden = document.getElementById('sugCategory').value !== 'ديليفري وتوصيل طلبات'; };
+        document.getElementById('sugCategory').addEventListener('change',update); update();
+        window.addEventListener('popstate', readCategoryLink);
+        window.addEventListener('hashchange', readCategoryLink);
+    }
+});

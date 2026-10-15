@@ -23,7 +23,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=15">
+    <link rel="stylesheet" href="style.css?v=17">
+    <script src="portal-features.js?v=17"></script>
 </head>
 <body>
 
@@ -54,16 +55,9 @@
 </nav>
 
 <!-- HERO -->
-<header class="hero-section">
-  <div class="container hero-content">
-    <img src="Vertical%20Trans.png" alt="اتحاد طلبة سوريا - فرع جامعة الأندلس" class="hero-banner-img">
-    <div class="hero-badge">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      دليل الطالب الخدمي التفاعلي
-    </div>
-    <h1 class="hero-title">نافذة خدمية — منطقة القدموس</h1>
-    <p class="hero-subtitle">دليل شامل لأرقام المطاعم والسوبر ماركت والحلويات وشركات المواصلات لجميع المحافظات.</p>
-  </div>
+<header class="compact-heading container">
+  <h1>نافذة خدمية — القدموس</h1>
+  <button type="button" class="btn-secondary" onclick="toggleSuggestionTracker()">متابعة اقتراحاتي</button>
 </header>
 
 <!-- MAIN -->
@@ -917,6 +911,7 @@
                 <div class="contact-header">
                     <span class="contact-name">${nameEscaped}</span>
                     ${item.note ? `<div class="contact-note">${escapeHtml(item.note)}</div>` : ''}
+                    ${typeof contactDetailsHtml === 'function' ? contactDetailsHtml(item) : ''}
                     ${createStarsHtml(item)}
                 </div>
                 <div class="contact-footer">
@@ -960,6 +955,7 @@
                 </div>
                 ${noteEscaped ? `<div class="contact-note">${noteEscaped}</div>` : ''}
                 ${hoursEscaped ? `<div class="contact-note">🕒 ${hoursEscaped}</div>` : ''}
+                ${typeof contactDetailsHtml === 'function' ? contactDetailsHtml(item) : ''}
                 ${scheduleEscaped ? `
                     <div class="schedule-badge">
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -993,8 +989,9 @@
                     <button type="button" class="btn-icon" data-action="copy" data-phone="${phoneEscaped}" title="نسخ الرقم" aria-label="نسخ رقم ${nameEscaped}">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                     </button>
-                    <button type="button" class="btn-icon btn-report" data-action="report" data-name="${nameEscaped}" data-phone="${phoneEscaped}" title="إبلاغ عن رقم مقطوع أو تعديل" aria-label="إبلاغ عن رقم مقطوع">
+                    <button type="button" class="btn-secondary btn-report report-shortcut" data-action="report" data-name="${nameEscaped}" data-phone="${phoneEscaped}" title="إبلاغ عن رقم مقطوع أو تعديل" aria-label="إبلاغ عن رقم مقطوع">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+                        <span>الرقم لا يعمل؟</span>
                     </button>
                 </div>
             </div>
@@ -1030,14 +1027,16 @@
 
         document.getElementById('fabTodayPharmacy').style.display = 'none';
         if (!dutyData || !dutyData.schedule || dutyData.schedule.length === 0) {
-            if (dutySection) dutySection.style.display = 'none';
+            if (dutySection) dutySection.style.display = 'block';
+            dutyDateLabel.textContent = 'الصيدلية المناوبة';
+            dutyContent.textContent = 'لا يتوفر جدول مناوبات حالياً. راجع قسم الطوارئ والصيدليات للتواصل والتأكد.';
             return;
         }
 
         const todayDuty = getTodayDutyPharmacy();
         if (!todayDuty) {
             dutySection.style.display = 'block';
-            dutyDateLabel.textContent = 'لا تتوفر مناوبة مؤكدة لتاريخ اليوم';
+            dutyDateLabel.textContent = 'الصيدلية المناوبة — لا تتوفر مناوبة مؤكدة اليوم';
             dutyContent.textContent = 'يمكنك مراجعة الجدول المتاح والتأكد من الصيدلية هاتفياً.';
             return;
         }
@@ -1189,7 +1188,11 @@
         const favList = document.getElementById('list-favorites');
         if (favSec && favList) {
             if (favs.length > 0) {
-                favList.innerHTML = favs.map(f => createContactRow({ name: f.name, phone: f.phone }, f.context || 'المفضلة')).join('');
+                const entries = directoryEntries(portalData);
+                favList.innerHTML = favs.map(f => {
+                    const current = entries.find(e => e.item.name === f.name && contactsOverlap(e.item.phone || e.item.link, f.phone));
+                    return createContactRow(current?.item || { name: f.name, phone: f.phone }, f.context || 'المفضلة');
+                }).join('');
                 favSec.style.display = 'block';
             } else {
                 favList.innerHTML = '';
@@ -1267,7 +1270,7 @@
                     </div>
                     <span class="category-count">${group.items.length}</span>
                 </div>
-                <div class="category-items-list">
+                <div class="category-items-list" id="${escapeHtml(cityListId(group.city))}">
                     ${sortedItems.map(item => createContactRow(item, group.city + " سرفيس مواصلات بولمان")).join('')}
                 </div>
             </div>`;
@@ -1275,6 +1278,7 @@
 
         renderDutyPharmacy();
         decorateCardHeaders();
+        enhancePublicDirectory();
         filterItems();
     }
 
@@ -1298,7 +1302,11 @@
             button.dataset.section = card.dataset.section;
             button.dataset.list = id;
             const icon = header.querySelector('svg');
-            if (icon) button.appendChild(icon.cloneNode(true));
+            if (icon) {
+                const copy = icon.cloneNode(true);
+                copy.style.removeProperty('color');
+                button.appendChild(copy);
+            }
             const title = document.createElement('strong');
             title.textContent = header.querySelector('.category-title').textContent;
             button.appendChild(title);
@@ -1306,8 +1314,7 @@
             hint.textContent = `${count} جهة اتصال · عرض الأرقام ←`;
             button.appendChild(hint);
             button.onclick = () => {
-                selectedCategory = id;
-                filterItems();
+                navigateCategory(id);
                 document.getElementById('browseStatus').focus();
             };
             tiles.appendChild(button);
@@ -1321,6 +1328,7 @@
     function backToCategories() {
         const previous = selectedCategory;
         selectedCategory = null;
+        history.replaceState(null, '', location.pathname + location.search);
         document.getElementById('searchInput').value = '';
         filterItems();
         const tile = [...document.querySelectorAll('.category-tile')].find(el => el.dataset.list === previous && !el.hidden);
@@ -1330,6 +1338,7 @@
     // --- TAB SWITCHING ---
     function switchTab(tab) {
         selectedCategory = null;
+        if (location.hash.startsWith('#category=')) history.replaceState(null, '', location.pathname + location.search);
         currentTab = tab;
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.remove('tab-active');
@@ -1362,6 +1371,8 @@
             tile.hidden = currentTab !== 'all' && tile.dataset.section !== currentTab;
         });
         const selectedList = selectedCategory && document.getElementById(selectedCategory);
+        const shareButton = document.getElementById('shareCategory');
+        if (shareButton) shareButton.hidden = !selectedCategory || !!normalizedQuery;
         document.getElementById('browseStatus').textContent = normalizedQuery ? 'نتائج البحث في كل الدليل' : selectedList?.closest('.category-card').querySelector('.category-title').textContent || '';
 
         secServices.style.display = showServices ? 'block' : 'none';
@@ -1415,7 +1426,7 @@
             card.style.display = visibleInCard > 0 && (hasQuery || selectedCategory === listId) ? 'flex' : 'none';
         });
 
-        if (!hasDutySchedule) dutySection.style.display = 'none';
+        if (!hasDutySchedule) dutySection.style.display = browsing && showServices ? 'block' : 'none';
         const favoriteItems = [...document.querySelectorAll('#list-favorites .contact-item')];
         favoriteItems.forEach(item => {
             item.style.display = normalizeArabic(item.dataset.search).includes(normalizedQuery) ? 'flex' : 'none';
@@ -1581,7 +1592,7 @@
         const name = document.getElementById('sugName').value.trim();
         const contact = normalizeContactInput(document.getElementById('sugPhone').value);
         const phone = contact.value;
-        const notes = document.getElementById('sugNotes').value.trim();
+        const notes = document.getElementById('sugNotes').value.trim() + suggestionDeliveryNotes();
         const errEl = document.getElementById('suggestError');
         const successEl = document.getElementById('suggestSuccess');
         const btn = document.getElementById('btnSubmitSug');
@@ -1617,7 +1628,8 @@
         fd.append(ENTRIES.city, city || "القدموس");
         fd.append(ENTRIES.name, name);
         fd.append(ENTRIES.phone, phone);
-        if (notes) fd.append(ENTRIES.notes, notes);
+        const trackingId = crypto.randomUUID();
+        fd.append(ENTRIES.notes, `${notes}\n[طلب:${trackingId}]`);
 
         try {
             await fetch(GOOGLE_FORM_URL, {
@@ -1626,6 +1638,7 @@
                 body: fd
             });
 
+            rememberSuggestion(trackingId, name);
             successEl.style.display = 'block';
             document.getElementById('sugName').value = '';
             document.getElementById('sugPhone').value = '';
@@ -1635,7 +1648,7 @@
             setTimeout(() => {
                 successEl.style.display = 'none';
                 closeModal('suggestModal');
-                showToast("✅ تم إرسال اقتراحك بنجاح!");
+                showToast("أُرسل طلبك — تابع حالته من «متابعة اقتراحاتي».");
             }, 1200);
         } catch (err) {
             errEl.textContent = 'تعذر الإرسال بسبب انقطاع الاتصال. يرجى المحاولة لاحقاً.';
@@ -1705,7 +1718,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v16';
+    const APP_VERSION = 'v17';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.
