@@ -2,6 +2,7 @@
 function cityListId(city) { return 'list-city-' + encodeURIComponent(city); }
 
 function categoryFromLabel(label) {
+    if (/صيدليات القدموس/.test(label)) return 'pharmacies';
     if (/ديليفري|ديلفري|توصيل/.test(label)) return 'delivery';
     if (/تكاسي|تاكسي|تكسي|موتور/.test(label)) return 'taxis';
     if (/طوارئ|صيدلي|إسعاف|مشفى|صحي/.test(label)) return 'emergency';

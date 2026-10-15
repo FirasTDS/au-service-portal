@@ -91,3 +91,32 @@ test('delivery approval keeps structured details without exposing receipt marker
     assert.equal(result.newItem.delivery.kind,'أكل');
     assert.ok(!result.newItem.note.includes('[طلب:'));
 });
+
+test('pharmacies directory lists every duty pharmacy once with address and phone', () => {
+    const data = JSON.parse(read('data.json'));
+    const pharmacies = data.services.pharmacies || [];
+    const schedule = data.pharmacies_duty.schedule || [];
+    const names = new Set(schedule.map(item => item.pharmacy));
+    assert.equal(pharmacies.length, names.size);
+    assert.equal(new Set(pharmacies.map(item => item.name)).size, pharmacies.length);
+    const ctx = setup({services:{},transport:[]});
+    for (const item of pharmacies) {
+        assert.ok(item.address && item.address.trim(), item.name);
+        assert.equal(ctx.normalizeContactInput(item.phone).error, '', item.phone);
+    }
+    for (const name of names) {
+        assert.ok(pharmacies.some(item => item.name === name), name);
+    }
+    const index = read('index.html');
+    assert.ok(index.includes('list-pharmacies') && index.includes('صيدليات القدموس'));
+});
+
+test('pharmacy suggestions map to the pharmacies directory, not emergency', () => {
+    const ctx = setup({services:{emergency:[],pharmacies:[]},transport:[]});
+    ctx.checkItemExists = () => false;
+    const admin = read('admin.html');
+    vm.runInContext(admin.slice(admin.indexOf('        function buildApprovedItem('),admin.indexOf('        async function bulkApprove(')),ctx);
+    const result = ctx.buildApprovedItem({type:'اقتراح',category:'صيدليات القدموس',name:'Test',phone:'0991111111',city:'القدموس',notes:''});
+    assert.equal(result.cat,'pharmacies');
+    assert.equal(ctx.categoryFromLabel('صيدليات القدموس'),'pharmacies');
+});

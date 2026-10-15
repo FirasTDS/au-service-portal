@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=18">
-    <script src="portal-features.js?v=18"></script>
+    <link rel="stylesheet" href="style.css?v=19">
+    <script src="portal-features.js?v=19"></script>
 </head>
 <body>
 
@@ -195,6 +195,7 @@
                         <label for="newCategory" class="form-label">القسم الرئيسي *</label>
                         <select id="newCategory" class="form-select" onchange="toggleAdminCityInput()" required>
                             <option value="emergency">طوارئ وصيدليات ومراكز صحية</option>
+                            <option value="pharmacies">صيدليات القدموس (دليل العناوين والأرقام)</option>
                             <option value="restaurants">المطاعم (القدموس)</option>
                             <option value="supermarkets">سوبر ماركت (القدموس)</option>
                             <option value="water">صهاريج وتعبئة مياه</option>
@@ -509,6 +510,7 @@
         // --- RENDER CURRENT LISTS WITH DELEGATION ---
         const SERVICE_LABELS = {
             emergency: 'طوارئ وصيدليات ومراكز صحية',
+            pharmacies: 'صيدليات القدموس (دليل العناوين والأرقام)',
             restaurants: 'المطاعم (القدموس)',
             supermarkets: 'سوبر ماركت (القدموس)',
             water: 'صهاريج وتعبئة مياه',
@@ -1102,6 +1104,8 @@
                 cat = 'delivery';
             } else if (/تكاسي|تاكسي|تكسي|موتور/.test(item.category)) {
                 cat = 'taxis';
+            } else if (item.category.includes('صيدليات القدموس')) {
+                cat = 'pharmacies';
             } else if (item.category.includes('طوارئ') || item.category.includes('صيدلية') || item.category.includes('إسعاف') || item.category.includes('مشفى') || item.category.includes('صحي')) {
                 cat = 'emergency';
             } else if (item.category.includes('سوبر') || item.category.includes('ماركت')) {
@@ -1396,7 +1400,7 @@
             const contact = normalizeContactInput(phone);
             if (contact.error) return false;
             const existingContacts = [];
-            for (const cat of ['emergency', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'taxis', 'delivery', 'sweets']) {
+            for (const cat of ['emergency', 'pharmacies', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'taxis', 'delivery', 'sweets']) {
                 if (category && categoryFromLabel(category) !== cat) continue;
                 const list = adminData.services[cat] || [];
                 existingContacts.push(...list.map(item => normalizeContactInput(item.phone || item.link)));
