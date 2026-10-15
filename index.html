@@ -1312,6 +1312,10 @@
             };
             tiles.appendChild(button);
         });
+        // A refresh may remove the open category's last contact.
+        if (selectedCategory && ![...tiles.children].some(tile => tile.dataset.list === selectedCategory)) {
+            selectedCategory = null;
+        }
     }
 
     function backToCategories() {
@@ -1417,8 +1421,9 @@
             item.style.display = normalizeArabic(item.dataset.search).includes(normalizedQuery) ? 'flex' : 'none';
         });
         const visibleFavorites = favoriteItems.filter(item => item.style.display !== 'none');
-        if (normalizedQuery) totalVisibleInActiveTab += visibleFavorites.length;
-        document.getElementById('section-favorites').style.display = (normalizedQuery || browsing && currentTab === 'all') && visibleFavorites.length ? 'block' : 'none';
+        const showFavorites = (normalizedQuery || browsing && currentTab === 'all') && visibleFavorites.length > 0;
+        if (showFavorites) totalVisibleInActiveTab += visibleFavorites.length;
+        document.getElementById('section-favorites').style.display = showFavorites ? 'block' : 'none';
         secServices.style.display = showServices && [...secServices.querySelectorAll('.category-card')].some(card => card.style.display !== 'none') ? 'block' : 'none';
         secTransport.style.display = showTransport && [...secTransport.querySelectorAll('.category-card')].some(card => card.style.display !== 'none') ? 'block' : 'none';
         const emptyState = document.getElementById('emptyState');
@@ -1700,7 +1705,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v15';
+    const APP_VERSION = 'v16';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.
