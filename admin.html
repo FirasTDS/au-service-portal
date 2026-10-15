@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=24">
+    <link rel="stylesheet" href="style.css?v=28">
     <script src="portal-features.js?v=24"></script>
 </head>
 <body>
@@ -72,7 +72,7 @@
         <div id="dashboardSection" style="display: none;">
 
             <!-- Header Info & Actions -->
-            <div class="admin-card" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="admin-card admin-publish-card" style="display: flex; flex-direction: column; gap: 1rem;">
                 <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
                     <div>
                         <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -81,7 +81,7 @@
                         </div>
                         <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--color-teal-dark); margin-top: 0.25rem;">إدارة بيانات الدليل ونشرها</h2>
                     </div>
-                    <div style="display: flex; gap: 0.5rem;">
+                    <div class="admin-publish-actions" style="display: flex; gap: 0.5rem;">
                         <button onclick="handleAdminLogout()" class="btn-secondary" style="font-size: 0.75rem;">
                             تسجيل خروج
                         </button>
@@ -93,7 +93,7 @@
                 </div>
 
                 <!-- Reference Telegram Posts -->
-                <div style="background-color: var(--color-slate-100); border-radius: var(--radius-md); padding: 0.75rem 1rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem;">
+                <div class="admin-reference-links">
                     <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-slate-700); display: flex; align-items: center; gap: 0.4rem;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" color="#0284c7"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
                         <span>الروابط المرجعية على قناة الفريق (تلغرام):</span>

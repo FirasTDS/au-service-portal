@@ -704,6 +704,19 @@ body {
 }
 
 /* Directory tools */
+.collaboration-credit { margin:.65rem auto; padding:.65rem 1rem; max-width:600px; color:var(--color-slate-700); font-size:.85rem; line-height:1.8; }
+.collaboration-credit strong { color:var(--color-teal-dark); }
+.developer-credit { margin:.5rem 0 .85rem; color:var(--color-slate-600); font-size:.8rem; line-height:1.8; }
+.collaboration-logo { display:block; width:min(100%, 260px); height:auto; margin:.65rem auto 0; padding:.6rem; background:#fff; border-radius:var(--radius-md); object-fit:contain; }
+.admin-reference-links { display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-start; gap:.75rem; padding-top:.75rem; border-top:1px solid var(--color-slate-200); }
+.admin-publish-actions { flex-wrap:wrap; align-items:stretch; }
+.admin-publish-card #publishStatus:not(.show) { display:none; }
+@media (max-width:600px) {
+  .admin-publish-actions { width:100%; }
+  .admin-publish-actions button { flex:1 1 130px; white-space:normal; }
+  .admin-reference-links > div { min-width:0; flex-wrap:wrap; }
+  .admin-reference-links a { white-space:normal; text-align:center; }
+}
 .compact-heading { display:flex; justify-content:space-between; align-items:center; gap:.75rem; padding-top:1rem; padding-bottom:1rem; flex-wrap:wrap; }
 .compact-heading h1 { font-size:clamp(1.1rem, 3vw, 1.6rem); color:var(--color-teal-dark); margin:0; }
 .feature-actions { display:flex; align-items:center; flex-wrap:wrap; gap:.5rem; padding:.5rem 0; }
