@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=14">
+    <link rel="stylesheet" href="style.css?v=15">
 </head>
 <body>
 
@@ -153,6 +153,16 @@
         <span>محول العملة</span>
       </a>
     </div>
+  </div>
+
+  <section id="categoryBrowser" aria-labelledby="browseTitle">
+    <h2 id="browseTitle" tabindex="-1">شو بدك اليوم؟</h2>
+    <p class="browse-hint">اختر القسم لتشوف أرقامه، أو ابحث بالاسم أو الرقم في كل الدليل.</p>
+    <div id="categoryTiles" class="category-tiles"></div>
+  </section>
+  <div id="browseToolbar" class="browse-toolbar" hidden>
+    <button type="button" class="btn-secondary" onclick="backToCategories()">→ كل الأقسام</button>
+    <h2 id="browseStatus" tabindex="-1" aria-live="polite"></h2>
   </div>
 
   <!-- SECTION: PINNED FAVORITES -->
@@ -1268,55 +1278,54 @@
         filterItems();
     }
 
-    // --- COLLAPSIBLE CARDS + SHOW-MORE (keeps long category lists compact) ---
-    const CARD_LIMIT = 3;
-    let collapsedCards = [];
-    try {
-        collapsedCards = JSON.parse(portalStorage.get('susa_collapsed') || '[]');
-        if (!Array.isArray(collapsedCards)) collapsedCards = [];
-    } catch (e) { collapsedCards = []; }
-    const expandedCards = new Set();
+    // Category overview -> full contact list. Search always spans the directory.
+    let selectedCategory = null;
 
     function decorateCardHeaders() {
+        const tiles = document.getElementById('categoryTiles');
+        tiles.replaceChildren();
         document.querySelectorAll('.category-card').forEach((card, ci) => {
             const header = card.querySelector(':scope > .category-header');
             const list = card.querySelector(':scope > .category-items-list');
             if (!header || !list) return;
             if (!list.id) list.id = `list-auto-${ci}`;
             const id = list.id;
-            header.classList.add('collapsible');
-            header.setAttribute('role', 'button');
-            header.setAttribute('tabindex', '0');
-            header.setAttribute('aria-expanded', String(!collapsedCards.includes(id)));
-            if (!header.querySelector('.collapse-chevron')) {
-                const chev = document.createElement('span');
-                chev.className = 'collapse-chevron';
-                chev.setAttribute('aria-hidden', 'true');
-                chev.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>';
-                header.appendChild(chev);
-            }
-            header.onclick = () => toggleCardCollapse(id);
-            header.onkeydown = (e) => {
-                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCardCollapse(id); }
+            const count = list.querySelectorAll('.contact-item').length;
+            if (!count) return;
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'category-tile';
+            button.dataset.section = card.dataset.section;
+            button.dataset.list = id;
+            const icon = header.querySelector('svg');
+            if (icon) button.appendChild(icon.cloneNode(true));
+            const title = document.createElement('strong');
+            title.textContent = header.querySelector('.category-title').textContent;
+            button.appendChild(title);
+            const hint = document.createElement('span');
+            hint.textContent = `${count} جهة اتصال · عرض الأرقام ←`;
+            button.appendChild(hint);
+            button.onclick = () => {
+                selectedCategory = id;
+                filterItems();
+                document.getElementById('browseStatus').focus();
             };
+            tiles.appendChild(button);
         });
     }
 
-    function toggleCardCollapse(id) {
-        collapsedCards = collapsedCards.includes(id)
-            ? collapsedCards.filter(x => x !== id)
-            : [...collapsedCards, id];
-        portalStorage.set('susa_collapsed', JSON.stringify(collapsedCards));
+    function backToCategories() {
+        const previous = selectedCategory;
+        selectedCategory = null;
+        document.getElementById('searchInput').value = '';
         filterItems();
-    }
-
-    function expandCard(id) {
-        expandedCards.add(id);
-        filterItems();
+        const tile = [...document.querySelectorAll('.category-tile')].find(el => el.dataset.list === previous && !el.hidden);
+        (tile || document.getElementById('browseTitle')).focus();
     }
 
     // --- TAB SWITCHING ---
     function switchTab(tab) {
+        selectedCategory = null;
         currentTab = tab;
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.remove('tab-active');
@@ -1339,8 +1348,17 @@
         const secServices = document.getElementById('section-services');
         const secTransport = document.getElementById('section-transport');
 
-        const showServices = (currentTab === 'all' || currentTab === 'services');
-        const showTransport = (currentTab === 'all' || currentTab === 'transport');
+        const browsing = !normalizedQuery && !selectedCategory;
+        const showServices = !!normalizedQuery || currentTab === 'all' || currentTab === 'services';
+        const showTransport = !!normalizedQuery || currentTab === 'all' || currentTab === 'transport';
+        document.getElementById('categoryBrowser').hidden = !browsing;
+        document.getElementById('browseToolbar').hidden = browsing;
+        document.getElementById('main').classList.toggle('directory-detail', !browsing);
+        document.querySelectorAll('.category-tile').forEach(tile => {
+            tile.hidden = currentTab !== 'all' && tile.dataset.section !== currentTab;
+        });
+        const selectedList = selectedCategory && document.getElementById(selectedCategory);
+        document.getElementById('browseStatus').textContent = normalizedQuery ? 'نتائج البحث في كل الدليل' : selectedList?.closest('.category-card').querySelector('.category-title').textContent || '';
 
         secServices.style.display = showServices ? 'block' : 'none';
         secTransport.style.display = showTransport ? 'block' : 'none';
@@ -1364,7 +1382,7 @@
 
         document.querySelectorAll('.category-card').forEach(card => {
             const cardSection = card.getAttribute('data-section');
-            const isCardInActiveTab = (currentTab === 'all') || (currentTab === cardSection);
+            const isCardInActiveTab = !!normalizedQuery || (currentTab === 'all') || (currentTab === cardSection);
 
             if (!isCardInActiveTab) {
                 card.style.display = 'none';
@@ -1375,43 +1393,22 @@
             const listEl = card.querySelector(':scope > .category-items-list');
             const listId = listEl && listEl.id;
             const hasQuery = !!normalizedQuery;
-            const isCollapsed = !hasQuery && listId && collapsedCards.includes(listId);
-            const isExpanded = listId && expandedCards.has(listId);
-            card.classList.toggle('card-collapsed', !!isCollapsed);
             let visibleInCard = 0;
 
-            items.forEach((item, idx) => {
+            items.forEach(item => {
                 const searchStr = item.getAttribute('data-search') || '';
                 const normalizedSearch = normalizeArabic(searchStr);
 
                 if (!normalizedQuery || normalizedSearch.includes(normalizedQuery)) {
-                    if (!hasQuery && !isExpanded && idx >= CARD_LIMIT) {
-                        item.style.display = 'none';
-                    } else {
-                        item.style.display = 'flex';
-                        visibleInCard++;
-                        totalVisibleInActiveTab++;
-                    }
+                    item.style.display = 'flex';
+                    visibleInCard++;
+                    totalVisibleInActiveTab++;
                 } else {
                     item.style.display = 'none';
                 }
             });
 
-            card.style.display = visibleInCard > 0 ? 'flex' : 'none';
-
-            let moreBtn = card.querySelector(':scope > .card-show-more');
-            if (hasQuery || isExpanded || isCollapsed || visibleInCard <= CARD_LIMIT) {
-                if (moreBtn) moreBtn.style.display = 'none';
-            } else {
-                if (!moreBtn) {
-                    moreBtn = document.createElement('div');
-                    moreBtn.className = 'card-show-more';
-                    moreBtn.innerHTML = `<button type="button" onclick="expandCard('${listId}')" aria-label="عرض كل العناصر"></button>`;
-                    card.appendChild(moreBtn);
-                }
-                moreBtn.style.display = 'block';
-                moreBtn.querySelector('button').textContent = `عرض الكل (${visibleInCard - CARD_LIMIT} المزيد) ▾`;
-            }
+            card.style.display = visibleInCard > 0 && (hasQuery || selectedCategory === listId) ? 'flex' : 'none';
         });
 
         if (!hasDutySchedule) dutySection.style.display = 'none';
@@ -1419,7 +1416,9 @@
         favoriteItems.forEach(item => {
             item.style.display = normalizeArabic(item.dataset.search).includes(normalizedQuery) ? 'flex' : 'none';
         });
-        document.getElementById('section-favorites').style.display = currentTab === 'all' && favoriteItems.some(item => item.style.display !== 'none') ? 'block' : 'none';
+        const visibleFavorites = favoriteItems.filter(item => item.style.display !== 'none');
+        if (normalizedQuery) totalVisibleInActiveTab += visibleFavorites.length;
+        document.getElementById('section-favorites').style.display = (normalizedQuery || browsing && currentTab === 'all') && visibleFavorites.length ? 'block' : 'none';
         secServices.style.display = showServices && [...secServices.querySelectorAll('.category-card')].some(card => card.style.display !== 'none') ? 'block' : 'none';
         secTransport.style.display = showTransport && [...secTransport.querySelectorAll('.category-card')].some(card => card.style.display !== 'none') ? 'block' : 'none';
         const emptyState = document.getElementById('emptyState');
@@ -1701,7 +1700,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v14';
+    const APP_VERSION = 'v15';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.
