@@ -335,6 +335,15 @@
         "name": "تكسي ربيع ابراهيم",
         "phone": "0951460666",
         "note": "الخدمة ليلاً ونهاراً _توصيل للسكن الجامعي"
+      },
+      {
+        "name": "وائل نيسان نقل عفش",
+        "phone": "0991653159"
+      },
+      {
+        "name": "تكسي ابويوسف",
+        "phone": "0932616536",
+        "note": "داخل وخارج مدينة القدموس"
       }
     ],
     "sweets": [
@@ -800,7 +809,9 @@
     "fe268b123ab5e08c1b00439097033dd4704e444175ec4824403b2dfb52c7aa5e": "approved",
     "882278dce97c526a2f6bc272401a4aef258ec3bfee28e4cdb93b63140cafd814": "approved",
     "0c5e74d609a63e5491a171924448d25f5ffb1148565ed15944e97321cd7ec117": "approved",
-    "f2b8b70268e65b4f144edba361a8187fbf9c26065b0566a3e40f37e3e8e3956e": "approved"
+    "f2b8b70268e65b4f144edba361a8187fbf9c26065b0566a3e40f37e3e8e3956e": "approved",
+    "b279e11c9efa2962f75dd6e3a6b2c7f356ca925900a3169bb8876387cc866f41": "approved",
+    "461f672fa4d1cb50367fb233100eb1b779b88d3c0af931e00173246be2931462": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -872,6 +883,14 @@
       "updated": "2026-10-15"
     },
     "67ca263f-3aa6-47d7-9c3b-347af09e3fee": {
+      "status": "approved",
+      "updated": "2026-10-15"
+    },
+    "ba3020fe-fc0a-4e7d-b5cc-c5248444f178": {
+      "status": "approved",
+      "updated": "2026-10-15"
+    },
+    "a3653e05-58bc-434d-bc4c-adaceb32c9b4": {
       "status": "approved",
       "updated": "2026-10-15"
     }
