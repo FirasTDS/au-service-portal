@@ -232,6 +232,10 @@
         "name": "طرطوس القدموس",
         "link": "https://www.google.com/maps/place/%D8%B7%D8%B1%D8%B7%D9%88%D8%B3+%D8%A7%D9%84%D9%82%D8%AF%D9%85%D9%88%D8%B3/@35.1012166,36.162192999999995,14z/data=!4m8!1m2!2m1!1s%D8%B7%D8%B1%D8%B7%D9%88%D8%B3+%D8%A7%D9%84%D9%82%D8%AF%D9%85%D9%88%D8%B3!3m4!1s0x1523ef0007ebc8d7:0x9cbd2f419495ce35!8m2!3d35.1012166!4d36.162192999999995",
         "note": "4526+FVP, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
+      },
+      {
+        "name": "مطعم. gan food",
+        "phone": "0952532316"
       }
     ],
     "supermarkets": [
@@ -1177,7 +1181,8 @@
     "3fa8bd2c3f19a2ee191f4526d8d5cc1ff43ee16030f40ee54938782b27eadd73": "approved",
     "2c086924d4325ef3897dbd9a528f6b5d623745e5c1524e33ff90e6594c368cc6": "approved",
     "40f63047a8435be39f6a2cfdc0b64499dd4aa568ce17810a2d96e0104632057f": "approved",
-    "e38cb11c3d2595a903d53ed059d2880e2f80c4e703440b6f3d4a72d2cdefd4c0": "approved"
+    "e38cb11c3d2595a903d53ed059d2880e2f80c4e703440b6f3d4a72d2cdefd4c0": "approved",
+    "fc8df043833ddae76a03b1ed66d74b12ed588f2590a4286b1531cfb233336c9a": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1285,6 +1290,10 @@
       "updated": "2026-10-16"
     },
     "dc0f3c82-8cd6-46d8-b08f-6bf2f71aa412": {
+      "status": "approved",
+      "updated": "2026-10-16"
+    },
+    "a925ff34-5cad-4098-8529-754ce3131313": {
       "status": "approved",
       "updated": "2026-10-16"
     }
