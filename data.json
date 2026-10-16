@@ -525,6 +525,10 @@
         "name": "تكسي الطالب احمد الهبال (لخدمة الطلاب )",
         "phone": "0995443327",
         "note": "يوصل للسكن - بيطلع يوم الجمعة - خدمة على مدار الساعة - اسعار مقبولة ورخيصة"
+      },
+      {
+        "name": "تكسي لؤي",
+        "phone": "0933135318"
       }
     ],
     "sweets": [
@@ -1182,7 +1186,8 @@
     "2c086924d4325ef3897dbd9a528f6b5d623745e5c1524e33ff90e6594c368cc6": "approved",
     "40f63047a8435be39f6a2cfdc0b64499dd4aa568ce17810a2d96e0104632057f": "approved",
     "e38cb11c3d2595a903d53ed059d2880e2f80c4e703440b6f3d4a72d2cdefd4c0": "approved",
-    "fc8df043833ddae76a03b1ed66d74b12ed588f2590a4286b1531cfb233336c9a": "approved"
+    "fc8df043833ddae76a03b1ed66d74b12ed588f2590a4286b1531cfb233336c9a": "approved",
+    "ad0dc483d4ddde9005fc4a304267c7f1be824b57e029efdf24ed964f415df392": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1294,6 +1299,10 @@
       "updated": "2026-10-16"
     },
     "a925ff34-5cad-4098-8529-754ce3131313": {
+      "status": "approved",
+      "updated": "2026-10-16"
+    },
+    "ad9e75d9-5291-4085-ba74-8592512153c6": {
       "status": "approved",
       "updated": "2026-10-16"
     }
