@@ -375,6 +375,11 @@
         "name": "ماركت ذوالفقار",
         "phone": "0942320907",
         "note": "كل ما يحتاجه الطالب من معلبات وأطعمة ومشروبات ومواد تنظيف"
+      },
+      {
+        "name": "سوبر ماركت Golden",
+        "phone": "0933170880",
+        "note": "24/7 جميع المواد الغذائية ومستلزمات المنازل"
       }
     ],
     "water": [
@@ -423,6 +428,11 @@
         "name": "مركز PIXEL - للخدمات الجامعية والصور الشخصية",
         "phone": "0941896288",
         "note": "4526+QV8, Al Qadmus, Syria"
+      },
+      {
+        "name": "مكتبة عمار",
+        "phone": "0933368162",
+        "note": "متوفر من 8 صباحا حتى 4 عصرا والجمعة عطلة"
       }
     ],
     "maintenance": [
@@ -1149,7 +1159,9 @@
     "b279e11c9efa2962f75dd6e3a6b2c7f356ca925900a3169bb8876387cc866f41": "approved",
     "461f672fa4d1cb50367fb233100eb1b779b88d3c0af931e00173246be2931462": "approved",
     "719fcdd2fbd46b5904db1a58928ea3ffb8ab7ed5d3bdae268563c41e00fd97cf": "approved",
-    "f87f8f6b123e3d70c65628e49cd66c06420bf2a61f8331c5a221f8139cee625a": "approved"
+    "f87f8f6b123e3d70c65628e49cd66c06420bf2a61f8331c5a221f8139cee625a": "approved",
+    "54c8a3ff3ac22ab7faa6e083ee9ca910d7c8a5bb29316199cf45288d7d2ecfe8": "approved",
+    "3fa8bd2c3f19a2ee191f4526d8d5cc1ff43ee16030f40ee54938782b27eadd73": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1239,6 +1251,14 @@
     "4f983f47-d4ad-4564-a46d-2c0d6f4bf5f4": {
       "status": "approved",
       "updated": "2026-10-15"
+    },
+    "81c2c5a0-2cb5-4e0e-9083-329b172d6bc4": {
+      "status": "approved",
+      "updated": "2026-10-16"
+    },
+    "d06254a9-46eb-4635-9291-cd168f0a5841": {
+      "status": "approved",
+      "updated": "2026-10-16"
     }
   },
   "trash": [],
