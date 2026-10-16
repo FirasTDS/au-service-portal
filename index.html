@@ -23,9 +23,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=36">
-    <script src="portal-features.js?v=36"></script>
-    <script src="rates.js?v=36"></script>
+    <link rel="stylesheet" href="style.css?v=37">
+    <script src="portal-features.js?v=37"></script>
+    <script src="rates.js?v=37"></script>
 </head>
 <body>
 
@@ -234,6 +234,22 @@
     </div>
   </section>
 
+  <section id="section-duty-university" class="duty-card" aria-labelledby="dutyUniversityLabel" data-section="services">
+    <div class="duty-header">
+      <div class="duty-badge-wrap">
+        <span class="duty-live-dot" aria-hidden="true"></span>
+        <span class="duty-badge-text" id="dutyUniversityLabel">عيادات مشفى الأندلس الجامعي اليوم</span>
+      </div>
+      <button type="button" onclick="openUniversityModal()" class="duty-modal-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>جدول العيادات الشهري</span>
+      </button>
+    </div>
+    <div id="dutyUniversityContent">
+      <!-- Injected via JavaScript -->
+    </div>
+  </section>
+
   <!-- SECTION: LOCAL SERVICES -->
   <section id="section-services" aria-labelledby="services-heading">
     <div class="section-header">
@@ -434,6 +450,7 @@
           <select id="uniSpecialtyFilter" class="form-select"></select>
         </div>
         <div class="category-items-list" id="list-university" role="list" aria-label="قائمة عيادات جامعة الأندلس"></div>
+        <p class="pharmacy-directory-hint">جدول العيادات الشهري في البطاقة أعلاه — للحجز والاستفسار اتصل بالمشفى.</p>
       </div>
     </div>
   </section>
@@ -611,6 +628,29 @@
          <input type="search" id="pharmacySearchInput" class="form-input" aria-label="بحث في جدول الصيدليات" placeholder="🔍 ابحث باسم الصيدلية، اليوم، أو التاريخ..." oninput="filterPharmacyTable()" style="padding: 0.55rem 0.85rem; font-size: 0.825rem;">
       </div>
       <div id="pharmacyScheduleList" class="pharmacy-schedule-list" style="max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; padding-left: 0.25rem;">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UNIVERSITY CLINICS SCHEDULE MODAL -->
+<div id="universityModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="universityModalTitle">
+  <div class="modal-dialog" style="max-width: 640px;">
+    <div class="modal-header">
+      <div class="modal-header-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <h2 id="universityModalTitle">جدول عيادات مشفى الأندلس الجامعي</h2>
+      </div>
+      <button class="modal-close-btn" onclick="closeModal('universityModal')" aria-label="إغلاق النافذة">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="padding: 1rem 1.25rem;">
+      <div style="margin-bottom: 0.85rem;">
+         <input type="search" id="universitySearchInput" class="form-input" aria-label="بحث في جدول العيادات" placeholder="🔍 ابحث باسم العيادة أو الدكتور..." oninput="filterUniversityTable()" style="padding: 0.55rem 0.85rem; font-size: 0.825rem;">
+      </div>
+      <div id="universityScheduleList" class="pharmacy-schedule-list" style="max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; padding-left: 0.25rem;">
         <!-- Injected via JavaScript -->
       </div>
     </div>
@@ -1366,6 +1406,97 @@
         });
     }
 
+    // --- UNIVERSITY HOSPITAL CLINICS (monthly schedule, Sat-Wed) ---
+    const UNI_DAYS = [['saturday','السبت'],['sunday','الأحد'],['monday','الاثنين'],['tuesday','الثلاثاء'],['wednesday','الأربعاء']];
+    function universityWeekdayKey(now = new Date()) {
+        return new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Damascus', weekday: 'long' }).format(now).toLowerCase();
+    }
+    function getTodayUniversityClinics(now = new Date()) {
+        const dutyData = portalData.university_clinics;
+        if (!dutyData || !dutyData.schedule || dutyData.schedule.length === 0) return null;
+        const key = universityWeekdayKey(now);
+        if (key === 'thursday' || key === 'friday') return { closed: true };
+        const entries = dutyData.schedule
+            .filter(row => row[key])
+            .map(row => ({ clinic: row.clinic, doctor: row[key] }));
+        return { closed: false, dayKey: key, entries };
+    }
+    function renderDutyUniversity() {
+        const dutyData = portalData.university_clinics;
+        const section = document.getElementById('section-duty-university');
+        const content = document.getElementById('dutyUniversityContent');
+        const label = document.getElementById('dutyUniversityLabel');
+        if (!section || !content) return;
+        if (!dutyData || !dutyData.schedule || dutyData.schedule.length === 0) {
+            section.style.display = 'block';
+            if (label) label.textContent = 'عيادات مشفى الأندلس الجامعي';
+            content.textContent = 'لا يتوفر جدول عيادات حالياً.';
+            return;
+        }
+        section.style.display = 'block';
+        const today = getTodayUniversityClinics();
+        const dayName = Object.fromEntries(UNI_DAYS)[today.dayKey] || '';
+        if (label) label.textContent = today.closed
+            ? 'عيادات مشفى الأندلس الجامعي — مغلق اليوم (الخميس والجمعة)'
+            : `عيادات مشفى الأندلس الجامعي اليوم (${dayName}) — ${dutyData.month}`;
+        const chips = today.closed ? '' : today.entries.map(e =>
+            `<span class="admin-badge admin-badge-teal" style="font-size:0.72rem;">${escapeHtml(e.clinic)}: ${escapeHtml(e.doctor)}</span>`
+        ).join('');
+        content.innerHTML = `
+            <div class="duty-info">
+                <div class="duty-main-row">
+                    <div class="duty-icon-box">🏥</div>
+                    <div style="min-width: 0;">
+                        <h3 class="duty-pharmacy-name">${escapeHtml(dutyData.hospital)}</h3>
+                        <div class="duty-address-row"><span>🕒 ${escapeHtml(dutyData.hours)}</span></div>
+                        <div class="duty-address-row"><span>${today.closed ? 'يستأنف الدوام السبت.' : `اليوم: ${today.entries.length} عيادة`}</span></div>
+                    </div>
+                </div>
+                <div class="duty-actions">
+                    <a href="tel:${escapeHtml(dutyData.phone)}" class="btn-call duty-call-btn" aria-label="اتصال بمشفى الأندلس الجامعي">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        <span>اتصال: ${escapeHtml(dutyData.phone)}</span>
+                    </a>
+                </div>
+            </div>
+            ${chips ? `<div style="display:flex; flex-wrap:wrap; gap:0.4rem; margin-top:0.75rem;">${chips}</div>` : ''}`;
+    }
+
+    function openUniversityModal() {
+        const dutyData = portalData.university_clinics;
+        if (!dutyData || !dutyData.schedule) return;
+        const listContainer = document.getElementById('universityScheduleList');
+        if (!listContainer) return;
+        document.getElementById('universityModalTitle').textContent = `جدول عيادات مشفى الأندلس الجامعي — ${dutyData.month}`;
+        document.getElementById('universitySearchInput').value = '';
+        const todayKey = universityWeekdayKey();
+        listContainer.innerHTML = dutyData.schedule.map(row => {
+            const days = UNI_DAYS.filter(([key]) => row[key]);
+            const searchable = row.clinic + ' ' + days.map(([key]) => row[key]).join(' ');
+            return `
+                <div class="pharmacy-row" data-search="${escapeHtml(searchable)}">
+                    <div style="min-width: 0; flex: 1 1 auto;">
+                        <div style="font-weight: 800; font-size: 0.925rem; color: var(--color-teal-dark);">
+                            ${escapeHtml(row.clinic)}
+                        </div>
+                        ${days.map(([key, ar]) => `
+                            <div style="font-size: 0.775rem; color: var(--color-slate-600); margin-top: 0.15rem; ${key === todayKey ? 'font-weight:800; color:var(--color-teal);' : ''}">
+                                ${ar}: ${escapeHtml(row[key])}${key === todayKey ? ' — اليوم' : ''}
+                            </div>`).join('')}
+                    </div>
+                </div>`;
+        }).join('');
+        openModal('universityModal');
+    }
+
+    function filterUniversityTable() {
+        const query = normalizeArabic(document.getElementById('universitySearchInput').value || '');
+        document.querySelectorAll('#universityScheduleList .pharmacy-row').forEach(row => {
+            const text = normalizeArabic(row.getAttribute('data-search') || '');
+            row.style.display = (!query || text.includes(query)) ? 'flex' : 'none';
+        });
+    }
+
     // --- RENDER ALL SECTIONS ---
     let specialtyFilter = '', uniSpecialtyFilter = '', kindFilter = '';
     function applyListFilter(list, selectId, rowId, getValue, setFilter, current) {
@@ -1509,6 +1640,7 @@
         }).join('');
 
         renderDutyPharmacy();
+        renderDutyUniversity();
         decorateCardHeaders();
         enhancePublicDirectory();
         filterItems();
@@ -2037,7 +2169,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v36';
+    const APP_VERSION = 'v37';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.

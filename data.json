@@ -695,7 +695,13 @@
         "note": "4582+HM4, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
       }
     ],
-    "university": []
+    "university": [
+      {
+        "name": "مشفى الأندلس الجامعي",
+        "phone": "0942200443",
+        "note": "العيادات: من الساعة 8:00 صباحاً وحتى الساعة 12:00 ظهراً (السبت–الأربعاء) · طرطوس - بانياس - مدينة القدموس - ضمن حرم جامعة الأندلس الخاصة للعلوم الطبية"
+      }
+    ]
   },
   "transport": [
     {
@@ -1240,5 +1246,159 @@
     "[\"p:0437553700\",[[\"service\",\"emergency\",\"مشفى القدموس الوطني\",\"0437553700\"],[\"service\",\"pharmacies\",\"صيدلية ديما حسن\",\"0437553700\"]]]",
     "[\"p:0437553917\",[[\"service\",\"emergency\",\"مستوصف القدموس الصحي\",\"0437553917\"],[\"service\",\"pharmacies\",\"صيدلية رهف خدام\",\"0437553917\"]]]",
     "[\"p:0951460666\",[[\"service\",\"supermarkets\",\"سوبر ماركت رامي\",\"0951460666\"],[\"service\",\"taxis\",\"تكسي ربيع ابراهيم\",\"0951460666\"]]]"
-  ]
+  ],
+  "university_clinics": {
+    "hospital": "مشفى الأندلس الجامعي",
+    "month": "تشرين الأول 2026",
+    "hours": "من الساعة 8:00 صباحاً وحتى الساعة 12:00 ظهراً",
+    "phone": "0942200443",
+    "address": "طرطوس - بانياس - مدينة القدموس - ضمن حرم جامعة الأندلس الخاصة للعلوم الطبية",
+    "services_note": "يقدم المشفى كافة الخدمات الصحية للمواطنين المشتركين بالضمان الصحي",
+    "schedule": [
+      {
+        "clinic": "النسائية",
+        "saturday": "د. نجيبة عيسى",
+        "sunday": "د. ميس صبوح",
+        "monday": "د. ميس صبوح",
+        "tuesday": null,
+        "wednesday": null
+      },
+      {
+        "clinic": "الأذنية",
+        "saturday": "د. محسن علي",
+        "sunday": "د. محمد صارم",
+        "monday": null,
+        "tuesday": "د. محمد صارم",
+        "wednesday": null
+      },
+      {
+        "clinic": "الصدرية",
+        "saturday": "د. ملك مهيوب",
+        "sunday": null,
+        "monday": null,
+        "tuesday": null,
+        "wednesday": null
+      },
+      {
+        "clinic": "العصبية",
+        "saturday": "د. يزن حسن",
+        "sunday": "د. لميس الخطيب",
+        "monday": null,
+        "tuesday": "د. لميس الخطيب",
+        "wednesday": null
+      },
+      {
+        "clinic": "الغدد الصم",
+        "saturday": "د. حنان صالح",
+        "sunday": "د. حنان صالح",
+        "monday": "د. حلا عيسى",
+        "tuesday": null,
+        "wednesday": null
+      },
+      {
+        "clinic": "الداخلية - عامة",
+        "saturday": "د. آصف حيدر",
+        "sunday": null,
+        "monday": null,
+        "tuesday": "د. آصف حيدر",
+        "wednesday": null
+      },
+      {
+        "clinic": "الداخلية - قلبية",
+        "saturday": null,
+        "sunday": "د. يوسف وقاف",
+        "monday": "د. عدي عثمان",
+        "tuesday": null,
+        "wednesday": null
+      },
+      {
+        "clinic": "الداخلية - هضمية",
+        "saturday": null,
+        "sunday": null,
+        "monday": null,
+        "tuesday": "د. مرح خسروف",
+        "wednesday": null
+      },
+      {
+        "clinic": "البولية",
+        "saturday": "د. حسان عيسى",
+        "sunday": null,
+        "monday": null,
+        "tuesday": null,
+        "wednesday": null
+      },
+      {
+        "clinic": "الجراحة العامة",
+        "saturday": "د. حامد المحمود",
+        "sunday": null,
+        "monday": null,
+        "tuesday": "د. حامد المحمود",
+        "wednesday": null
+      },
+      {
+        "clinic": "الجراحة (أوعية)",
+        "saturday": "د. المثنى خليل",
+        "sunday": "د. المثنى خليل",
+        "monday": null,
+        "tuesday": null,
+        "wednesday": null
+      },
+      {
+        "clinic": "الأطفال",
+        "saturday": "د. ولاء ديوب",
+        "sunday": null,
+        "monday": "د. رهف سليمان",
+        "tuesday": null,
+        "wednesday": null
+      },
+      {
+        "clinic": "العينية",
+        "saturday": "د. راما حسن",
+        "sunday": "د. راما حسن",
+        "monday": "د. أحمد إبراهيم",
+        "tuesday": "د. ميس حمود",
+        "wednesday": "د. دانا رقية"
+      },
+      {
+        "clinic": "الجلدية",
+        "saturday": "د. باسمة سليمان",
+        "sunday": null,
+        "monday": "د. سالي إبراهيم",
+        "tuesday": null,
+        "wednesday": null
+      },
+      {
+        "clinic": "الأشعة",
+        "saturday": "د. رزان عباس",
+        "sunday": "د. رزان عباس",
+        "monday": "د. نور مصطفى",
+        "tuesday": "د. نور مصطفى",
+        "wednesday": null
+      },
+      {
+        "clinic": "العظمية",
+        "saturday": "د. أحمد عواد",
+        "sunday": "د. أحمد عواد",
+        "monday": "د. علي وطفه",
+        "tuesday": "د. علي وطفه",
+        "wednesday": "د. علي وطفه"
+      },
+      {
+        "clinic": "المفاصل",
+        "saturday": null,
+        "sunday": "د. مي عيسى",
+        "monday": null,
+        "tuesday": null,
+        "wednesday": null
+      },
+      {
+        "clinic": "الأسنان",
+        "saturday": "د. آياد عباس",
+        "sunday": null,
+        "monday": "د. زين أسعد",
+        "tuesday": null,
+        "wednesday": null
+      }
+    ]
+  }
 }

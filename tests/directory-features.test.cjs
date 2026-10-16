@@ -122,8 +122,7 @@ test('pharmacy suggestions map to the pharmacies directory, not emergency', () =
     assert.equal(ctx.categoryFromLabel('صيدليات القدموس'),'pharmacies');
 });
 
-test('clinics carry specialties, approval parses them, and cards filter by them', () => {
-    const data = JSON.parse(read('data.json'));
+test('clinics carry specialties, approval parses them, and cards filter by them', () => {    const data = JSON.parse(read('data.json'));
     for (const item of data.services.clinics) {
         assert.ok(item.specialty && item.specialty.trim(), item.name);
     }
@@ -189,4 +188,30 @@ test('report modal specifies which info is wrong and submits it with the report'
     const notes = Object.fromEntries(posted.entries())['entry.40821348'];
     assert.ok(notes.includes('[بلاغ خطأ | الاسم]:'), notes);
     assert.ok(notes.includes('الاسم ناقص'), notes);
+});
+
+test('university hospital schedule imports with 18 clinics and weekday lookups', () => {
+    const data = JSON.parse(read('data.json'));
+    const duty = data.university_clinics;
+    assert.ok(duty && duty.hospital.includes('الأندلس'));
+    assert.equal(duty.schedule.length, 18);
+    for (const row of duty.schedule) {
+        assert.ok(row.clinic, 'clinic name');
+        assert.ok(['saturday', 'sunday', 'monday', 'tuesday', 'wednesday'].some(k => row[k]), row.clinic);
+    }
+    const hosp = data.services.university.find(x => x.phone === '0942200443');
+    assert.ok(hosp, 'hospital contact in university category');
+    const index = read('index.html');
+    const ctx = vm.createContext({ Intl, Date, portalData: data,
+        document: { getElementById() { return null; }, addEventListener() {}, querySelectorAll() { return []; } } });
+    vm.runInContext(extractFn(index, 'function universityWeekdayKey('), ctx);
+    vm.runInContext(extractFn(index, 'function getTodayUniversityClinics('), ctx);
+    assert.equal(ctx.universityWeekdayKey(new Date('2026-10-17T10:00:00+03:00')), 'saturday');
+    assert.equal(ctx.universityWeekdayKey(new Date('2026-10-19T10:00:00+03:00')), 'monday');
+    const sat = ctx.getTodayUniversityClinics(new Date('2026-10-17T10:00:00+03:00'));
+    assert.equal(sat.closed, false);
+    assert.ok(sat.entries.length > 0 && sat.entries.every(e => e.clinic && e.doctor));
+    assert.equal(ctx.getTodayUniversityClinics(new Date('2026-10-16T10:00:00+03:00')).closed, true);
+    assert.equal(ctx.getTodayUniversityClinics(new Date('2026-10-15T10:00:00+03:00')).closed, true);
+    assert.ok(index.includes('openUniversityModal') && index.includes('universityScheduleList'));
 });
