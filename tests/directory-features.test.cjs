@@ -215,3 +215,34 @@ test('university hospital schedule imports with 18 clinics and weekday lookups',
     assert.equal(ctx.getTodayUniversityClinics(new Date('2026-10-15T10:00:00+03:00')).closed, true);
     assert.ok(index.includes('openUniversityModal') && index.includes('universityScheduleList'));
 });
+
+test('admin header has a working light/dark mode switcher', () => {
+    const admin = read('admin.html');
+    assert.ok(admin.includes('onclick="toggleDarkMode()"'), 'theme button in admin header');
+    const attrs = {};
+    const docEl = { dataset: {}, style: {},
+        setAttribute(k, v) { attrs[k] = v; this.dataset[k.replace('data-', '')] = v; },
+        getAttribute(k) { if (k === 'data-theme' && this.dataset.theme) return this.dataset.theme; return attrs[k] || null; } };
+    const els = {};
+    const mkEl = () => ({ value: '', innerHTML: '', disabled: false, style: {}, classList: { add() {}, remove() {} }, querySelector() { return null; } });
+    const store = { susa_theme: 'dark' };
+    const toasts = [];
+    const ctx = vm.createContext({
+        document: { documentElement: docEl,
+            getElementById(id) { return els[id] || (els[id] = mkEl()); }, addEventListener() {}, querySelectorAll() { return []; } },
+        window: {}, setTimeout: () => 0,
+        portalStorage: { get: k => store[k] || null, set: (k, v) => { store[k] = String(v); return true; } },
+        showToast: msg => toasts.push(msg),
+    });
+    vm.runInContext(extractFn(read('shared.js'), 'function applyPortalTheme('), ctx);
+    vm.runInContext(extractFn(admin, 'function updateThemeIcon('), ctx);
+    vm.runInContext(extractFn(admin, 'function initTheme('), ctx);
+    vm.runInContext(extractFn(admin, 'function toggleDarkMode('), ctx);
+    ctx.initTheme();
+    assert.equal(docEl.dataset.theme, 'dark');
+    assert.ok(els.themeIcon.innerHTML.includes('circle'), 'sun icon in dark mode');
+    ctx.toggleDarkMode();
+    assert.equal(docEl.dataset.theme, 'light');
+    assert.equal(store.susa_theme, 'light');
+    assert.ok(toasts.length > 0);
+});

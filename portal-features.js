@@ -386,9 +386,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('newNote').parentElement.style.gridColumn = '1 / -1';
     } else {
         const main = document.getElementById('main');
-        const pharmacy = document.getElementById('section-duty-pharmacy');
-        if (main && pharmacy) {
-            main.prepend(main.querySelector('.notice-banner'), main.querySelector('.sy-hub-card'), pharmacy, document.getElementById('installCard'));
+        const duty = document.getElementById('section-duty');
+        if (main && duty) {
+            main.prepend(main.querySelector('.notice-banner'), main.querySelector('.sy-hub-card'), duty, document.getElementById('installCard'));
         }
         const tracker = document.createElement('section'); tracker.id = 'suggestionTracker'; tracker.className = 'tracker-panel'; tracker.hidden = true; main.prepend(tracker);
         extraFields('sug', document.getElementById('sugNotes').parentElement, false);

@@ -23,9 +23,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=37">
-    <script src="portal-features.js?v=37"></script>
-    <script src="rates.js?v=37"></script>
+    <link rel="stylesheet" href="style.css?v=38">
+    <script src="portal-features.js?v=38"></script>
+    <script src="rates.js?v=38"></script>
 </head>
 <body>
 
@@ -218,7 +218,8 @@
   </section>
 
   <!-- SECTION: TODAY'S ON-DUTY PHARMACY -->
-  <section id="section-duty-pharmacy" class="duty-card" aria-labelledby="dutyDateLabel" data-section="services">
+  <section id="section-duty" class="duty-card" aria-label="مناوبات اليوم" data-section="services">
+  <div id="section-duty-pharmacy">
     <div class="duty-header">
       <div class="duty-badge-wrap">
         <span class="duty-live-dot" aria-hidden="true"></span>
@@ -232,9 +233,10 @@
     <div id="dutyPharmacyContent">
       <!-- Injected via JavaScript -->
     </div>
-  </section>
+    <hr class="duty-divider">
+  </div>
 
-  <section id="section-duty-university" class="duty-card" aria-labelledby="dutyUniversityLabel" data-section="services">
+  <div id="section-duty-university">
     <div class="duty-header">
       <div class="duty-badge-wrap">
         <span class="duty-live-dot" aria-hidden="true"></span>
@@ -248,6 +250,7 @@
     <div id="dutyUniversityContent">
       <!-- Injected via JavaScript -->
     </div>
+  </div>
   </section>
 
   <!-- SECTION: LOCAL SERVICES -->
@@ -1747,7 +1750,7 @@
         secTransport.style.display = showTransport ? 'block' : 'none';
 
         let totalVisibleInActiveTab = 0;
-        const dutySection = document.getElementById('section-duty-pharmacy');
+        const dutySection = document.getElementById('section-duty');
         const hasDutySchedule = portalData.pharmacies_duty?.schedule?.length > 0;
         if (dutySection && hasDutySchedule) {
             if (!showServices) {
@@ -2169,7 +2172,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v37';
+    const APP_VERSION = 'v38';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.

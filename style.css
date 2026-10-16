@@ -1956,6 +1956,7 @@ html[data-theme="dark"] .fab-item {
   color: var(--color-teal-dark);
   transform: translateY(-1px);
 }
+.duty-divider { border: 0; border-top: 1px dashed #a7f3d0; margin: 0.9rem 0; }
 
 .duty-info {
   display: flex;
