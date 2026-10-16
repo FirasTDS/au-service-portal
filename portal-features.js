@@ -38,7 +38,8 @@ function contactsOverlap(a, b) {
 function contactDetailsHtml(item) {
     const d = item.delivery || {};
     return `<div class="contact-note">${item.last_verified ? `آخر تحقق: ${escapeHtml(item.last_verified)}` : 'لم يُسجّل تاريخ تحقق بعد'}</div>` +
-        [d.areas && `مناطق التوصيل: ${d.areas}`, d.fee && `أجرة التوصيل: ${d.fee}`, d.kind && `نوع الطلبات: ${d.kind}`]
+        [item.specialty && `الاختصاص: ${item.specialty}`,
+         d.areas && `مناطق التوصيل: ${d.areas}`, d.fee && `أجرة التوصيل: ${d.fee}`, d.kind && `نوع الطلبات: ${d.kind}`]
         .filter(Boolean).map(text => `<div class="contact-note">${escapeHtml(text)}</div>`).join('');
 }
 
@@ -52,7 +53,7 @@ function extraFields(prefix, anchor, includeDate = true) {
     if (!anchor || document.getElementById(prefix + 'Extras')) return;
     const box = document.createElement('fieldset'); box.id = prefix + 'Extras'; box.className = 'extra-fields';
     const legend = document.createElement('legend'); legend.textContent = includeDate ? 'التحقق وتفاصيل التوصيل (اختياري)' : 'تفاصيل التوصيل (اختياري)'; box.append(legend);
-    const fields = [['Areas','مناطق التوصيل'], ['Fee','أجرة التوصيل (مثال: حسب المسافة)'], ['Kind','نوع الطلبات (أكل / مشاوير / كلاهما)']];
+    const fields = [['Areas','مناطق التوصيل'], ['Fee','أجرة التوصيل (مثال: حسب المسافة)'], ['Kind','نوع الطلبات (أكل / مشاوير / كلاهما)'], ['Specialty','الاختصاص (للأطباء والعيادات فقط)']];
     if (includeDate) fields.unshift(['Verified','تاريخ آخر تحقق فعلي من الرقم']);
     fields.forEach(([key, text]) => {
         const label = document.createElement('label'); label.className = 'form-label'; label.textContent = text;
@@ -64,7 +65,7 @@ function extraFields(prefix, anchor, includeDate = true) {
 }
 
 function fillExtraFields(prefix, item) {
-    const values = {Verified:item.last_verified || '', Areas:item.delivery?.areas || '', Fee:item.delivery?.fee || '', Kind:item.delivery?.kind || ''};
+    const values = {Verified:item.last_verified || '', Areas:item.delivery?.areas || '', Fee:item.delivery?.fee || '', Kind:item.delivery?.kind || '', Specialty:item.specialty || ''};
     Object.entries(values).forEach(([key, value]) => { const el = document.getElementById(prefix + key); if (el) el.value = value; });
 }
 
@@ -73,11 +74,14 @@ function applyExtraFields(prefix, item) {
     if (value('Verified')) item.last_verified = value('Verified'); else delete item.last_verified;
     const delivery = {areas:value('Areas'), fee:value('Fee'), kind:value('Kind')};
     if (Object.values(delivery).some(Boolean)) item.delivery = delivery; else delete item.delivery;
+    if (value('Specialty')) item.specialty = value('Specialty'); else delete item.specialty;
 }
 
 function suggestionDeliveryNotes() {
-    if (document.getElementById('sugCategory').value !== 'ديليفري وتوصيل طلبات') return '';
-    return [['Areas','مناطق التوصيل'],['Fee','أجرة التوصيل'],['Kind','نوع الطلبات']].map(([key,label]) => {
+    const cat = document.getElementById('sugCategory').value;
+    if (cat !== 'ديليفري وتوصيل طلبات' && cat !== 'الأطباء والعيادات' && cat !== 'عيادات جامعة الأندلس') return '';
+    const rows = [['Areas','مناطق التوصيل'],['Fee','أجرة التوصيل'],['Kind','نوع الطلبات'],['Specialty','الاختصاص']];
+    return rows.map(([key,label]) => {
         const value = document.getElementById('sug' + key)?.value.trim(); return value ? `\n${label}: ${value}` : '';
     }).join('');
 }
@@ -388,7 +392,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const tracker = document.createElement('section'); tracker.id = 'suggestionTracker'; tracker.className = 'tracker-panel'; tracker.hidden = true; main.prepend(tracker);
         extraFields('sug', document.getElementById('sugNotes').parentElement, false);
-        const update = () => { document.getElementById('sugExtras').hidden = document.getElementById('sugCategory').value !== 'ديليفري وتوصيل طلبات'; };
+        const update = () => {
+            const cat = document.getElementById('sugCategory').value;
+            const isDelivery = cat === 'ديليفري وتوصيل طلبات';
+            const isClinic = cat === 'الأطباء والعيادات' || cat === 'عيادات جامعة الأندلس';
+            document.getElementById('sugExtras').hidden = !isDelivery && !isClinic;
+            for (const key of ['Areas', 'Fee', 'Kind']) {
+                const input = document.getElementById('sug' + key);
+                if (input) input.closest('label').style.display = isDelivery ? '' : 'none';
+            }
+            const spec = document.getElementById('sugSpecialty');
+            if (spec) spec.closest('label').style.display = isDelivery || isClinic ? '' : 'none';
+        };
         document.getElementById('sugCategory').addEventListener('change',update); update();
         window.addEventListener('popstate', readCategoryLink);
         window.addEventListener('hashchange', readCategoryLink);

@@ -122,6 +122,28 @@ test('pharmacy suggestions map to the pharmacies directory, not emergency', () =
     assert.equal(ctx.categoryFromLabel('صيدليات القدموس'),'pharmacies');
 });
 
+test('clinics carry specialties, approval parses them, and cards filter by them', () => {
+    const data = JSON.parse(read('data.json'));
+    for (const item of data.services.clinics) {
+        assert.ok(item.specialty && item.specialty.trim(), item.name);
+    }
+    const ctx = setup({services:{clinics:[],university:[]},transport:[]});
+    ctx.checkItemExists = () => false;
+    const admin = read('admin.html');
+    vm.runInContext(admin.slice(admin.indexOf('        function buildApprovedItem('),admin.indexOf('        async function bulkApprove(')),ctx);
+    const result = ctx.buildApprovedItem({type:'اقتراح',category:'الأطباء والعيادات',name:'Test',phone:'0991111111',city:'القدموس',notes:'الاختصاص: أسنان'});
+    assert.equal(result.cat,'clinics');
+    assert.equal(result.newItem.specialty,'أسنان');
+    ctx.escapeHtml = s => String(s);
+    const html = ctx.contactDetailsHtml({specialty:'أسنان',delivery:{kind:'أكل'}});
+    assert.ok(html.includes('الاختصاص: أسنان'), html);
+    const index = read('index.html');
+    for (const id of ['specialtyFilter', 'uniSpecialtyFilter', 'kindFilter']) {
+        assert.ok(index.includes(`id="${id}"`), id);
+    }
+    assert.ok(index.includes('applyListFilter'));
+});
+
 function extractFn(src, marker) {
     const start = src.indexOf(marker);
     let depth = 0;

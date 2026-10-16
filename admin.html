@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=35">
-    <script src="portal-features.js?v=33"></script>
+    <link rel="stylesheet" href="style.css?v=36">
+    <script src="portal-features.js?v=36"></script>
 </head>
 <body>
 
@@ -1127,6 +1127,10 @@
                     if (line) delivery[key] = line.slice(label.length + 1).trim();
                 }
                 if (Object.keys(delivery).length) newItem.delivery = delivery;
+            }
+            if (cat === 'clinics' || cat === 'university') {
+                const line = cleanedNotes.split('\n').find(text => text.startsWith('الاختصاص:'));
+                if (line) newItem.specialty = line.slice('الاختصاص:'.length).trim();
             }
             return { cat, newItem, city: item.city.trim() };
         }

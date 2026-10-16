@@ -23,9 +23,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=35">
-    <script src="portal-features.js?v=35"></script>
-    <script src="rates.js?v=35"></script>
+    <link rel="stylesheet" href="style.css?v=36">
+    <script src="portal-features.js?v=36"></script>
+    <script src="rates.js?v=36"></script>
 </head>
 <body>
 
@@ -278,6 +278,10 @@
           </div>
           <span class="category-count" id="count-clinics">0</span>
         </div>
+        <div class="card-filter" id="specialtyFilterRow" hidden>
+          <label class="form-label" for="specialtyFilter">تصفية حسب الاختصاص:</label>
+          <select id="specialtyFilter" class="form-select"></select>
+        </div>
         <div class="category-items-list" id="list-clinics" role="list" aria-label="قائمة الأطباء والعيادات"></div>
       </div>
       <!-- Restaurant Card -->
@@ -366,6 +370,10 @@
           </div>
           <span class="category-count" id="count-delivery">0</span>
         </div>
+        <div class="card-filter" id="kindFilterRow" hidden>
+          <label class="form-label" for="kindFilter">تصفية حسب نوع الطلبات:</label>
+          <select id="kindFilter" class="form-select"></select>
+        </div>
         <div class="category-items-list" id="list-delivery" role="list" aria-label="قائمة الديليفري وتوصيل الطلبات"></div>
       </div>
       <!-- Sweets Card -->
@@ -420,6 +428,10 @@
             <h3 class="category-title">عيادات جامعة الأندلس</h3>
           </div>
           <span class="category-count" id="count-university">0</span>
+        </div>
+        <div class="card-filter" id="uniSpecialtyFilterRow" hidden>
+          <label class="form-label" for="uniSpecialtyFilter">تصفية حسب الاختصاص:</label>
+          <select id="uniSpecialtyFilter" class="form-select"></select>
         </div>
         <div class="category-items-list" id="list-university" role="list" aria-label="قائمة عيادات جامعة الأندلس"></div>
       </div>
@@ -1355,6 +1367,22 @@
     }
 
     // --- RENDER ALL SECTIONS ---
+    let specialtyFilter = '', uniSpecialtyFilter = '', kindFilter = '';
+    function applyListFilter(list, selectId, rowId, getValue, setFilter, current) {
+        const select = document.getElementById(selectId);
+        const row = document.getElementById(rowId);
+        const uniq = [...new Set(list.map(getValue).filter(Boolean))].sort();
+        const kept = current && uniq.includes(current) ? current : '';
+        setFilter(kept);
+        if (!uniq.length) { row.hidden = true; return list; }
+        row.hidden = false;
+        if (select.options.length !== uniq.length + 1) {
+            select.innerHTML = '<option value="">الكل</option>' + uniq.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+        }
+        select.value = kept;
+        return kept ? list.filter(i => getValue(i) === kept) : list;
+    }
+
     function renderAll() {
         // Pinned Favorites List
         const favs = getLocalFavorites();
@@ -1393,8 +1421,9 @@
         document.getElementById('list-taxis').innerHTML = sortArray(taxis).map(i => createContactRow(i, 'تكاسي تاكسي تكسي موتورات موتور دراجة نقل محلي داخل القدموس')).join('');
         document.getElementById('count-taxis').textContent = taxis.length;
         const delivery = portalData.services.delivery || [];
-        document.getElementById('list-delivery').innerHTML = sortArray(delivery).map(i => createContactRow(i, 'ديليفري ديلفري توصيل طلبات طعام اكل موتور مشاوير')).join('');
-        document.getElementById('count-delivery').textContent = delivery.length;
+        const shownDelivery = applyListFilter(delivery, 'kindFilter', 'kindFilterRow', i => i.delivery?.kind, v => kindFilter = v, kindFilter);
+        document.getElementById('list-delivery').innerHTML = sortArray(shownDelivery).map(i => createContactRow(i, 'ديليفري ديلفري توصيل طلبات طعام اكل موتور مشاوير')).join('');
+        document.getElementById('count-delivery').textContent = shownDelivery.length;
 
         const emergEl = document.getElementById('list-emergency');
         if (emergEl) {
@@ -1446,8 +1475,9 @@
         document.getElementById('list-rental').innerHTML = sortArray(rental).map(i => createContactRow(i, "إيجار إيجارات شقق سكن مكاتب عقارات")).join('');
         document.getElementById('count-rental').textContent = rental.length;
 
-        document.getElementById('list-clinics').innerHTML = sortArray(clinics).map(i => createContactRow(i, "أطباء عيادات أسنان دكتور طبيب")).join('');
-        document.getElementById('count-clinics').textContent = clinics.length;
+        const shownClinics = applyListFilter(clinics, 'specialtyFilter', 'specialtyFilterRow', i => i.specialty, v => specialtyFilter = v, specialtyFilter);
+        document.getElementById('list-clinics').innerHTML = sortArray(shownClinics).map(i => createContactRow(i, "أطباء عيادات أسنان دكتور طبيب")).join('');
+        document.getElementById('count-clinics').textContent = shownClinics.length;
 
         document.getElementById('list-bakeries').innerHTML = sortArray(bakeries).map(i => createContactRow(i, "مخابز فرن فطائر معجنات")).join('');
         document.getElementById('count-bakeries').textContent = bakeries.length;
@@ -1455,8 +1485,9 @@
         document.getElementById('list-butchers').innerHTML = sortArray(butchers).map(i => createContactRow(i, "ملاحم لحوم فروج دواجن")).join('');
         document.getElementById('count-butchers').textContent = butchers.length;
 
-        document.getElementById('list-university').innerHTML = sortArray(university).map(i => createContactRow(i, "جامعة الأندلس عيادات")).join('');
-        document.getElementById('count-university').textContent = university.length;
+        const shownUniversity = applyListFilter(university, 'uniSpecialtyFilter', 'uniSpecialtyFilterRow', i => i.specialty, v => uniSpecialtyFilter = v, uniSpecialtyFilter);
+        document.getElementById('list-university').innerHTML = sortArray(shownUniversity).map(i => createContactRow(i, "جامعة الأندلس عيادات")).join('');
+        document.getElementById('count-university').textContent = shownUniversity.length;
 
         // Transport Grid
         const transportGrid = document.getElementById('transport-grid');
@@ -2006,7 +2037,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v35';
+    const APP_VERSION = 'v36';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.
@@ -2049,6 +2080,10 @@
     window.addEventListener('DOMContentLoaded', () => {
         // 0. Initialize theme (dark/light)
         initTheme();
+        // 0b. Card filters (specialty / order kind)
+        [['specialtyFilter', v => specialtyFilter = v], ['uniSpecialtyFilter', v => uniSpecialtyFilter = v], ['kindFilter', v => kindFilter = v]].forEach(([id, set]) => {
+            document.getElementById(id).addEventListener('change', e => { set(e.target.value); renderAll(); });
+        });
         // 1. Render fallback immediately (zero delay for students)
         renderAll();
         // 2. Fetch fresh data asynchronously
