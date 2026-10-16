@@ -601,6 +601,10 @@
         "name": "حلويات قداح اخوان",
         "phone": "0988945773",
         "note": "35W5+9QR السوق القديم, Al Qadmus, Syria"
+      },
+      {
+        "name": "كافيه فيروز",
+        "phone": "0958646660"
       }
     ],
     "rental": [
@@ -1161,7 +1165,8 @@
     "719fcdd2fbd46b5904db1a58928ea3ffb8ab7ed5d3bdae268563c41e00fd97cf": "approved",
     "f87f8f6b123e3d70c65628e49cd66c06420bf2a61f8331c5a221f8139cee625a": "approved",
     "54c8a3ff3ac22ab7faa6e083ee9ca910d7c8a5bb29316199cf45288d7d2ecfe8": "approved",
-    "3fa8bd2c3f19a2ee191f4526d8d5cc1ff43ee16030f40ee54938782b27eadd73": "approved"
+    "3fa8bd2c3f19a2ee191f4526d8d5cc1ff43ee16030f40ee54938782b27eadd73": "approved",
+    "2c086924d4325ef3897dbd9a528f6b5d623745e5c1524e33ff90e6594c368cc6": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1257,6 +1262,10 @@
       "updated": "2026-10-16"
     },
     "d06254a9-46eb-4635-9291-cd168f0a5841": {
+      "status": "approved",
+      "updated": "2026-10-16"
+    },
+    "66f8ee39-81b6-4694-b54f-6e93f2eaa11e": {
       "status": "approved",
       "updated": "2026-10-16"
     }
