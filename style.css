@@ -822,7 +822,7 @@ body {
 .directory-detail .category-items-list > .contact-item { border: 1px solid var(--color-slate-200); }
 @media (min-width: 700px) {
   .category-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .directory-detail .category-items-list { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .directory-detail .category-items-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (min-width: 1050px) { .category-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
@@ -833,6 +833,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
+  height: 100%;
   transition: background-color 0.15s ease;
   background-color: #ffffff;
 }
@@ -969,7 +970,7 @@ body {
   gap: 0.5rem;
   padding-top: 0.55rem;
   border-top: 1px dashed var(--color-slate-200);
-  margin-top: 0.15rem;
+  margin-top: auto;
 }
 
 .contact-primary-actions {

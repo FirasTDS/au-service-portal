@@ -23,9 +23,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=33">
-    <script src="portal-features.js?v=33"></script>
-    <script src="rates.js?v=33"></script>
+    <link rel="stylesheet" href="style.css?v=35">
+    <script src="portal-features.js?v=35"></script>
+    <script src="rates.js?v=35"></script>
 </head>
 <body>
 
@@ -621,6 +621,16 @@
       <p style="font-size:0.82rem; color:var(--color-slate-600);">الجهة التي ستُبلَّغ عنها:</p>
       <p id="reportItemName" style="font-size:1rem; font-weight:800; color:var(--color-slate-800); margin-top:0.25rem;"></p>
       <div class="form-group" style="margin-top:0.5rem;">
+        <label class="form-label" for="reportField">المعلومة الخاطئة *</label>
+        <select id="reportField" class="form-select">
+          <option value="رقم الهاتف">رقم الهاتف</option>
+          <option value="الاسم">الاسم</option>
+          <option value="العنوان">العنوان</option>
+          <option value="ساعات الدوام">ساعات الدوام</option>
+          <option value="معلومة أخرى">معلومة أخرى</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-top:0.5rem;">
         <label class="form-label" for="reportNote">تفاصيل المشكلة *</label>
         <textarea id="reportNote" class="form-textarea" placeholder="مثال: الرقم لا يرد، خط مقطوع، الاسم خاطئ..." required></textarea>
       </div>
@@ -1077,6 +1087,11 @@
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                             <span>زيارة الرابط</span>
                         </a>
+                        ${!item.phone ? `
+                        <button type="button" class="btn-secondary btn-report report-shortcut" data-action="suggest-details" data-name="${nameEscaped}" title="اقتراح الرقم أو تفاصيل ناقصة" aria-label="اقتراح تفاصيل ناقصة لـ ${nameEscaped}">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>
+                            <span>اقترح التفاصيل</span>
+                        </button>` : ''}
                     </div>
                     <div class="contact-tool-actions">
                         <button type="button" class="btn-icon btn-report" data-action="report" data-name="${nameEscaped}" data-phone="${targetUrl}" title="إبلاغ عن رابط غير صالح" aria-label="إبلاغ عن رابط معطل">
@@ -1676,6 +1691,8 @@
             rateItem(key, stars, name);
         } else if (action === 'report') {
             openReportModal(btn.getAttribute('data-name'), btn.getAttribute('data-phone'));
+        } else if (action === 'suggest-details') {
+            suggestMissingDetails(btn.getAttribute('data-name'));
         }
     });
 
@@ -1805,6 +1822,14 @@
     }
 
     // --- MODAL SYSTEM (Accessible, ESC, Click-Outside) ---
+    function suggestMissingDetails(name) {
+        openModal('suggestModal');
+        const nameInput = document.getElementById('sugName');
+        const phoneInput = document.getElementById('sugPhone');
+        if (nameInput) nameInput.value = name || '';
+        if (phoneInput) { phoneInput.value = ''; phoneInput.focus(); }
+    }
+
     function openModal(id) {
         const modal = document.getElementById(id);
         if (modal) {
@@ -1926,6 +1951,7 @@
         reportingItem = { name, phone };
         document.getElementById('reportItemName').textContent = `${name} (${phone})`;
         document.getElementById('reportNote').value = '';
+        document.getElementById('reportField').selectedIndex = 0;
         document.getElementById('reportError').classList.remove('form-error-show');
         document.getElementById('reportSuccess').style.display = 'none';
         openModal('reportModal');
@@ -1934,6 +1960,7 @@
     async function submitReport() {
         if (!reportingItem) return;
         const note = document.getElementById('reportNote').value.trim();
+        const field = document.getElementById('reportField').value;
         const errEl = document.getElementById('reportError');
         const successEl = document.getElementById('reportSuccess');
         const btn = document.getElementById('btnSubmitReport');
@@ -1954,7 +1981,7 @@
         fd.append(ENTRIES.category, "إبلاغ عن رقم مقطوع أو مشكلة");
         fd.append(ENTRIES.name, reportingItem.name);
         fd.append(ENTRIES.phone, reportingItem.phone);
-        fd.append(ENTRIES.notes, `[بلاغ خطأ]: ${note}`);
+        fd.append(ENTRIES.notes, `[بلاغ خطأ | ${field}]: ${note}`);
 
         try {
             await fetch(GOOGLE_FORM_URL, {
@@ -1979,7 +2006,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v33';
+    const APP_VERSION = 'v35';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.

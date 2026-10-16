@@ -170,6 +170,29 @@ test('new categories are wired in directory, forms, admin and duplicate checks',
         assert.ok(Array.isArray(data.services[key]), 'data ' + key);
     }
     assert.ok(data.services.clinics.length >= 10 && data.services.bakeries.length >= 2 && data.services.butchers.length >= 3);
+    const find = (cat, name) => data.services[cat].find(x => x.name === name);
+    assert.ok(find('sweets', 'مرعي').note.includes('35X6+J9V'), 'skipped-row address merged into مرعي');
+    assert.ok(find('restaurants', 'فطاير محمود').note.includes('4525+RQ3'), 'skipped-row address merged into فطاير محمود');
+    assert.ok(find('supermarkets', 'ستوب اند شوب').note.includes('4537+J3P'), 'skipped-row address merged into ستوب اند شوب');
+    assert.ok(find('emergency', 'مشفى القدموس الوطني').note.includes('445X+2Q2'), 'skipped-row address merged into hospital');
+
+test('places without a phone offer a details suggestion with the name prefilled', () => {
+    const index = read('index.html');
+    assert.ok(index.includes('data-action="suggest-details"'), 'suggest button rendered');
+    const els = {};
+    const el = () => ({ value: '', focus() {}, classList: { add() {}, remove() {} }, querySelector() { return null; } });
+    const ctx = vm.createContext({
+        document: { getElementById(id) { return els[id] || (els[id] = el()); }, addEventListener() {}, querySelectorAll() { return []; } },
+        window: { addEventListener() {} },
+        setTimeout,
+    });
+    loadFn(ctx, index, 'function openModal(');
+    loadFn(ctx, index, 'function suggestMissingDetails(');
+    ctx.suggestMissingDetails('فطاير الغدير');
+    assert.equal(els.sugName.value, 'فطاير الغدير');
+    assert.equal(els.sugPhone.value, '');
+    assert.ok(els.suggestModal, 'suggestion modal opened');
+});
     const admin = read('admin.html');
     for (const [key, label] of [['clinics', 'الأطباء والعيادات'], ['bakeries', 'مخابز'], ['butchers', 'ملاحم'], ['university', 'عيادات جامعة الأندلس']]) {
         assert.ok(admin.includes(`<option value="${key}">`), 'admin option ' + key);

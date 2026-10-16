@@ -121,3 +121,50 @@ test('pharmacy suggestions map to the pharmacies directory, not emergency', () =
     assert.equal(result.cat,'pharmacies');
     assert.equal(ctx.categoryFromLabel('صيدليات القدموس'),'pharmacies');
 });
+
+function extractFn(src, marker) {
+    const start = src.indexOf(marker);
+    let depth = 0;
+    let i = src.indexOf('{', start);
+    for (; i < src.length; i++) {
+        if (src[i] === '{') depth++;
+        if (src[i] === '}') { depth--; if (!depth) return src.slice(start, i + 1); }
+    }
+    throw new Error('unbalanced ' + marker);
+}
+
+test('detail cards share row height with bottom-aligned actions', () => {
+    const css = read('style.css');
+    assert.ok(!css.includes('category-items-list { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }'));
+    assert.match(css, /\.contact-item\s*\{[^}]*height:\s*100%/);
+    assert.match(css, /\.contact-footer\s*\{[^}]*margin-top:\s*auto/);
+});
+
+test('report modal specifies which info is wrong and submits it with the report', async () => {
+    const index = read('index.html');
+    assert.ok(index.includes('id="reportField"'));
+    for (const opt of ['رقم الهاتف', 'الاسم', 'العنوان', 'ساعات الدوام', 'معلومة أخرى']) {
+        assert.ok(index.includes('<option value="' + opt + '">'), opt);
+    }
+    const els = {};
+    const mkEl = () => ({ value: '', textContent: '', disabled: false, innerHTML: '', style: {},
+        classList: { add() {}, remove() {} }, querySelector() { return null; } });
+    let posted = null;
+    const ctx = vm.createContext({
+        document: { getElementById(id) { return els[id] || (els[id] = mkEl()); }, addEventListener() {}, querySelectorAll() { return []; } },
+        window: { addEventListener() {} }, setTimeout: () => 0,
+        fetch: async (url, opts) => { posted = opts.body; return {}; }, FormData, URL,
+    });
+    const entriesStart = index.indexOf('const GOOGLE_FORM_URL');
+    vm.runInContext(index.slice(entriesStart, index.indexOf('\n    };', entriesStart) + 8) + '\nlet reportingItem = null;', ctx);
+    vm.runInContext(extractFn(index, 'function openModal('), ctx);
+    vm.runInContext(extractFn(index, 'function openReportModal('), ctx);
+    vm.runInContext(extractFn(index, 'async function submitReport('), ctx);
+    ctx.openReportModal('مكتبة الفيصل', '0949071072');
+    els.reportField.value = 'الاسم';
+    els.reportNote.value = 'الاسم ناقص';
+    await ctx.submitReport();
+    const notes = Object.fromEntries(posted.entries())['entry.40821348'];
+    assert.ok(notes.includes('[بلاغ خطأ | الاسم]:'), notes);
+    assert.ok(notes.includes('الاسم ناقص'), notes);
+});
