@@ -617,6 +617,18 @@
       {
         "name": "كافيه فيروز",
         "phone": "0958646660"
+      },
+      {
+        "name": "M7",
+        "link": "https://www.instagram.com/m7_cafe_1?psln=Mzk3MnN5NTN6a25o"
+      },
+      {
+        "name": "Sugar bar",
+        "link": "https://www.instagram.com/sugarbar2026?srtk=c2Q0cTc3cjMybnBv"
+      },
+      {
+        "name": "كافيه شهلا",
+        "link": "https://www.instagram.com/shahla_cafe?vrfl=MTNxcjl1bHl3NnNoNw=="
       }
     ],
     "rental": [
@@ -1192,7 +1204,10 @@
     "e38cb11c3d2595a903d53ed059d2880e2f80c4e703440b6f3d4a72d2cdefd4c0": "approved",
     "fc8df043833ddae76a03b1ed66d74b12ed588f2590a4286b1531cfb233336c9a": "approved",
     "ad0dc483d4ddde9005fc4a304267c7f1be824b57e029efdf24ed964f415df392": "approved",
-    "5d1b03a62bb3927ce9216f14e1cd8eedf56d4cd7ba78678f46e29b23ea5b5f3e": "approved"
+    "5d1b03a62bb3927ce9216f14e1cd8eedf56d4cd7ba78678f46e29b23ea5b5f3e": "approved",
+    "d099c7ef69e2be845def6967bd14f3025d021afc9c093866b26d56dc917de32d": "approved",
+    "b05bb0f94b5b3b11860efd63149dbbb017c960097d0acf34d8619ca2bfa17f3c": "approved",
+    "56636464b184efbc493b60127c6ad0868efeae136d85880b74b3f168340d50c2": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1312,6 +1327,18 @@
       "updated": "2026-10-16"
     },
     "7e0ad69a-97e3-405c-8da9-5f4344d3cc70": {
+      "status": "approved",
+      "updated": "2026-10-16"
+    },
+    "78270797-e868-4ff3-91a0-dc4b00ddc2d9": {
+      "status": "approved",
+      "updated": "2026-10-16"
+    },
+    "6fdd5bb9-3c0b-44b7-a7e7-486a99e3c72b": {
+      "status": "approved",
+      "updated": "2026-10-16"
+    },
+    "bc2c27e9-6eea-4613-8fd1-d65b8a3ece33": {
       "status": "approved",
       "updated": "2026-10-16"
     }
