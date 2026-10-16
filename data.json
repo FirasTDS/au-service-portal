@@ -433,6 +433,11 @@
         "name": "مكتبة عمار",
         "phone": "0933368162",
         "note": "متوفر من 8 صباحا حتى 4 عصرا والجمعة عطلة"
+      },
+      {
+        "name": "قاعة مطالعة برايت هوب (study zone)",
+        "phone": "0991824958",
+        "note": "Bright Hub جانب مطعم  الخليل"
       }
     ],
     "maintenance": [
@@ -616,6 +621,10 @@
         "name": "مجموعة طنجور للعقارات",
         "phone": "0988929432",
         "note": "المكتب قرب الكراجات"
+      },
+      {
+        "name": "مكتب الكاسر العقاري خلف المخفر تحت مطعم مروان",
+        "phone": "0933995541"
       }
     ],
     "clinics": [
@@ -1166,7 +1175,9 @@
     "f87f8f6b123e3d70c65628e49cd66c06420bf2a61f8331c5a221f8139cee625a": "approved",
     "54c8a3ff3ac22ab7faa6e083ee9ca910d7c8a5bb29316199cf45288d7d2ecfe8": "approved",
     "3fa8bd2c3f19a2ee191f4526d8d5cc1ff43ee16030f40ee54938782b27eadd73": "approved",
-    "2c086924d4325ef3897dbd9a528f6b5d623745e5c1524e33ff90e6594c368cc6": "approved"
+    "2c086924d4325ef3897dbd9a528f6b5d623745e5c1524e33ff90e6594c368cc6": "approved",
+    "40f63047a8435be39f6a2cfdc0b64499dd4aa568ce17810a2d96e0104632057f": "approved",
+    "e38cb11c3d2595a903d53ed059d2880e2f80c4e703440b6f3d4a72d2cdefd4c0": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1266,6 +1277,14 @@
       "updated": "2026-10-16"
     },
     "66f8ee39-81b6-4694-b54f-6e93f2eaa11e": {
+      "status": "approved",
+      "updated": "2026-10-16"
+    },
+    "0d9c20d7-ff16-477b-9b8b-2ee8c8be6c00": {
+      "status": "approved",
+      "updated": "2026-10-16"
+    },
+    "dc0f3c82-8cd6-46d8-b08f-6bf2f71aa412": {
       "status": "approved",
       "updated": "2026-10-16"
     }
