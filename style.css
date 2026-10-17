@@ -755,6 +755,37 @@ body {
 #dashboardSection .admin-item-meta { min-width:0; overflow-wrap:anywhere; }
 #dashboardSection .admin-item-row > div:last-of-type { flex-wrap:wrap; }
 #dashboardSection .admin-card { min-width:0; }
+#suggestionsTableContainer { min-width:0; max-width:100%; }
+.inbox-toolbar-actions { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; min-width:0; }
+.inbox-table { width:100%; table-layout:fixed; border-collapse:collapse; font-size:.8rem; text-align:right; }
+.inbox-col-select { width:4%; }
+.inbox-col-type { width:10%; }
+.inbox-col-category { width:12%; }
+.inbox-col-city { width:8%; }
+.inbox-col-name { width:13%; }
+.inbox-col-contact { width:17%; }
+.inbox-col-notes { width:21%; }
+.inbox-col-actions { width:15%; }
+.inbox-table th, .inbox-table td { min-width:0; vertical-align:top; overflow-wrap:anywhere; line-height:1.7; }
+.inbox-contact { display:block; max-width:100%; font-family:monospace; text-align:left; white-space:normal; overflow-wrap:anywhere; unicode-bidi:isolate; }
+.inbox-notes { white-space:pre-line; }
+.inbox-action-buttons { display:flex; flex-direction:column; align-items:stretch; gap:.4rem; }
+.inbox-action-buttons > button { white-space:normal; overflow-wrap:anywhere; min-width:0; width:100%; margin-top:0 !important; }
+.inbox-action-buttons svg { flex-shrink:0; }
+@media (max-width:900px) {
+  .inbox-table, .inbox-table tbody { display:block; }
+  .inbox-table colgroup { display:none; }
+  .inbox-table thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+  .inbox-table tbody { display:grid; gap:1rem; }
+  .inbox-table tbody tr { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border:1px solid var(--color-slate-200); border-radius:12px; padding:.35rem; }
+  .inbox-table tbody td { display:block; text-align:start !important; }
+  .inbox-table td::before { content:attr(data-label); display:block; color:var(--color-slate-500); font:700 .7rem 'Cairo',sans-serif; margin-bottom:.25rem; }
+  .inbox-table td.inbox-select { display:flex; align-items:center; gap:.5rem; }
+  .inbox-table td.inbox-select::before { margin:0; }
+  .inbox-table td.inbox-notes, .inbox-table td.inbox-actions { grid-column:1/-1; }
+  .inbox-action-buttons { flex-direction:row; flex-wrap:wrap; }
+  .inbox-action-buttons > button { flex:1 1 9rem; width:auto; }
+}
 @media (min-width:700px) { .extra-fields { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width:500px) {
   #dashboardSection .admin-card { padding:.85rem; }

@@ -6,12 +6,12 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=49"></script>
+    <script src="shared.js?v=50"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=49">
-    <script src="portal-features.js?v=49"></script>
+    <link rel="stylesheet" href="style.css?v=50">
+    <script src="portal-features.js?v=50"></script>
 </head>
 <body>
 
@@ -126,7 +126,7 @@
                             مزامنة مباشرة مع Google Sheet — يمكنك مراجعة اقتراحات الطلاب واعتمادها بضغطة زر
                         </p>
                     </div>
-                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <div class="inbox-toolbar-actions">
                         <button type="button" onclick="fetchLiveSuggestions()" id="btnRefreshSheet" class="btn-secondary" style="font-size: 0.75rem; padding: 0.4rem 0.75rem;">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
                             <span>تحديث الردود</span>
@@ -142,7 +142,7 @@
                     جاري فحص الاقتراحات الواردة...
                 </div>
 
-                <div id="suggestionsTableContainer" style="display: none; overflow-x: auto;">
+                <div id="suggestionsTableContainer" style="display: none;">
                     <div id="bulkBar" style="display:flex; flex-wrap:wrap; align-items:center; gap:0.5rem; padding:0.6rem 0.25rem;">
                         <label style="display:flex; align-items:center; gap:0.35rem; font-size:0.78rem; font-weight:800; cursor:pointer;">
                             <input type="checkbox" id="bulkSelectAll" onchange="toggleBulkSelectAll(this.checked)"> تحديد الكل
@@ -152,7 +152,8 @@
                         <button type="button" onclick="reloadAdminFromGitHub()" id="btnSyncGitHub" class="btn-secondary" style="font-size:0.75rem; padding:0.4rem 0.8rem;">مزامنة من GitHub</button>
                         <span id="bulkCount" style="font-size:0.75rem; color:var(--color-slate-500);"></span>
                     </div>
-                    <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: right;">
+                    <table class="inbox-table" aria-label="اقتراحات وبلاغات الطلاب الواردة">
+                        <colgroup><col class="inbox-col-select"><col class="inbox-col-type"><col class="inbox-col-category"><col class="inbox-col-city"><col class="inbox-col-name"><col class="inbox-col-contact"><col class="inbox-col-notes"><col class="inbox-col-actions"></colgroup>
                         <thead>
                             <tr style="background-color: var(--color-slate-100); border-bottom: 2px solid var(--color-slate-200); color: var(--color-slate-700);">
                                 <th style="padding: 0.65rem 0.75rem; text-align:center;">✓</th>
@@ -1366,29 +1367,30 @@
 
                     return `
                         <tr style="border-bottom: 1px solid var(--color-slate-200); background-color: ${isReport ? 'var(--color-red-soft)' : 'var(--surface)'};">
-                            <td style="padding: 0.65rem 0.5rem; text-align:center;">
+                            <td class="inbox-select" data-label="تحديد" style="padding: 0.65rem 0.5rem; text-align:center;">
                                 ${!decision && !isReport && !isRating && !alreadyExists && !contact.error ? `<input type="checkbox" data-bulk="${item.id}" onchange="updateBulkCount()" aria-label="تحديد ${escapeHtml(item.name)}">` : ''}
                             </td>
-                            <td style="padding: 0.65rem 0.75rem;">
+                            <td data-label="النوع" style="padding: 0.65rem 0.75rem;">
                                 <span class="admin-badge ${badgeClass}">${badgeText}</span>
                             </td>
-                            <td style="padding: 0.65rem 0.75rem; font-weight: 700; color: var(--color-slate-700);">
+                            <td data-label="التصنيف" style="padding: 0.65rem 0.75rem; font-weight: 700; color: var(--color-slate-700);">
                                 ${escapeHtml(item.category || '—')}
                             </td>
-                            <td style="padding: 0.65rem 0.75rem; color: var(--color-slate-600);">
+                            <td data-label="المحافظة" style="padding: 0.65rem 0.75rem; color: var(--color-slate-600);">
                                 ${escapeHtml(item.city || 'القدموس')}
                             </td>
-                            <td style="padding: 0.65rem 0.75rem; font-weight: 800; color: var(--color-slate-900);">
+                            <td data-label="الاسم" style="padding: 0.65rem 0.75rem; font-weight: 800; color: var(--color-slate-900);">
                                 ${escapeHtml(item.name)}
                             </td>
-                            <td style="padding: 0.65rem 0.75rem; font-family: monospace;" dir="ltr">
-                                ${escapeHtml(contact.value)}
+                            <td class="inbox-contact-cell" data-label="الرقم / الرابط" style="padding: 0.65rem 0.75rem;">
+                                <bdi class="inbox-contact" dir="ltr">${escapeHtml(contact.value)}</bdi>
                                 ${contact.error ? '<span class="admin-badge admin-badge-amber">يحتاج تصحيح الرقم</span>' : ''}
                             </td>
-                            <td style="padding: 0.65rem 0.75rem; font-size: 0.75rem; color: var(--color-slate-600); max-width: 220px;">
+                            <td class="inbox-notes" data-label="ملاحظات / بلاغ" style="padding: 0.65rem 0.75rem; font-size: 0.75rem; color: var(--color-slate-600);">
                                 ${escapeHtml(reportNotesSummary(item.notes || '—'))}
                             </td>
-                            <td style="padding: 0.65rem 0.75rem; text-align: center;">
+                            <td class="inbox-actions" data-label="إجراء" style="padding: 0.65rem 0.75rem; text-align: center;">
+                                <div class="inbox-action-buttons">
                                  ${decision === 'ignored' ? '<span class="admin-badge admin-badge-amber">لم يُعتمد / تم التجاهل</span>' : decision === 'approved' ? '<span class="admin-badge admin-badge-teal">تم الاعتماد والنشر ✓</span>' : decision === 'resolved' ? '<span class="admin-badge admin-badge-teal">تم الحل ✓</span>' : isReport ? `
                                     ${item.notes.includes('[تصحيح:') ? `<button type="button" onclick="applyReportCorrection(${item.id})" class="btn-primary">مراجعة التصحيحات وتطبيقها</button>` : ''}
                                     <button type="button" onclick="resolveReport(${item.id})" class="btn-primary" style="font-size: 0.725rem; padding: 0.35rem 0.65rem;">
@@ -1405,6 +1407,7 @@
                                     </button>
                                 `}
                                 ${decision === 'resolved' ? `<button type="button" onclick="reopenReport(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">إعادة فتح</button>` : decision === 'ignored' ? `<button type="button" onclick="ignoreSuggestion(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">إعادة للمراجعة</button>` : !decision ? `<button type="button" onclick="ignoreSuggestion(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">${isReport || isRating ? 'تجاهل' : 'رفض الاقتراح'}</button>` : ''}
+                                </div>
                             </td>
                         </tr>
                     `;

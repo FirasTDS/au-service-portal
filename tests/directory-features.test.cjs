@@ -14,6 +14,20 @@ function setup(data) {
     return context;
 }
 
+test('admin inbox bounds long contacts and has labelled responsive rows', () => {
+    const admin = read('admin.html');
+    const css = read('style.css');
+    assert.ok(admin.includes('class="inbox-table"'));
+    assert.ok(admin.includes('class="inbox-contact" dir="ltr"'));
+    for (const label of ['تحديد','النوع','التصنيف','المحافظة','الاسم','الرقم / الرابط','ملاحظات / بلاغ','إجراء']) {
+        assert.ok(admin.includes(`data-label="${label}"`), label);
+    }
+    assert.ok(css.includes('table-layout:fixed'));
+    assert.ok(css.includes('.inbox-contact {') && css.includes('overflow-wrap:anywhere'));
+    assert.ok(css.includes('.inbox-table tbody tr { display:grid;'));
+    assert.ok(css.includes('.inbox-action-buttons > button'));
+});
+
 test('stars preview cumulatively on hover and keyboard focus, with numeric labels', () => {
     const css = read('style.css');
     assert.ok(css.includes('.stars-list:has(.star-btn:is(:hover, :focus)) .star-btn'));
