@@ -1,12 +1,56 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-10-17T03:19:40+00:00",
-  "total_ratings": 1,
+  "fetched_at": "2026-10-17T22:47:59+00:00",
+  "total_ratings": 14,
   "places": {
     "0933574279\nشاهين": {
       "avg": 5.0,
       "count": 1
+    },
+    "0949071072\nمكتبة الفيصل": {
+      "avg": 5.0,
+      "count": 2
+    },
+    "0952532845\nستوب اند شوب": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "0994207644\nموتور التوصيل ابراهيم": {
+      "avg": 4.0,
+      "count": 1
+    },
+    "0991824958\nقاعة مطالعة برايت هوب (study zone)": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "0947785541\nمطعم برايم فود": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "0996538589\nمطعم الأحمد": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "https://www.google.com/maps/place/MA+Donut+shop/@35.103549,36.162327,14z/data=!4m8!1m2!2m1!1sMA+Donut+shop!3m4!1s0x1523ef003039bd1b:0xdb0b9334ac978873!8m2!3d35.103549!4d36.162327\nMA Donut shop": {
+      "avg": 1.0,
+      "count": 1
+    },
+    "0944866328\nمكتب الحسن للإعمار": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "https://www.instagram.com/sugarbar2026?srtk=c2Q0cTc3cjMybnBv\nSugar bar": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "0933135318\nتكسي لؤي": {
+      "avg": 1.0,
+      "count": 1
+    },
+    "0992571491\nأحمد موتور توصيل": {
+      "avg": 5.0,
+      "count": 2
     }
   }
 }
