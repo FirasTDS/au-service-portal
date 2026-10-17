@@ -23,10 +23,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=41">
-    <script src="portal-features.js?v=41"></script>
-    <script src="rates.js?v=41"></script>
-    <script src="ratings.js?v=41"></script>
+    <link rel="stylesheet" href="style.css?v=42">
+    <script src="portal-features.js?v=42"></script>
+    <script src="rates.js?v=42"></script>
+    <script src="ratings.js?v=42"></script>
 </head>
 <body>
 
@@ -1043,10 +1043,6 @@
         if (!Number.isInteger(stars) || stars < 1 || stars > 5) return;
         const userRatings = getLocalUserRatings();
         const previousStars = Object.hasOwn(userRatings, key) ? userRatings[key] : null;
-        if (previousStars === stars) {
-            showToast(`تقييمك الحالي (${getStarLabel(stars)}) ⭐ — اضغط نجمة أخرى لتعديله`);
-            return;
-        }
 
         userRatings[key] = stars;
         try {
@@ -1068,7 +1064,7 @@
         try {
             const fd = new FormData();
             fd.append(ENTRIES.type, "تقييم خدمة موجودة حالياً");
-            fd.append(ENTRIES.category, "تقييم من الدليل التفاعلي");
+            fd.append(ENTRIES.category, "أخرى");
             fd.append(ENTRIES.name, itemName);
             fd.append(ENTRIES.phone, key);
             fd.append(ENTRIES.rating, stars.toString());
@@ -2194,7 +2190,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v41';
+    const APP_VERSION = 'v42';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.
