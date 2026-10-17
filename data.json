@@ -539,6 +539,11 @@
       {
         "name": "تكسي لؤي",
         "phone": "0933135318"
+      },
+      {
+        "name": "جعفر ابو سلطان",
+        "phone": "0992623300",
+        "note": "طلبات داخل القدموس و خارجها و محترم و يؤتمن عبر مصاري امين بكلشي و يونثق فيو و يحترم الحرمة الحدود مع النساء"
       }
     ],
     "sweets": [
@@ -1239,7 +1244,8 @@
     "d099c7ef69e2be845def6967bd14f3025d021afc9c093866b26d56dc917de32d": "approved",
     "b05bb0f94b5b3b11860efd63149dbbb017c960097d0acf34d8619ca2bfa17f3c": "approved",
     "56636464b184efbc493b60127c6ad0868efeae136d85880b74b3f168340d50c2": "approved",
-    "2dd5ef55ae37e23962b85f4ac5eaa035eebc008c03bf2182b196d0a7ad04b102": "approved"
+    "2dd5ef55ae37e23962b85f4ac5eaa035eebc008c03bf2182b196d0a7ad04b102": "approved",
+    "372cd9b8c047e4e377f355afff454a1300ddee718f9811d3f399e07dbcbe970f": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1375,6 +1381,10 @@
       "updated": "2026-10-16"
     },
     "094621d3-6a85-43d4-a136-ac72b7788660": {
+      "status": "approved",
+      "updated": "2026-10-17"
+    },
+    "238e6cd0-5002-45ab-98f6-fca627770364": {
       "status": "approved",
       "updated": "2026-10-17"
     }
