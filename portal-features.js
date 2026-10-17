@@ -6,6 +6,92 @@ function placeRatingKey(contact, name) {
     return String(contact || '').trim() + '\n' + String(name || '').trim();
 }
 
+const REPORT_FIELDS = {contact:['رقم الهاتف','reportPhone'], name:['الاسم','reportName'], address:['العنوان','reportAddress'], hours:['ساعات الدوام','reportHours'], note:['معلومة أخرى','reportOther']};
+
+function reportValue(item, key) {
+    return key === 'contact' ? (item.phone || item.link || '') : (item[key] ?? null);
+}
+
+function prepareReportCorrections(target) {
+    const matches = directoryEntries(portalData).filter(e => e.item.name === target.name && (e.item.phone || e.item.link || '') === target.phone);
+    target.original = matches.length === 1 ? structuredClone(matches[0].item) : null;
+    Object.values(REPORT_FIELDS).forEach(([,id]) => { document.getElementById(id).value = ''; });
+    const update = () => {
+        const selected = [...document.querySelectorAll('#reportField input:checked')].map(input => input.value);
+        document.querySelectorAll('[data-correction]').forEach(label => { label.hidden = !selected.includes(label.dataset.correction); });
+    };
+    document.getElementById('reportField').onchange = update;
+    update();
+}
+
+function collectReportCorrections(target, selected) {
+    const changes = {}, base = {};
+    for (const [key, [label,id]] of Object.entries(REPORT_FIELDS)) {
+        const value = document.getElementById(id).value.trim();
+        if (!selected.includes(label) || !value) continue;
+        if (!target.original) throw new Error('تعذر تحديد إدخال وحيد للتعديل. أرسل تفاصيل المشكلة فقط.');
+        changes[key] = value;
+        base[key] = reportValue(target.original, key);
+    }
+    if (!Object.keys(changes).length) return null;
+    const patch = {version:1, target:{name:target.name, contact:target.phone}, base, changes};
+    // Validate on both sides; never infer changes from the free-text explanation.
+    validatedReportChanges(target.original, patch);
+    return patch;
+}
+
+function parseReportCorrection(notes) {
+    const match = String(notes || '').match(/\[تصحيح:([^\]\n]+)\]/);
+    if (!match) return null; // Legacy free-text reports remain manual.
+    if (match[1].length > 30000) throw new Error('حجم التصحيح أكبر من المسموح');
+    const patch = JSON.parse(decodeURIComponent(match[1]));
+    if (!patch || patch.version !== 1 || !patch.target || !patch.base || !patch.changes || Array.isArray(patch.changes)) throw new Error('صيغة التصحيح غير صالحة');
+    return patch;
+}
+
+function validatedReportChanges(original, patch) {
+    const keys = Object.keys(patch.changes);
+    if (!keys.length || keys.some(key => !Object.hasOwn(REPORT_FIELDS, key))) throw new Error('حقول تصحيح غير صالحة');
+    const next = structuredClone(original);
+    for (const key of keys) {
+        if (!Object.hasOwn(patch.base, key) || JSON.stringify(reportValue(original, key)) !== JSON.stringify(patch.base[key])) throw new Error('تغيرت البيانات منذ إرسال البلاغ. راجعها يدوياً.');
+        const value = patch.changes[key];
+        if (typeof value !== 'string' || !value.trim() || value.length > 2000) throw new Error('قيمة التصحيح غير صالحة');
+        if (key === 'contact') {
+            const contact = normalizeContactInput(value);
+            if (contact.error) throw new Error(contact.error);
+            delete next.phone; delete next.link;
+            next[contact.link ? 'link' : 'phone'] = contact.value;
+        } else if (key === 'hours') {
+            const hours = parseHoursText(value);
+            if (!hours) throw new Error('ساعات الدوام غير مفهومة — مثال: 08:00-22:00');
+            // No days were supplied: retain the existing working days.
+            if (original.hours?.days) hours.days = structuredClone(original.hours.days);
+            next.hours = hours;
+        } else next[key] = value.trim();
+    }
+    return next;
+}
+
+function planReportCorrection(data, report) {
+    const patch = parseReportCorrection(report.notes);
+    if (!patch) throw new Error('هذا بلاغ نصي قديم. عدّل البيانات يدوياً.');
+    if (patch.target.name !== report.name || patch.target.contact !== report.phone) throw new Error('هدف التصحيح لا يطابق البلاغ');
+    const matches = directoryEntries(data).filter(e => e.item.name === patch.target.name && (e.item.phone || e.item.link || '') === patch.target.contact);
+    if (matches.length !== 1) throw new Error('لا توجد مطابقة وحيدة للاسم والرقم — راجع يدوياً.');
+    const entry = matches[0];
+    return {entry, next:validatedReportChanges(entry.item, patch), patch};
+}
+
+function reportNotesSummary(notes) {
+    try {
+        const patch = parseReportCorrection(notes);
+        if (!patch) return notes;
+        return String(notes).replace(/\[تصحيح:[^\]\n]+\]/, '').trim() + '\n' +
+            Object.entries(patch.changes).map(([key,value]) => `${REPORT_FIELDS[key]?.[0] || key}: ${value}`).join('\n');
+    } catch { return 'تصحيح غير صالح — راجع البلاغ الأصلي يدوياً.\n' + String(notes); }
+}
+
 // These labels must match the actual Google Form choices, not internal categories.
 function formCategory(label) {
     const choices = ['مطاعم القدموس', 'سوبر ماركت', 'حلويات وكافيه', 'شركات المواصلات سرفيس او بولمان', 'صهاريج وتعبئة مياه', 'حوالات وشحن طرود', 'مكتبات وطباعة وقرطاسية', 'خدمات وصيانة سكنات', 'طوارئ ومراكز صحية', 'تكاسي وموتورات داخل القدموس', 'مكاتب الإيجار', 'عيادات جامعة الأندلس', 'ملاحم', 'مخابز', 'الأطباء والعيادات', 'أخرى'];

@@ -19,14 +19,14 @@
     <meta name="theme-color" content="#0f4c42">
     <link rel="icon" type="image/png" href="Asset%201.png">
     <link rel="apple-touch-icon" href="Asset%201.png">
-    <script src="shared.js?v=46"></script>
+    <script src="shared.js?v=47"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=46">
-    <script src="portal-features.js?v=46"></script>
-    <script src="rates.js?v=46"></script>
-    <script src="ratings.js?v=46"></script>
+    <link rel="stylesheet" href="style.css?v=47">
+    <script src="portal-features.js?v=47"></script>
+    <script src="rates.js?v=47"></script>
+    <script src="ratings.js?v=47"></script>
 </head>
 <body>
 
@@ -688,6 +688,14 @@
           <label><input type="checkbox" name="reportFields" value="ساعات الدوام"> ساعات الدوام</label>
           <label><input type="checkbox" name="reportFields" value="معلومة أخرى"> معلومة أخرى</label>
         </fieldset>
+      </div>
+      <div id="reportCorrections" class="extra-fields">
+        <p class="contact-note">اختر المعلومات أعلاه ثم اكتب القيم الصحيحة أدناه. اترك القيمة فارغة إذا كنت تبلغ عن مشكلة فقط.</p>
+        <label class="form-label" data-correction="رقم الهاتف">الرقم الصحيح أو رابط الصفحة<input id="reportPhone" class="form-input" dir="ltr"></label>
+        <label class="form-label" data-correction="الاسم">الاسم الصحيح<input id="reportName" class="form-input"></label>
+        <label class="form-label" data-correction="العنوان">العنوان الصحيح<input id="reportAddress" class="form-input"></label>
+        <label class="form-label" data-correction="ساعات الدوام">ساعات الدوام الصحيحة<input id="reportHours" class="form-input" placeholder="08:00-22:00 أو 24 ساعة"></label>
+        <label class="form-label" data-correction="معلومة أخرى">الملاحظة الصحيحة (ستستبدل الملاحظة الحالية)<textarea id="reportOther" class="form-textarea"></textarea></label>
       </div>
       <div class="form-group" style="margin-top:0.5rem;">
         <label class="form-label" for="reportNote">تفاصيل الأخطاء والتصحيحات المقترحة *</label>
@@ -2140,6 +2148,7 @@
         document.getElementById('reportItemName').textContent = `${name} (${phone})`;
         document.getElementById('reportNote').value = '';
         document.querySelectorAll('#reportField input').forEach(input => { input.checked = input.value === 'رقم الهاتف'; });
+        prepareReportCorrections(reportingItem);
         document.getElementById('reportError').classList.remove('form-error-show');
         document.getElementById('reportSuccess').style.display = 'none';
         openModal('reportModal');
@@ -2167,6 +2176,14 @@
             return;
         }
 
+        let correction;
+        try { correction = collectReportCorrections(reportingItem, fields); }
+        catch (error) {
+            errEl.textContent = error.message;
+            errEl.classList.add('form-error-show');
+            return;
+        }
+
         btn.disabled = true;
         btn.innerHTML = '<span>جاري الإرسال...</span>';
 
@@ -2175,7 +2192,7 @@
         fd.append(ENTRIES.category, "أخرى");
         fd.append(ENTRIES.name, reportingItem.name);
         fd.append(ENTRIES.phone, reportingItem.phone);
-        fd.append(ENTRIES.notes, `[بلاغ خطأ | ${field}]: ${note}`);
+        fd.append(ENTRIES.notes, `[بلاغ خطأ | ${field}]: ${note}` + (correction ? `\n[تصحيح:${encodeURIComponent(JSON.stringify(correction))}]` : ''));
 
         try {
             await fetch(GOOGLE_FORM_URL, {
@@ -2200,7 +2217,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v46';
+    const APP_VERSION = 'v47';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.

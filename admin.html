@@ -6,12 +6,12 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=46"></script>
+    <script src="shared.js?v=47"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=46">
-    <script src="portal-features.js?v=46"></script>
+    <link rel="stylesheet" href="style.css?v=47">
+    <script src="portal-features.js?v=47"></script>
 </head>
 <body>
 
@@ -1209,6 +1209,23 @@
             if (ok) showToast(`تم وضع علامة "تم الحل" على بلاغ (${item.name}).`);
         }
 
+        async function applyReportCorrection(id) {
+            if (!sessionToken || document.getElementById('btnPushGitHub').disabled) return;
+            const report = liveSuggestions.find(item => item.id === id);
+            if (!report || adminData.suggestion_reviews?.[report.reviewKey] === 'resolved') return;
+            try {
+                const plan = planReportCorrection(adminData, report);
+                const preview = Object.keys(plan.patch.changes).map(key =>
+                    `${REPORT_FIELDS[key][0]}:\n${JSON.stringify(reportValue(plan.entry.item, key))}\n← ${JSON.stringify(reportValue(plan.next, key))}`).join('\n\n');
+                if (!confirm(`مراجعة تصحيحات (${report.name}) قبل النشر:\n\n${preview}\n\nتطبيق هذه التعديلات فقط ونشرها؟`)) return;
+                const previousData = structuredClone(adminData);
+                Object.keys(plan.entry.item).forEach(key => { delete plan.entry.item[key]; });
+                Object.assign(plan.entry.item, plan.next);
+                const saved = await persistSuggestionDecisions({[report.reviewKey]:'resolved'}, previousData);
+                if (saved) showToast('تم تطبيق التصحيحات ونشرها.');
+            } catch (error) { showToast(error.message, 'error'); }
+        }
+
         async function deleteReportedEntry(id) {
             if (!sessionToken || document.getElementById('btnPushGitHub').disabled) return;
             const item = liveSuggestions.find(s => s.id === id);
@@ -1369,10 +1386,11 @@
                                 ${contact.error ? '<span class="admin-badge admin-badge-amber">يحتاج تصحيح الرقم</span>' : ''}
                             </td>
                             <td style="padding: 0.65rem 0.75rem; font-size: 0.75rem; color: var(--color-slate-600); max-width: 220px;">
-                                ${escapeHtml(item.notes || '—')}
+                                ${escapeHtml(reportNotesSummary(item.notes || '—'))}
                             </td>
                             <td style="padding: 0.65rem 0.75rem; text-align: center;">
-                                ${decision === 'ignored' ? '<span class="admin-badge admin-badge-amber">لم يُعتمد / تم التجاهل</span>' : decision === 'approved' ? '<span class="admin-badge admin-badge-teal">تم الاعتماد والنشر ✓</span>' : decision === 'resolved' ? '<span class="admin-badge admin-badge-teal">تم الحل ✓</span>' : isReport ? `
+                                 ${decision === 'ignored' ? '<span class="admin-badge admin-badge-amber">لم يُعتمد / تم التجاهل</span>' : decision === 'approved' ? '<span class="admin-badge admin-badge-teal">تم الاعتماد والنشر ✓</span>' : decision === 'resolved' ? '<span class="admin-badge admin-badge-teal">تم الحل ✓</span>' : isReport ? `
+                                    ${item.notes.includes('[تصحيح:') ? `<button type="button" onclick="applyReportCorrection(${item.id})" class="btn-primary">مراجعة التصحيحات وتطبيقها</button>` : ''}
                                     <button type="button" onclick="resolveReport(${item.id})" class="btn-primary" style="font-size: 0.725rem; padding: 0.35rem 0.65rem;">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                                         <span>تم الحل</span>

@@ -14,6 +14,52 @@ function setup(data) {
     return context;
 }
 
+test('structured reports apply only reviewed fields to one exact target and reject stale or unsafe changes', () => {
+    const original = {name:'A',phone:'0991111111',address:'old',note:'keep',specialty:'طب',hours:{open:'08:00',close:'12:00',days:[0,1]}};
+    const other = {name:'B',phone:'0991111111',note:'unrelated'};
+    const data = {services:{clinics:[original,other]},transport:[]};
+    const ctx = setup(data);
+    const patch = {version:1,target:{name:'A',contact:'0991111111'},base:{name:'A',address:'old',hours:original.hours},
+        changes:{name:'New A',address:'new',hours:'09:00-14:00'}};
+    const report = {name:'A',phone:'0991111111',notes:'[بلاغ خطأ | الاسم، العنوان، ساعات الدوام]: تصحيح\n[تصحيح:' + encodeURIComponent(JSON.stringify(patch)) + ']'};
+    const plan = ctx.planReportCorrection(data, report);
+    assert.equal(plan.entry.item, original);
+    assert.equal(plan.next.name, 'New A');
+    assert.equal(plan.next.address, 'new');
+    assert.equal(plan.next.note, 'keep');
+    assert.equal(plan.next.specialty, 'طب');
+    assert.deepEqual(plan.next.hours.days, [0,1]);
+    assert.equal(original.name, 'A', 'planning does not mutate data');
+    assert.equal(other.note, 'unrelated');
+    assert.ok(ctx.reportNotesSummary(report.notes).includes('العنوان: new'));
+    assert.ok(!ctx.reportNotesSummary(report.notes).includes('[تصحيح:'));
+    original.address = 'admin updated';
+    assert.throws(()=>ctx.planReportCorrection(data, report), /تغيرت البيانات/);
+    original.address = 'old';
+    assert.throws(()=>ctx.planReportCorrection(data, {...report,name:'B'}), /لا يطابق/);
+    data.services.clinics.push(structuredClone(original));
+    assert.throws(()=>ctx.planReportCorrection(data, report), /مطابقة وحيدة/);
+    assert.equal(ctx.parseReportCorrection('[بلاغ خطأ]: نص قديم'), null);
+    assert.throws(()=>ctx.parseReportCorrection('[تصحيح:%invalid]'));
+    assert.throws(()=>ctx.validatedReportChanges(original,{base:{name:'A'},changes:{admin:true}}));
+    assert.throws(()=>ctx.validatedReportChanges(original,{base:{contact:'0991111111'},changes:{contact:'invalid'}}));
+    assert.throws(()=>ctx.validatedReportChanges(original,{base:{hours:original.hours},changes:{hours:'13م-14م'}}));
+});
+
+test('correction form serializes selected explicit values without parsing the explanation', () => {
+    const ctx = setup({services:{},transport:[]});
+    const original = {name:'A',phone:'0991111111',address:'old'};
+    const values = {reportName:'New name',reportAddress:'new',reportHours:'',reportPhone:'',reportOther:''};
+    ctx.document.getElementById = id => ({value:values[id] || ''});
+    const patch = ctx.collectReportCorrections({name:'A',phone:'0991111111',original}, ['الاسم','العنوان']);
+    assert.equal(patch.changes.name, 'New name');
+    assert.equal(patch.changes.address, 'new');
+    assert.equal(patch.base.address, 'old');
+    assert.equal(ctx.collectReportCorrections({name:'A',phone:'0991111111',original}, ['رقم الهاتف']), null);
+    assert.ok(read('admin.html').includes('async function applyReportCorrection('));
+    assert.ok(read('admin.html').includes('persistSuggestionDecisions({[report.reviewKey]:\'resolved\'}, previousData)'));
+});
+
 test('all form submissions use real form choices; analytics cannot enter the inbox', () => {
     const index = read('index.html');
     const types = ['اقتراح إضافة رقم أو خدمة جديدة', 'تقييم خدمة موجودة حالياً'];
@@ -211,6 +257,8 @@ test('report modal specifies which info is wrong and submits it with the report'
     vm.runInContext(extractFn(index, 'function openModal('), ctx);
     vm.runInContext(extractFn(index, 'function openReportModal('), ctx);
     vm.runInContext(extractFn(index, 'async function submitReport('), ctx);
+    ctx.prepareReportCorrections = () => {};
+    ctx.collectReportCorrections = () => null;
     ctx.openReportModal('مكتبة الفيصل', '0949071072');
     // Empty selection is rejected, then multiple corrections share one submission.
     els.reportNote.value = 'الاسم ناقص';
