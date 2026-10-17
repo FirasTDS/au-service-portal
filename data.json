@@ -234,6 +234,15 @@
       {
         "name": "مطعم. gan food",
         "phone": "0952532316"
+      },
+      {
+        "name": "مطعم شهد العسل",
+        "phone": "0993979581",
+        "hours": {
+          "open": "09:00",
+          "close": "01:00"
+        },
+        "note": "يوجد توصيل وطلبات خارجية وجميع أنواع الاكل والمشاريب"
       }
     ],
     "supermarkets": [
@@ -1240,7 +1249,8 @@
     "b05bb0f94b5b3b11860efd63149dbbb017c960097d0acf34d8619ca2bfa17f3c": "approved",
     "56636464b184efbc493b60127c6ad0868efeae136d85880b74b3f168340d50c2": "approved",
     "2dd5ef55ae37e23962b85f4ac5eaa035eebc008c03bf2182b196d0a7ad04b102": "approved",
-    "372cd9b8c047e4e377f355afff454a1300ddee718f9811d3f399e07dbcbe970f": "approved"
+    "372cd9b8c047e4e377f355afff454a1300ddee718f9811d3f399e07dbcbe970f": "approved",
+    "a4ac8930a50cdf740d18f0d058c9a3aff0db1a4caeb98171960bc0cdedcf3384": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1380,6 +1390,10 @@
       "updated": "2026-10-17"
     },
     "238e6cd0-5002-45ab-98f6-fca627770364": {
+      "status": "approved",
+      "updated": "2026-10-17"
+    },
+    "90815108-c843-4a90-8aff-113a8c62c617": {
       "status": "approved",
       "updated": "2026-10-17"
     }
