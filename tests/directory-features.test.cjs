@@ -14,6 +14,17 @@ function setup(data) {
     return context;
 }
 
+test('stars preview cumulatively on hover and keyboard focus, with numeric labels', () => {
+    const css = read('style.css');
+    assert.ok(css.includes('.stars-list:has(.star-btn:is(:hover, :focus)) .star-btn'));
+    assert.ok(css.includes('.star-btn:has(~ .star-btn:hover)'));
+    assert.ok(css.includes('.star-btn:has(~ .star-btn:focus)'));
+    assert.ok(css.includes('.star-btn:focus-visible'));
+    assert.ok(read('index.html').includes('title="${s}/5 — ${label}"'));
+    const hint = css.match(/\.pharmacy-directory-hint\s*\{([^}]+)\}/)[1];
+    assert.ok(hint.includes('padding:') && hint.includes('line-height:'));
+});
+
 test('structured reports apply only reviewed fields to one exact target and reject stale or unsafe changes', () => {
     const original = {name:'A',phone:'0991111111',address:'old',note:'keep',specialty:'طب',hours:{open:'08:00',close:'12:00',days:[0,1]}};
     const other = {name:'B',phone:'0991111111',note:'unrelated'};

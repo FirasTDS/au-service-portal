@@ -628,7 +628,8 @@ body {
 .category-icon {
   width: 20px;
   height: 20px;
-  color: #fca5a5;
+  color: inherit;
+  flex-shrink: 0;
 }
 
 .category-count {
@@ -804,7 +805,7 @@ body {
 }.category-group + .category-group { border-top:1px solid var(--color-slate-200); padding-top:1.5rem; margin-top:2rem; }
 .category-group h3 { font-size:1.1rem; color:var(--color-teal-dark); }
 .category-group > p { color:var(--color-slate-500); font-size:.8rem; margin:.35rem 0 1rem; }
-.pharmacy-directory-hint { color:var(--color-slate-500); font-size:.75rem; margin:0 .9rem .5rem; }
+.pharmacy-directory-hint { color:var(--color-slate-600); background:var(--color-teal-soft); border-bottom:1px solid var(--color-teal-border); font-size:.8rem; line-height:1.8; margin:0; padding:.65rem 1rem; }
 .category-tile { display: flex; flex-direction: column; align-items: flex-start; gap: .65rem; text-align: right; padding: 1.15rem; border: 1px solid var(--color-slate-200); border-radius: var(--radius-lg); background: var(--surface, white); color: var(--color-slate-900); font: inherit; cursor: pointer; min-width: 0; }
 .category-tile svg { width: 28px; height: 28px; color: var(--color-teal); }
 .category-tile strong { font-size: .95rem; }
@@ -945,6 +946,23 @@ body {
 .star-btn svg {
   width: 14px;
   height: 14px;
+}
+
+/* Buttons are ordered 1..5 (right to left in Arabic). Preview every star
+   through the hovered/focused value, not just the one under the pointer.
+   Temporarily clear a saved higher score while previewing a lower one. */
+.stars-list:has(.star-btn:is(:hover, :focus)) .star-btn {
+  color: var(--color-slate-300);
+}
+.stars-list:has(.star-btn:hover) .star-btn:hover,
+.stars-list:has(.star-btn:hover) .star-btn:has(~ .star-btn:hover),
+.stars-list:not(:has(.star-btn:hover)):has(.star-btn:focus) .star-btn:focus,
+.stars-list:not(:has(.star-btn:hover)):has(.star-btn:focus) .star-btn:has(~ .star-btn:focus) {
+  color: var(--color-amber-light);
+}
+.star-btn:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 2px;
 }
 
 .rating-score {

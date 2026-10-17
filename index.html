@@ -19,14 +19,14 @@
     <meta name="theme-color" content="#0f4c42">
     <link rel="icon" type="image/png" href="Asset%201.png">
     <link rel="apple-touch-icon" href="Asset%201.png">
-    <script src="shared.js?v=47"></script>
+    <script src="shared.js?v=48"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=47">
-    <script src="portal-features.js?v=47"></script>
-    <script src="rates.js?v=47"></script>
-    <script src="ratings.js?v=47"></script>
+    <link rel="stylesheet" href="style.css?v=48">
+    <script src="portal-features.js?v=48"></script>
+    <script src="rates.js?v=48"></script>
+    <script src="ratings.js?v=48"></script>
 </head>
 <body>
 
@@ -1108,7 +1108,7 @@
             const starClass = isFilled ? 'star-btn star-filled' : 'star-btn';
             const label = getStarLabel(s);
             starsBtns += `
-                <button type="button" class="${starClass}" data-action="rate" data-key="${escapeHtml(key)}" data-contact="${escapeHtml(contact)}" data-stars="${s}" data-name="${escapeHtml(item.name)}" title="${userStars ? 'تعديل التقييم إلى' : 'قيّم بـ'} ${label}" aria-label="${userStars ? 'تعديل التقييم إلى' : 'تقييم بـ'} ${label}" aria-pressed="${userStars === s}">
+                <button type="button" class="${starClass}" data-action="rate" data-key="${escapeHtml(key)}" data-contact="${escapeHtml(contact)}" data-stars="${s}" data-name="${escapeHtml(item.name)}" title="${s}/5 — ${label}" aria-label="${userStars ? 'تعديل التقييم إلى' : 'تقييم بـ'} ${s}/5 — ${label}" aria-pressed="${userStars === s}">
                     <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                 </button>
             `;
@@ -2217,7 +2217,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v47';
+    const APP_VERSION = 'v48';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.
