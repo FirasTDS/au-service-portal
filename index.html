@@ -23,9 +23,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=39">
-    <script src="portal-features.js?v=39"></script>
-    <script src="rates.js?v=39"></script>
+    <link rel="stylesheet" href="style.css?v=40">
+    <script src="portal-features.js?v=40"></script>
+    <script src="rates.js?v=40"></script>
 </head>
 <body>
 
@@ -182,8 +182,7 @@
     </div>
   </div>
 
-  <section id="categoryBrowser" aria-labelledby="browseTitle">
-    <h2 id="browseTitle" tabindex="-1">شو بدك اليوم؟</h2>
+  <section id="categoryBrowser" aria-label="أقسام الدليل" tabindex="-1">
     <div id="categoryTiles">
       <section class="category-group" data-category-group="services" aria-labelledby="localCategoriesTitle">
         <h3 id="localCategoriesTitle">خدمات داخل القدموس</h3>
@@ -1699,7 +1698,7 @@
         document.getElementById('searchInput').value = '';
         filterItems();
         const tile = [...document.querySelectorAll('.category-tile')].find(el => el.dataset.list === previous && !el.hidden);
-        (tile || document.getElementById('browseTitle')).focus();
+        (tile || document.getElementById('categoryBrowser')).focus();
     }
 
     // --- TAB SWITCHING ---
@@ -2171,7 +2170,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v39';
+    const APP_VERSION = 'v40';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.
