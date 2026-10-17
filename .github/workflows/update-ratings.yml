@@ -1,0 +1,40 @@
+name: Aggregate visitor ratings
+on:
+  schedule:
+    # 00:00 Damascus (UTC+3) = 21:00 UTC the previous day.
+    - cron: '0 21 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/update-ratings.py
+      - .github/workflows/update-ratings.yml
+permissions:
+  contents: write
+concurrency:
+  group: visitor-ratings
+  cancel-in-progress: false
+jobs:
+  aggregate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Self-test the aggregator
+        run: python scripts/update-ratings.py --selftest
+      - name: Read the form sheet and average every rating
+        run: python scripts/update-ratings.py
+      - name: Publish only the ratings snapshot
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add ratings.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Aggregate visitor ratings from the form sheet'
+          git pull --rebase origin main
+          git push origin HEAD:main

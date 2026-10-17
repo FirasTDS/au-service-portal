@@ -88,10 +88,64 @@ function hoursLabel(hours) {
     return `${hours.open} - ${hours.close}${days}`;
 }
 
-function getOpenStatusBadge(item) {
+// Free text (student suggestions, admin notes) -> structured hours. Returns null when unclear.
+// Accepts: "08:00-22:00", "8ص-10م", "من 8 صباحاً حتى 12 ظهراً", "٩:٣٠-١٨:٠٠", "24 ساعة", "طوال اليوم".
+function parseHoursText(text) {
+    if (typeof text !== 'string') return null;
+    let normalized = text
+        .replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x0660)) // Arabic-Indic digits
+        .replace(/[\u06F0-\u06F9]/g, d => String(d.charCodeAt(0) - 0x06F0)) // Eastern Arabic-Indic digits
+        .replace(/[\u064B-\u065F\u0670\u0640]/g, '')                        // diacritics + tatweel
+        .replace(/(\d)\.(?=\d)/g, '$1:')                                   // "8.00" -> "8:00"
+        .replace(/[:.,،]+/g, m => (m === ':' ? ':' : ' '))                  // keep HH:MM, split on other punctuation
+        .replace(/[-–—]+/g, ' ')                                            // range dashes
+        .replace(/\s+/g, ' ')
+        .trim();
+    if (!normalized) return null;
+    if (/طوال اليوم|بشكل دائم|لا يتوقف|بلا توقف/.test(normalized)) return { allday: true };
+    if (/(^|\D)24(\D|$)/.test(normalized) && /ساع|يوم|دائم|طوال|always/i.test(normalized)) return { allday: true };
+    // Attach meridiem words glued to digits ("8ص" -> "8 ص").
+    normalized = normalized.replace(/(\d)\s?(صباحا|صباح|مساءا|مساء|ظهرا|ظهر|ليلا|ليل|ص|م|am|pm)(?=\s|$)/gi, '$1 $2');
+    const tokens = normalized.split(' ');
+    const isMer = (token, kind) => {
+        if (!token) return false;
+        if (kind === 'am') return /^(صباحا|صباح|ص|am)$/i.test(token);
+        if (kind === 'pm') return /^(مساءا|مساء|م|pm)$/i.test(token);
+        if (kind === 'noon') return /^(ظهرا|ظهر)$/i.test(token);
+        return /^(ليلا|ليل)$/i.test(token);
+    };
+    const found = [];
+    tokens.forEach((token, i) => {
+        const m = token.match(/^([01]?\d|2[0-3])(?::([0-5]\d))?$/);
+        if (!m) return;
+        // A meridiem right after the time wins; one right before it counts only when
+        // it is not already consumed by an earlier time ("8 ص 10 م").
+        const next = tokens[i + 1] || '';
+        const prev = tokens[i - 1] || '';
+        const prevIsTime = /^([01]?\d|2[0-3])(?::([0-5]\d))?$/.test(tokens[i - 2] || '');
+        let mer = '';
+        for (const kind of ['am', 'pm', 'noon', 'night']) {
+            if (isMer(next, kind)) { mer = kind; break; }
+            if (!prevIsTime && isMer(prev, kind)) { mer = kind; break; }
+        }
+        found.push({ h: parseInt(m[1], 10), mm: m[2] || '00', mer });
+    });
+    if (found.length !== 2) return null;
+    const to24 = ({ h, mm, mer }) => {
+        const pad = value => String(value).padStart(2, '0') + ':' + mm;
+        if (mer === 'pm') return pad(h === 12 ? 12 : h + 12);
+        if (mer === 'am') return pad(h % 12);
+        if (mer === 'noon') return pad(h);
+        if (mer === 'night') return pad(h < 6 ? h : (h === 12 ? 0 : h + 12));
+        return pad(h); // already 24h or plain morning hour
+    };
+    const open = to24(found[0]), close = to24(found[1]);
+    return open === close ? null : { open, close };
+}
+
+function getOpenStatusBadge(item, now = damascusNow()) {
     const hours = item && item.hours;
     if (!hours || typeof hours !== 'object') return '';
-    const now = damascusNow();
     if (Array.isArray(hours.days) && hours.days.length && !hours.days.includes(now.day)) {
         return '<span class="status-badge status-badge-closed"><span class="status-dot"></span>مغلق اليوم</span>';
     }

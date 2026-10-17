@@ -23,9 +23,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=40">
-    <script src="portal-features.js?v=40"></script>
-    <script src="rates.js?v=40"></script>
+    <link rel="stylesheet" href="style.css?v=41">
+    <script src="portal-features.js?v=41"></script>
+    <script src="rates.js?v=41"></script>
+    <script src="ratings.js?v=41"></script>
 </head>
 <body>
 
@@ -596,6 +597,11 @@
           <label class="form-label" for="sugNotes">ملاحظات إضافية (اختياري)</label>
           <input type="text" id="sugNotes" class="form-input" placeholder="مثال: يوصل للسكن / يطلع الخميس...">
         </div>
+        <div class="form-group">
+          <label class="form-label" for="sugHours">ساعات الدوام (اختياري)</label>
+          <input type="text" id="sugHours" class="form-input" placeholder="مثال: 08:00-22:00 أو 8ص-10م أو 24 ساعة" aria-describedby="sugHoursHint">
+          <small id="sugHoursHint" class="contact-note">تظهر شارة «مفتوح الآن / مغلق» على بطاقة المكان إذا كانت ساعات الدوام صحيحة.</small>
+        </div>
         <div id="suggestError" class="form-error"></div>
         <div id="suggestSuccess" style="display:none; font-size:0.82rem; font-weight:700; color:var(--color-teal); background:var(--color-teal-soft); border:1px solid var(--color-teal-border); padding:0.65rem 0.85rem; border-radius:var(--radius-md);">
           ✅ تم إرسال اقتراحك بنجاح! شكراً لمساهمتك.
@@ -1084,6 +1090,10 @@
         const key = item.phone || item.link || item.name;
         const userRatings = getLocalUserRatings();
         const userStars = userRatings[key];
+        const place = typeof visitorRatingFor === 'function' ? visitorRatingFor(key) : null;
+        const averageHtml = place
+            ? `<span class="rating-average" title="متوسط تقييمات الزوار — يُحدَّث يومياً">⭐ ${typeof formatVisitorRating === 'function' ? formatVisitorRating(place) : place.avg.toFixed(1)}</span>`
+            : '';
 
         let starsBtns = '';
         for (let s = 1; s <= 5; s++) {
@@ -1102,7 +1112,7 @@
                 <div class="rating-bar">
                     <div class="stars-list">${starsBtns}</div>
                     <span class="rating-score">تقييمك: ${userStars}/5</span>
-                    <span class="rating-unrated">اضغط نجمة أخرى للتعديل</span>
+                    ${averageHtml ? `${averageHtml}<span class="rating-unrated">— اضغط نجمة للتعديل</span>` : '<span class="rating-unrated">اضغط نجمة أخرى للتعديل</span>'}
                 </div>
             `;
         }
@@ -1110,7 +1120,7 @@
         return `
             <div class="rating-bar">
                 <div class="stars-list">${starsBtns}</div>
-                <span class="rating-unrated">قيّم الخدمة</span>
+                ${averageHtml || '<span class="rating-unrated">قيّم الخدمة</span>'}
             </div>
         `;
     }
@@ -1673,11 +1683,17 @@
                 copy.style.removeProperty('color');
                 button.appendChild(copy);
             }
+            const titleRow = document.createElement('span');
+            titleRow.className = 'tile-title-row';
             const title = document.createElement('strong');
             title.textContent = header.querySelector('.category-title').textContent;
-            button.appendChild(title);
+            const chip = document.createElement('span');
+            chip.className = 'tile-count';
+            chip.textContent = String(count);
+            titleRow.append(title, chip);
+            button.appendChild(titleRow);
             const hint = document.createElement('span');
-            hint.textContent = `${count} جهة اتصال · عرض الأرقام ←`;
+            hint.textContent = count ? 'عرض الأرقام ←' : 'أضف أول رقم ←';
             button.appendChild(hint);
             button.onclick = () => {
                 navigateCategory(id);
@@ -2042,7 +2058,7 @@
         const name = document.getElementById('sugName').value.trim();
         const contact = normalizeContactInput(document.getElementById('sugPhone').value);
         const phone = contact.value;
-        const notes = document.getElementById('sugNotes').value.trim() + suggestionDeliveryNotes();
+        const notes = document.getElementById('sugNotes').value.trim() + suggestionDeliveryNotes() + suggestionHoursNotes();
         const errEl = document.getElementById('suggestError');
         const successEl = document.getElementById('suggestSuccess');
         const btn = document.getElementById('btnSubmitSug');
@@ -2065,6 +2081,13 @@
 
         if (category === 'شركات المواصلات سرفيس او بولمان' && !city) {
             errEl.textContent = 'يرجى كتابة اسم المحافظة.';
+            errEl.classList.add('form-error-show');
+            return;
+        }
+
+        const hoursError = suggestionHoursError(document.getElementById('sugHours').value.trim());
+        if (hoursError) {
+            errEl.textContent = hoursError;
             errEl.classList.add('form-error-show');
             return;
         }
@@ -2094,6 +2117,7 @@
             document.getElementById('sugPhone').value = '';
             document.getElementById('sugNotes').value = '';
             document.getElementById('sugCity').value = '';
+            document.getElementById('sugHours').value = '';
 
             setTimeout(() => {
                 successEl.style.display = 'none';
@@ -2170,7 +2194,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v40';
+    const APP_VERSION = 'v41';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.

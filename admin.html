@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=40">
-    <script src="portal-features.js?v=40"></script>
+    <link rel="stylesheet" href="style.css?v=41">
+    <script src="portal-features.js?v=41"></script>
 </head>
 <body>
 
@@ -1122,8 +1122,7 @@
             if (contact.error) { showToast(contact.error, 'error'); return null; }
             const val = contact.value;
             const newItem = /^https?:\/\//i.test(val) ? { name: item.name.trim(), link: val } : { name: item.name.trim(), phone: val };
-            const cleanedNotes = cleanSuggestionNotes(item.notes);
-            if (cleanedNotes) newItem.note = cleanedNotes;
+            let cleanedNotes = cleanSuggestionNotes(item.notes);
             if (cat === 'delivery') {
                 const delivery = {};
                 for (const [key, label] of [['areas','مناطق التوصيل'],['fee','أجرة التوصيل'],['kind','نوع الطلبات']]) {
@@ -1136,6 +1135,15 @@
                 const line = cleanedNotes.split('\n').find(text => text.startsWith('الاختصاص:'));
                 if (line) newItem.specialty = line.slice('الاختصاص:'.length).trim();
             }
+            const hoursLine = cleanedNotes.split('\n').find(text => text.startsWith('ساعات الدوام:'));
+            if (hoursLine) {
+                const parsedHours = parseHoursText(hoursLine.slice('ساعات الدوام:'.length));
+                if (parsedHours) {
+                    newItem.hours = parsedHours;
+                    cleanedNotes = cleanedNotes.split('\n').filter(text => !text.startsWith('ساعات الدوام:')).join('\n').trim();
+                }
+            }
+            if (cleanedNotes) newItem.note = cleanedNotes;
             return { cat, newItem, city: item.city.trim() };
         }
 

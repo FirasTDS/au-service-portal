@@ -246,3 +246,73 @@ test('admin header has a working light/dark mode switcher', () => {
     assert.equal(store.susa_theme, 'light');
     assert.ok(toasts.length > 0);
 });
+
+test('hours free text parses into structured hours and drives the open/closed badge', () => {
+    const ctx = setup({services:{},transport:[]});
+    const hours = text => ({...ctx.parseHoursText(text)});
+    assert.deepEqual(hours('24 ساعة'), {allday:true});
+    assert.deepEqual(hours('08:00-22:00'), {open:'08:00',close:'22:00'});
+    assert.deepEqual(hours('8ص-10م'), {open:'08:00',close:'22:00'});
+    assert.deepEqual(hours('من 8 صباحاً حتى 12 ظهراً'), {open:'08:00',close:'12:00'});
+    assert.deepEqual(hours('٩:٣٠-١٨:٠٠'), {open:'09:30',close:'18:00'});
+    assert.deepEqual(hours('11 ص - 1 ليلاً'), {open:'11:00',close:'01:00'});
+    assert.equal(ctx.parseHoursText('مفتوح دائما'), null);
+    assert.equal(ctx.parseHoursText('8:00-8:00'), null);
+    assert.equal(ctx.parseHoursText(''), null);
+    const badge = (item, now) => ctx.getOpenStatusBadge(item, now);
+    assert.ok(badge({hours:{open:'08:00',close:'22:00'}}, {day:2,minutes:9*60}).includes('مفتوح الآن'));
+    assert.ok(badge({hours:{open:'08:00',close:'22:00'}}, {day:2,minutes:23*60}).includes('مغلق حالياً'));
+    assert.ok(badge({hours:{open:'22:00',close:'02:00'}}, {day:2,minutes:23*60}).includes('مفتوح الآن'), 'overnight range');
+    assert.ok(badge({hours:{allday:true}}, {day:2,minutes:9*60}).includes('مفتوح 24 ساعة'));
+    assert.ok(badge({hours:{open:'08:00',close:'22:00',days:[0,1]}}, {day:2,minutes:9*60}).includes('مغلق اليوم'));
+    assert.equal(badge({}, {day:2,minutes:9*60}), '', 'no hours, no badge');
+});
+
+test('suggestion form validates hours text and sends it as a notes line', () => {
+    const ctx = setup({services:{},transport:[]});
+    assert.equal(ctx.suggestionHoursError(''), '');
+    assert.equal(ctx.suggestionHoursError('08:00-22:00'), '');
+    assert.match(ctx.suggestionHoursError('غدا'), /غير مفهومة/);
+    ctx.document.getElementById = id => ({value: id === 'sugHours' ? '8ص-10م' : ''});
+    assert.equal(ctx.suggestionHoursNotes(), '\nساعات الدوام: 8ص-10م');
+    ctx.document.getElementById = id => ({value: ''});
+    assert.equal(ctx.suggestionHoursNotes(), '');
+    const index = read('index.html');
+    assert.ok(index.includes('id="sugHours"'), 'hours input in suggestion form');
+    assert.ok(index.includes('suggestionHoursError('), 'hours validation before submit');
+});
+
+test('approved suggestions carry parsed hours and drop the notes line', () => {
+    const ctx = setup({services:{restaurants:[]},transport:[]});
+    ctx.checkItemExists = () => false;
+    const admin = read('admin.html');
+    vm.runInContext(admin.slice(admin.indexOf('        function buildApprovedItem('),admin.indexOf('        async function bulkApprove(')),ctx);
+    const result = ctx.buildApprovedItem({type:'اقتراح',category:'مطاعم القدموس',name:'Test',phone:'0991111111',city:'القدموس',
+        notes:`توصيل للسكن\nساعات الدوام: 8ص-10م\n[طلب:${webcrypto.randomUUID()}]`});
+    assert.equal(result.cat,'restaurants');
+    assert.deepEqual({...result.newItem.hours}, {open:'08:00',close:'22:00'});
+    assert.ok(!result.newItem.note.includes('ساعات الدوام'), result.newItem.note);
+    assert.ok(result.newItem.note.includes('توصيل للسكن'));
+});
+
+test('category tiles show a count chip and admin hours fields stay wired', () => {
+    const index = read('index.html');
+    assert.ok(index.includes("chip.className = 'tile-count'"), 'count chip on tiles');
+    assert.ok(index.includes('id="sugHours"'));
+    const admin = read('admin.html');
+    assert.ok(admin.includes('id="newHoursOpen"') && admin.includes('id="editHoursOpen"'), 'admin hours inputs');
+    assert.ok(admin.includes('collectHours('), 'admin collects hours');
+    const shared = read('shared.js');
+    assert.ok(shared.includes('function parseHoursText('));
+});
+
+test('seeded opening hours follow the structured schema', () => {
+    const data = JSON.parse(read('data.json'));
+    const ctx = setup({services:{},transport:[]});
+    const entries = [];
+    Object.values(data.services).forEach(list => list.forEach(item => { if (item.hours) entries.push(item); }));
+    assert.ok(entries.length >= 3, 'seeded hours entries');
+    for (const item of entries) {
+        assert.ok(ctx.hoursLabel(item.hours), item.name + ' has valid hours');
+    }
+});

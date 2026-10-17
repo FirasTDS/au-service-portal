@@ -809,6 +809,8 @@ body {
 .category-tile svg { width: 28px; height: 28px; color: var(--color-teal); }
 .category-tile strong { font-size: .95rem; }
 .category-tile span { color: var(--color-slate-500); font-size: .75rem; }
+.tile-title-row { display: flex; align-items: center; justify-content: space-between; gap: .5rem; width: 100%; min-width: 0; }
+.category-tile .tile-count { min-width: 1.7rem; height: 1.7rem; padding: 0 .45rem; display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; background: var(--color-teal-soft); color: var(--color-teal-dark); border: 1px solid var(--color-teal-border); font-size: .78rem; font-weight: 800; }
 .category-tile:hover { border-color: var(--color-teal); background: var(--color-teal-soft); }
 .category-tile:focus-visible { outline: 3px solid var(--color-teal); outline-offset: 3px; }
 .browse-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem; margin: 1.25rem 0; }
@@ -960,6 +962,17 @@ body {
   font-size: 0.7rem;
   color: var(--color-slate-400);
   font-weight: 600;
+}
+
+.rating-average {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--color-amber);
+  background: var(--color-amber-soft);
+  border: 1px solid var(--color-amber-border, #fde68a);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  white-space: nowrap;
 }
 
 /* Contact Footer Actions Bar */

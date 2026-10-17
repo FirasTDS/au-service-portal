@@ -88,6 +88,17 @@ function suggestionDeliveryNotes() {
 
 function cleanSuggestionNotes(notes) { return String(notes || '').replace(/\[طلب:[a-f0-9-]{36}\]/g, '').trim(); }
 
+// Optional opening hours from the suggestion form travel inside the notes entry.
+function suggestionHoursNotes() {
+    const value = document.getElementById('sugHours')?.value.trim();
+    return value ? `\nساعات الدوام: ${value}` : '';
+}
+
+function suggestionHoursError(hoursText) {
+    if (!hoursText) return '';
+    return parseHoursText(hoursText) ? '' : 'صيغة ساعات الدوام غير مفهومة — مثال: 08:00-22:00 أو 8ص-10م أو 24 ساعة';
+}
+
 function trackingIdFromNotes(notes) { return String(notes || '').match(/\[طلب:([a-f0-9-]{36})\]/)?.[1]; }
 
 function updateTrackingDecisions(statusMap) {
