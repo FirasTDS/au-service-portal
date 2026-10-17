@@ -292,6 +292,9 @@ test('hours free text parses into structured hours and drives the open/closed ba
     assert.deepEqual(hours('11 ص - 1 ليلاً'), {open:'11:00',close:'01:00'});
     assert.equal(ctx.parseHoursText('مفتوح دائما'), null);
     assert.equal(ctx.parseHoursText('8:00-8:00'), null);
+    for (const invalid of ['13م-14م', '0ص-8ص', '23pm-11pm']) {
+        assert.equal(ctx.parseHoursText(invalid), null, invalid);
+    }
     assert.equal(ctx.parseHoursText(''), null);
     const badge = (item, now) => ctx.getOpenStatusBadge(item, now);
     assert.ok(badge({hours:{open:'08:00',close:'22:00'}}, {day:2,minutes:9*60}).includes('مفتوح الآن'));
@@ -300,6 +303,26 @@ test('hours free text parses into structured hours and drives the open/closed ba
     assert.ok(badge({hours:{allday:true}}, {day:2,minutes:9*60}).includes('مفتوح 24 ساعة'));
     assert.ok(badge({hours:{open:'08:00',close:'22:00',days:[0,1]}}, {day:2,minutes:9*60}).includes('مغلق اليوم'));
     assert.equal(badge({}, {day:2,minutes:9*60}), '', 'no hours, no badge');
+    const fridayNight = {hours:{open:'22:00',close:'02:00',days:[5]}};
+    assert.ok(badge(fridayNight, {day:5,minutes:23*60}).includes('مفتوح الآن'));
+    assert.ok(badge(fridayNight, {day:6,minutes:60}).includes('مفتوح الآن'), 'Friday shift continues on Saturday');
+    assert.ok(!badge(fridayNight, {day:5,minutes:60}).includes('مفتوح الآن'), 'Friday morning belongs to Thursday');
+    assert.ok(!badge(fridayNight, {day:6,minutes:120}).includes('مفتوح الآن'), 'closing boundary');
+    const saturdayNight = {hours:{open:'22:00',close:'02:00',days:[6]}};
+    assert.ok(badge(saturdayNight, {day:0,minutes:60}).includes('مفتوح الآن'), 'week wraps Saturday to Sunday');
+});
+
+test('places sharing a phone get distinct rating and receipt keys', () => {
+    const ctx = setup({services:{},transport:[]});
+    const keyA = ctx.placeRatingKey('0991111111', 'A');
+    const keyB = ctx.placeRatingKey('0991111111', 'B');
+    assert.notEqual(keyA, keyB);
+    assert.equal(keyA, '0991111111\nA');
+    assert.equal(ctx.placeRatingKey(' 0991111111 ', ' A '), keyA);
+    const store = {};
+    ctx.portalStorage = {get:k=>store[k], set:(k,v)=>{store[k]=v; return true;}};
+    assert.notEqual(ctx.ratingReceipt(keyA), ctx.ratingReceipt(keyB));
+    assert.ok(read('index.html').includes('rateItem(key, stars, name, btn.dataset.contact)'));
 });
 
 test('suggestion form validates hours text and sends it as a notes line', () => {

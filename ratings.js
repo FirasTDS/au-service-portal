@@ -1,6 +1,6 @@
 // Visitor averages are aggregated server-side nightly from the form sheet; this
 // file only reads the published snapshot. Keys match the local rating key:
-// item.phone || item.link || item.name.
+// placeRatingKey(contact, name), isolating places that share a contact number.
 const RATINGS_URL = 'https://raw.githubusercontent.com/FirasTDS/au-service-portal/main/ratings.json';
 const RATINGS_CACHE = 'portal_visitor_ratings_v1';
 let visitorRatings = null;

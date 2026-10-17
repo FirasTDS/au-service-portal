@@ -131,6 +131,8 @@ function parseHoursText(text) {
         found.push({ h: parseInt(m[1], 10), mm: m[2] || '00', mer });
     });
     if (found.length !== 2) return null;
+    // A 12-hour suffix cannot be attached to a 24-hour value such as 13م.
+    if (found.some(time => time.mer && (time.h < 1 || time.h > 12))) return null;
     const to24 = ({ h, mm, mer }) => {
         const pad = value => String(value).padStart(2, '0') + ':' + mm;
         if (mer === 'pm') return pad(h === 12 ? 12 : h + 12);
@@ -140,22 +142,26 @@ function parseHoursText(text) {
         return pad(h); // already 24h or plain morning hour
     };
     const open = to24(found[0]), close = to24(found[1]);
-    return open === close ? null : { open, close };
+    return !isValidTime(open) || !isValidTime(close) || open === close ? null : { open, close };
 }
 
 function getOpenStatusBadge(item, now = damascusNow()) {
     const hours = item && item.hours;
     if (!hours || typeof hours !== 'object') return '';
-    if (Array.isArray(hours.days) && hours.days.length && !hours.days.includes(now.day)) {
-        return '<span class="status-badge status-badge-closed"><span class="status-dot"></span>مغلق اليوم</span>';
-    }
+    const days = Array.isArray(hours.days) && hours.days.length ? hours.days : [0, 1, 2, 3, 4, 5, 6];
     if (hours.allday) {
+        if (!days.includes(now.day)) return '<span class="status-badge status-badge-closed"><span class="status-dot"></span>مغلق اليوم</span>';
         return '<span class="status-badge status-badge-open"><span class="status-dot"></span>مفتوح 24 ساعة</span>';
     }
     if (!isValidTime(hours.open) || !isValidTime(hours.close)) return '';
     const toMin = t => parseInt(t.slice(0, 2), 10) * 60 + parseInt(t.slice(3), 10);
     const open = toMin(hours.open), close = toMin(hours.close), t = now.minutes;
-    const isOpen = close > open ? (t >= open && t < close) : (t >= open || t < close);
+    // days describes the day the shift STARTS. Early morning belongs to yesterday.
+    const overnight = close < open;
+    const shiftDay = overnight && t < close ? (now.day + 6) % 7 : now.day;
+    const scheduled = days.includes(shiftDay);
+    const isOpen = scheduled && (overnight ? (t >= open || t < close) : (t >= open && t < close));
+    if (!scheduled && !days.includes(now.day)) return '<span class="status-badge status-badge-closed"><span class="status-dot"></span>مغلق اليوم</span>';
     const label = hoursLabel(hours);
     return isOpen
         ? `<span class="status-badge status-badge-open" title="${label}"><span class="status-dot"></span>مفتوح الآن</span>`

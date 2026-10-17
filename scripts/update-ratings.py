@@ -81,6 +81,9 @@ def aggregate(rows):
         key = (item.get('phone') or item.get('name') or '').strip()
         if not key:
             continue
+        name = (item.get('name') or '').strip()
+        if name:
+            key += '\n' + name
         receipt = RECEIPT_RE.search(item.get('notes') or '')
         if receipt:
             identified.setdefault(key, {})[receipt.group(1)] = stars
@@ -123,6 +126,9 @@ def selftest():
     assert aggregate([vote(a, 5), vote(b, 5), vote(a, 2), vote(a, 2)]) == {
         '0990000000': {'avg': 3.5, 'count': 2}}
     assert aggregate([vote(a, 5, '[بلاغ خطأ]')]) == {}
+    assert aggregate([dict(vote(a, 5), name='A'), dict(vote(a, 1), name='B')]) == {
+        '0990000000\nA': {'avg': 5.0, 'count': 1},
+        '0990000000\nB': {'avg': 1.0, 'count': 1}}
     rows = [
         {'type': 'تقييم خدمة موجودة حالياً', 'name': 'مطعم الشام', 'phone': '0991111111', 'rating': '5', 'notes': ''},
         {'type': 'تقييم خدمة موجودة حالياً', 'name': 'مطعم الشام', 'phone': '0991111111', 'rating': '3', 'notes': ''},
@@ -134,9 +140,9 @@ def selftest():
     ]
     places = aggregate(rows)
     # 5 and 3 where the 3 was corrected to 4: [5, 4]
-    assert places['0991111111'] == {'avg': 4.5, 'count': 2}, places
+    assert places['0991111111\nمطعم الشام'] == {'avg': 4.5, 'count': 2}, places
     # a correction whose previous value never occurred still counts once: [2, 1]
-    assert places['0922222222'] == {'avg': 1.5, 'count': 2}, places
+    assert places['0922222222\nبقالة النور'] == {'avg': 1.5, 'count': 2}, places
     assert '0933333333' not in places and '0944444444' not in places
     parsed = parse_csv('a,b\n"x,1","say ""hi"""\n')
     assert parsed[0] == ['a', 'b'] and parsed[1] == ['x,1', 'say "hi"'], parsed

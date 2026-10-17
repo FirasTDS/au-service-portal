@@ -1,6 +1,11 @@
 // Shared directory features. Data changes stay in the admin draft until publishing.
 function cityListId(city) { return 'list-city-' + encodeURIComponent(city); }
 
+// Keep distinct businesses separate even when they share a telephone number.
+function placeRatingKey(contact, name) {
+    return String(contact || '').trim() + '\n' + String(name || '').trim();
+}
+
 // These labels must match the actual Google Form choices, not internal categories.
 function formCategory(label) {
     const choices = ['مطاعم القدموس', 'سوبر ماركت', 'حلويات وكافيه', 'شركات المواصلات سرفيس او بولمان', 'صهاريج وتعبئة مياه', 'حوالات وشحن طرود', 'مكتبات وطباعة وقرطاسية', 'خدمات وصيانة سكنات', 'طوارئ ومراكز صحية', 'تكاسي وموتورات داخل القدموس', 'مكاتب الإيجار', 'عيادات جامعة الأندلس', 'ملاحم', 'مخابز', 'الأطباء والعيادات', 'أخرى'];
@@ -11,6 +16,16 @@ function formCategory(label) {
 function ratingReceipt(key) {
     const storageKey = 'portal_rating_receipt:' + key;
     let id = portalStorage.get(storageKey);
+    // Preserve existing identified votes across the switch to contact+name keys.
+    // The aggregator also scopes receipts by place, so sharing a legacy receipt
+    // does not merge two businesses.
+    if (!id && key.includes('\n')) {
+        const legacy = portalStorage.get('portal_rating_receipt:' + key.split('\n')[0]);
+        if (/^[a-f0-9-]{36}$/.test(legacy || '')) {
+            if (!portalStorage.set(storageKey, legacy)) throw new Error('تعذر حفظ معرّف التقييم');
+            id = legacy;
+        }
+    }
     if (!/^[a-f0-9-]{36}$/.test(id || '')) {
         id = crypto.randomUUID();
         if (!portalStorage.set(storageKey, id)) throw new Error('تعذر حفظ معرّف التقييم');
