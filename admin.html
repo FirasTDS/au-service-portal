@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=41">
-    <script src="portal-features.js?v=41"></script>
+    <link rel="stylesheet" href="style.css?v=43">
+    <script src="portal-features.js?v=43"></script>
 </head>
 <body>
 
@@ -1318,7 +1318,7 @@
                         id: i,
                         timestamp: r[0] || '',
                         type: r[1] || 'اقتراح إضافة رقم أو خدمة جديدة',
-                        category: r[2] || '',
+                        category: (r[7] || '').match(/\[القسم: ([^\]\n]+)\]/)?.[1] || r[2] || '',
                         city: r[3] || '',
                         name: r[4] || '',
                         phone: r[5] || '',

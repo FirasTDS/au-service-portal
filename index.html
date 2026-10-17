@@ -23,10 +23,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=42">
-    <script src="portal-features.js?v=42"></script>
-    <script src="rates.js?v=42"></script>
-    <script src="ratings.js?v=42"></script>
+    <link rel="stylesheet" href="style.css?v=43">
+    <script src="portal-features.js?v=43"></script>
+    <script src="rates.js?v=43"></script>
+    <script src="ratings.js?v=43"></script>
 </head>
 <body>
 
@@ -670,7 +670,7 @@
     <div class="modal-header modal-header-alert">
       <div class="modal-header-title">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <h2 id="reportModalTitle">الإبلاغ عن رقم خاطئ أو معطل</h2>
+        <h2 id="reportModalTitle">الإبلاغ عن خطأ أو اقتراح تعديل</h2>
       </div>
       <button class="modal-close-btn" onclick="closeModal('reportModal')" aria-label="إغلاق">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -680,18 +680,18 @@
       <p style="font-size:0.82rem; color:var(--color-slate-600);">الجهة التي ستُبلَّغ عنها:</p>
       <p id="reportItemName" style="font-size:1rem; font-weight:800; color:var(--color-slate-800); margin-top:0.25rem;"></p>
       <div class="form-group" style="margin-top:0.5rem;">
-        <label class="form-label" for="reportField">المعلومة الخاطئة *</label>
-        <select id="reportField" class="form-select">
-          <option value="رقم الهاتف">رقم الهاتف</option>
-          <option value="الاسم">الاسم</option>
-          <option value="العنوان">العنوان</option>
-          <option value="ساعات الدوام">ساعات الدوام</option>
-          <option value="معلومة أخرى">معلومة أخرى</option>
-        </select>
+        <fieldset id="reportField" class="extra-fields">
+          <legend>المعلومات المطلوب تعديلها * (يمكن اختيار أكثر من معلومة)</legend>
+          <label><input type="checkbox" name="reportFields" value="رقم الهاتف" checked> رقم الهاتف</label>
+          <label><input type="checkbox" name="reportFields" value="الاسم"> الاسم</label>
+          <label><input type="checkbox" name="reportFields" value="العنوان"> العنوان</label>
+          <label><input type="checkbox" name="reportFields" value="ساعات الدوام"> ساعات الدوام</label>
+          <label><input type="checkbox" name="reportFields" value="معلومة أخرى"> معلومة أخرى</label>
+        </fieldset>
       </div>
       <div class="form-group" style="margin-top:0.5rem;">
-        <label class="form-label" for="reportNote">تفاصيل المشكلة *</label>
-        <textarea id="reportNote" class="form-textarea" placeholder="مثال: الرقم لا يرد، خط مقطوع، الاسم خاطئ..." required></textarea>
+        <label class="form-label" for="reportNote">تفاصيل الأخطاء والتصحيحات المقترحة *</label>
+        <textarea id="reportNote" class="form-textarea" placeholder="اكتب التصحيح لكل معلومة اخترتها، مثلاً: الرقم الصحيح… والعنوان الجديد…" required></textarea>
       </div>
       <div id="reportError" class="form-error"></div>
       <div id="reportSuccess" style="display:none; font-size:0.82rem; font-weight:700; color:var(--color-teal); background:var(--color-teal-soft); border:1px solid var(--color-teal-border); padding:0.65rem 0.85rem; border-radius:var(--radius-md);">
@@ -1041,6 +1041,9 @@
     // --- RATINGS SYSTEM (One editable local rating per service) ---
     async function rateItem(key, stars, itemName) {
         if (!Number.isInteger(stars) || stars < 1 || stars > 5) return;
+        let receipt;
+        try { receipt = ratingReceipt(key); }
+        catch { showToast('تعذر حفظ التقييم في هذا المتصفح', 'error'); return; }
         const userRatings = getLocalUserRatings();
         const previousStars = Object.hasOwn(userRatings, key) ? userRatings[key] : null;
 
@@ -1068,9 +1071,8 @@
             fd.append(ENTRIES.name, itemName);
             fd.append(ENTRIES.phone, key);
             fd.append(ENTRIES.rating, stars.toString());
-            if (previousStars) {
-                fd.append(ENTRIES.notes, `[تعديل تقييم]: من ${previousStars} إلى ${stars} نجوم — تحديث لتقييم سابق وليس تقييماً مستقلاً`);
-            }
+            fd.append(ENTRIES.notes, `[تقييم:${receipt}]` + (previousStars
+                ? `\n[تعديل تقييم]: من ${previousStars} إلى ${stars} نجوم — تحديث لتقييم سابق وليس تقييماً مستقلاً` : ''));
 
             await fetch(GOOGLE_FORM_URL, {
                 method: "POST",
@@ -2093,12 +2095,12 @@
 
         const fd = new FormData();
         fd.append(ENTRIES.type, "اقتراح إضافة رقم أو خدمة جديدة");
-        fd.append(ENTRIES.category, category);
+        fd.append(ENTRIES.category, formCategory(category));
         fd.append(ENTRIES.city, city || "القدموس");
         fd.append(ENTRIES.name, name);
         fd.append(ENTRIES.phone, phone);
         const trackingId = crypto.randomUUID();
-        fd.append(ENTRIES.notes, `${notes}\n[طلب:${trackingId}]`);
+        fd.append(ENTRIES.notes, `${notes}\n[القسم: ${category}]\n[طلب:${trackingId}]`);
 
         try {
             await fetch(GOOGLE_FORM_URL, {
@@ -2135,7 +2137,7 @@
         reportingItem = { name, phone };
         document.getElementById('reportItemName').textContent = `${name} (${phone})`;
         document.getElementById('reportNote').value = '';
-        document.getElementById('reportField').selectedIndex = 0;
+        document.querySelectorAll('#reportField input').forEach(input => { input.checked = input.value === 'رقم الهاتف'; });
         document.getElementById('reportError').classList.remove('form-error-show');
         document.getElementById('reportSuccess').style.display = 'none';
         openModal('reportModal');
@@ -2144,13 +2146,19 @@
     async function submitReport() {
         if (!reportingItem) return;
         const note = document.getElementById('reportNote').value.trim();
-        const field = document.getElementById('reportField').value;
+        const fields = [...document.querySelectorAll('#reportField input:checked')].map(input => input.value);
+        const field = fields.join('، ');
         const errEl = document.getElementById('reportError');
         const successEl = document.getElementById('reportSuccess');
         const btn = document.getElementById('btnSubmitReport');
         if (btn.disabled) return;
         errEl.classList.remove('form-error-show');
 
+        if (!fields.length) {
+            errEl.textContent = 'اختر معلومة واحدة على الأقل لتعديلها.';
+            errEl.classList.add('form-error-show');
+            return;
+        }
         if (!note) {
             errEl.textContent = 'يرجى كتابة تفاصيل المشكلة.';
             errEl.classList.add('form-error-show');
@@ -2162,7 +2170,7 @@
 
         const fd = new FormData();
         fd.append(ENTRIES.type, "تقييم خدمة موجودة حالياً");
-        fd.append(ENTRIES.category, "إبلاغ عن رقم مقطوع أو مشكلة");
+        fd.append(ENTRIES.category, "أخرى");
         fd.append(ENTRIES.name, reportingItem.name);
         fd.append(ENTRIES.phone, reportingItem.phone);
         fd.append(ENTRIES.notes, `[بلاغ خطأ | ${field}]: ${note}`);
@@ -2190,7 +2198,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v42';
+    const APP_VERSION = 'v43';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.

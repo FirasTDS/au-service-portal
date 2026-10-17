@@ -9,9 +9,9 @@ portal loads like the exchange-rate snapshot.
 Rules:
   * A row counts as a rating only when نوع المشاركة contains "تقييم" and التقييم
     is an integer 1..5.
-  * A row whose notes carry [تعديل تقييم] corrects the user's own previous
-    rating: the previous value is replaced by the new one (last occurrence),
-    never counted twice.
+  * Identified ratings keep one latest vote per browser receipt and place.
+  * Legacy rows without receipts use the old correction-value heuristic; their
+    authors cannot be reliably distinguished retroactively.
   * Rows are applied in sheet order, which is submission order.
 """
 import json
@@ -23,6 +23,7 @@ SHEET_ID = '1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI'
 CSV_URL = f'https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv'
 OUT_PATH = 'ratings.json'
 EDIT_RE = re.compile(r'\[تعديل تقييم\].*?من\s*(\d)\s*إلى\s*(\d)')
+RECEIPT_RE = re.compile(r'\[تقييم:([a-f0-9-]{36})\]')
 
 
 def parse_csv(text):
@@ -68,14 +69,21 @@ def rating_value(raw):
 def aggregate(rows):
     """rows: iterable of dicts with type/name/phone/rating/notes. Returns {key: {avg, count}}."""
     values = {}
+    identified = {}
     for item in rows:
         if 'تقييم' not in (item.get('type') or ''):
+            continue
+        if '[بلاغ' in (item.get('notes') or ''):
             continue
         stars = rating_value(item.get('rating'))
         if not stars:
             continue
         key = (item.get('phone') or item.get('name') or '').strip()
         if not key:
+            continue
+        receipt = RECEIPT_RE.search(item.get('notes') or '')
+        if receipt:
+            identified.setdefault(key, {})[receipt.group(1)] = stars
             continue
         bucket = values.setdefault(key, [])
         edit = EDIT_RE.search(item.get('notes') or '')
@@ -90,6 +98,8 @@ def aggregate(rows):
                 bucket.append(stars)
         else:
             bucket.append(stars)
+    for key, votes in identified.items():
+        values.setdefault(key, []).extend(votes.values())
     return {key: {'avg': round(sum(v) / len(v), 2), 'count': len(v)}
             for key, v in values.items() if v}
 
@@ -106,6 +116,13 @@ def build_snapshot(rows):
 
 
 def selftest():
+    def vote(receipt, stars, notes=''):
+        return {'type': 'تقييم خدمة موجودة حالياً', 'phone': '0990000000', 'rating': str(stars),
+                'notes': f'[تقييم:{receipt}]' + notes}
+    a, b = 'a' * 36, 'b' * 36
+    assert aggregate([vote(a, 5), vote(b, 5), vote(a, 2), vote(a, 2)]) == {
+        '0990000000': {'avg': 3.5, 'count': 2}}
+    assert aggregate([vote(a, 5, '[بلاغ خطأ]')]) == {}
     rows = [
         {'type': 'تقييم خدمة موجودة حالياً', 'name': 'مطعم الشام', 'phone': '0991111111', 'rating': '5', 'notes': ''},
         {'type': 'تقييم خدمة موجودة حالياً', 'name': 'مطعم الشام', 'phone': '0991111111', 'rating': '3', 'notes': ''},

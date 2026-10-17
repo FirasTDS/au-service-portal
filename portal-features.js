@@ -1,6 +1,23 @@
 // Shared directory features. Data changes stay in the admin draft until publishing.
 function cityListId(city) { return 'list-city-' + encodeURIComponent(city); }
 
+// These labels must match the actual Google Form choices, not internal categories.
+function formCategory(label) {
+    const choices = ['مطاعم القدموس', 'سوبر ماركت', 'حلويات وكافيه', 'شركات المواصلات سرفيس او بولمان', 'صهاريج وتعبئة مياه', 'حوالات وشحن طرود', 'مكتبات وطباعة وقرطاسية', 'خدمات وصيانة سكنات', 'طوارئ ومراكز صحية', 'تكاسي وموتورات داخل القدموس', 'مكاتب الإيجار', 'عيادات جامعة الأندلس', 'ملاحم', 'مخابز', 'الأطباء والعيادات', 'أخرى'];
+    if (label === 'صيدليات القدموس') return 'طوارئ ومراكز صحية';
+    return choices.includes(label) ? label : 'أخرى';
+}
+
+function ratingReceipt(key) {
+    const storageKey = 'portal_rating_receipt:' + key;
+    let id = portalStorage.get(storageKey);
+    if (!/^[a-f0-9-]{36}$/.test(id || '')) {
+        id = crypto.randomUUID();
+        if (!portalStorage.set(storageKey, id)) throw new Error('تعذر حفظ معرّف التقييم');
+    }
+    return id;
+}
+
 function categoryFromLabel(label) {
     label = String(label || '').normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640\u200B-\u200F\u202A-\u202E\u2066-\u2069]/g, '');
     if (/[إأآا]يجار|عقارات|rental/i.test(label)) return 'rental';
@@ -86,7 +103,7 @@ function suggestionDeliveryNotes() {
     }).join('');
 }
 
-function cleanSuggestionNotes(notes) { return String(notes || '').replace(/\[طلب:[a-f0-9-]{36}\]/g, '').trim(); }
+function cleanSuggestionNotes(notes) { return String(notes || '').replace(/\[طلب:[a-f0-9-]{36}\]/g, '').replace(/\[القسم: [^\]\n]+\]/g, '').trim(); }
 
 // Optional opening hours from the suggestion form travel inside the notes entry.
 function suggestionHoursNotes() {

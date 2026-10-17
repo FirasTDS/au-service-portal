@@ -14,6 +14,22 @@ function setup(data) {
     return context;
 }
 
+test('rating receipt is stable per browser and place, and form categories are valid', () => {
+    const ctx = setup({services:{},transport:[]});
+    const store = {};
+    ctx.portalStorage = {get:k=>store[k], set:(k,v)=>{store[k]=v; return true;}};
+    const first = ctx.ratingReceipt('0991111111');
+    assert.equal(ctx.ratingReceipt('0991111111'), first);
+    assert.notEqual(ctx.ratingReceipt('0992222222'), first);
+    assert.equal(ctx.formCategory('إبلاغ عن رقم مقطوع أو مشكلة'), 'أخرى');
+    assert.equal(ctx.formCategory('ديليفري وتوصيل طلبات'), 'أخرى');
+    assert.equal(ctx.formCategory('صيدليات القدموس'), 'طوارئ ومراكز صحية');
+    assert.equal(ctx.formCategory('الأطباء والعيادات'), 'الأطباء والعيادات');
+    assert.ok(read('index.html').includes('fd.append(ENTRIES.category, formCategory(category))'));
+    const report = read('index.html').split('async function submitReport()')[1];
+    assert.ok(report.includes('fd.append(ENTRIES.category, "أخرى")'));
+});
+
 test('deleting last transport entry preserves city and metadata for restoration', () => {
     const item = {name:'Test',phone:'0991111111',hours:{allday:true},last_verified:'2026-10-15'};
     const ctx = setup({services:{},transport:[{city:'دمشق',items:[item]}]});
@@ -165,7 +181,7 @@ test('report modal specifies which info is wrong and submits it with the report'
     const index = read('index.html');
     assert.ok(index.includes('id="reportField"'));
     for (const opt of ['رقم الهاتف', 'الاسم', 'العنوان', 'ساعات الدوام', 'معلومة أخرى']) {
-        assert.ok(index.includes('<option value="' + opt + '">'), opt);
+        assert.ok(index.includes('name="reportFields" value="' + opt + '"'), opt);
     }
     const els = {};
     const mkEl = () => ({ value: '', textContent: '', disabled: false, innerHTML: '', style: {},
@@ -182,11 +198,15 @@ test('report modal specifies which info is wrong and submits it with the report'
     vm.runInContext(extractFn(index, 'function openReportModal('), ctx);
     vm.runInContext(extractFn(index, 'async function submitReport('), ctx);
     ctx.openReportModal('مكتبة الفيصل', '0949071072');
-    els.reportField.value = 'الاسم';
+    // Empty selection is rejected, then multiple corrections share one submission.
     els.reportNote.value = 'الاسم ناقص';
     await ctx.submitReport();
+    assert.equal(posted, null);
+    ctx.document.querySelectorAll = () => [{value:'الاسم'}, {value:'العنوان'}];
+    await ctx.submitReport();
     const notes = Object.fromEntries(posted.entries())['entry.40821348'];
-    assert.ok(notes.includes('[بلاغ خطأ | الاسم]:'), notes);
+    assert.ok(notes.includes('[بلاغ خطأ | الاسم، العنوان]:'), notes);
+    assert.equal(posted.get('entry.880573565'), 'أخرى');
     assert.ok(notes.includes('الاسم ناقص'), notes);
 });
 
