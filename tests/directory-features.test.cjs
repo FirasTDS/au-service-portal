@@ -14,6 +14,20 @@ function setup(data) {
     return context;
 }
 
+test('all form submissions use real form choices; analytics cannot enter the inbox', () => {
+    const index = read('index.html');
+    const types = ['اقتراح إضافة رقم أو خدمة جديدة', 'تقييم خدمة موجودة حالياً'];
+    const ctx = setup({services:{},transport:[]});
+    for (const match of index.matchAll(/fd\.append\(ENTRIES\.type, ["']([^"']+)["']\)/g)) {
+        assert.ok(types.includes(match[1]), 'invalid form type: ' + match[1]);
+    }
+    for (const match of index.matchAll(/fd\.append\(ENTRIES\.category, ["']([^"']+)["']\)/g)) {
+        assert.equal(ctx.formCategory(match[1]), match[1], 'invalid form category: ' + match[1]);
+    }
+    assert.ok(index.includes("fd.append(ENTRIES.notes, '[بحث بدون نتائج]')"));
+    assert.ok(read('admin.html').includes("(r[7] || '').includes('[بحث بدون نتائج]')"));
+});
+
 test('rating receipt is stable per browser and place, and form categories are valid', () => {
     const ctx = setup({services:{},transport:[]});
     const store = {};

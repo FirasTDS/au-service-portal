@@ -23,10 +23,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=43">
-    <script src="portal-features.js?v=43"></script>
-    <script src="rates.js?v=43"></script>
-    <script src="ratings.js?v=43"></script>
+    <link rel="stylesheet" href="style.css?v=44">
+    <script src="portal-features.js?v=44"></script>
+    <script src="rates.js?v=44"></script>
+    <script src="ratings.js?v=44"></script>
 </head>
 <body>
 
@@ -695,7 +695,7 @@
       </div>
       <div id="reportError" class="form-error"></div>
       <div id="reportSuccess" style="display:none; font-size:0.82rem; font-weight:700; color:var(--color-teal); background:var(--color-teal-soft); border:1px solid var(--color-teal-border); padding:0.65rem 0.85rem; border-radius:var(--radius-md);">
-        ✅ تم استلام بلاغك. شكراً!
+        تم إرسال البلاغ للمراجعة؛ لا يمكن تأكيد استلام Google من المتصفح.
       </div>
     </div>
     <div class="modal-footer">
@@ -1060,7 +1060,7 @@
 
         showToast(previousStars
             ? `تم تعديل تقييمك من ${previousStars} إلى ${stars} نجوم ⭐`
-            : `شكراً لك! تم تسجيل تقييمك (${getStarLabel(stars)}) ⭐`);
+            : `تم حفظ تقييمك على جهازك (${getStarLabel(stars)}) ⭐ — المتوسط العام يُحدّث يومياً`);
         renderAll();
 
         // Submit to Google Form with real entries
@@ -1080,7 +1080,7 @@
                 body: fd
             });
         } catch (err) {
-            // silent fail for background analytics
+            showToast('التقييم محفوظ على جهازك، لكن تعذر إرساله. أعد الضغط على النجمة للمحاولة.', 'error');
         }
     }
 
@@ -1833,8 +1833,9 @@
         loggedEmptySearches.add(q);
         try {
             const fd = new FormData();
-            fd.append(ENTRIES.type, 'بحث بدون نتائج');
-            fd.append(ENTRIES.category, 'تحليلات البحث');
+            fd.append(ENTRIES.type, 'اقتراح إضافة رقم أو خدمة جديدة');
+            fd.append(ENTRIES.category, 'أخرى');
+            fd.append(ENTRIES.notes, '[بحث بدون نتائج]');
             fd.append(ENTRIES.city, currentTab);
             fd.append(ENTRIES.name, q);
             await fetch(GOOGLE_FORM_URL, { method: 'POST', mode: 'no-cors', body: fd });
@@ -2186,7 +2187,7 @@
             setTimeout(() => {
                 successEl.style.display = 'none';
                 closeModal('reportModal');
-                showToast("✅ شكراً لك، تم استلام البلاغ للمراجعة.");
+                showToast("تم إرسال البلاغ؛ لا يمكن تأكيد استلام Google من المتصفح.");
             }, 1200);
         } catch (err) {
             errEl.textContent = 'تعذر الإرسال. تحقق من اتصال الإنترنت.';
@@ -2198,7 +2199,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v43';
+    const APP_VERSION = 'v44';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.

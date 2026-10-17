@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=43">
-    <script src="portal-features.js?v=43"></script>
+    <link rel="stylesheet" href="style.css?v=44">
+    <script src="portal-features.js?v=44"></script>
 </head>
 <body>
 
@@ -1312,7 +1312,7 @@
                 for (let i = 1; i < rows.length; i++) {
                     const r = rows[i];
                     if (!r || r.length < 5 || !r[4]) continue; // Skip empty rows
-                    if ((r[1] || '').trim() === 'بحث بدون نتائج') continue; // Search analytics stay in the Sheet only
+                    if ((r[1] || '').trim() === 'بحث بدون نتائج' || (r[7] || '').includes('[بحث بدون نتائج]')) continue; // Analytics are not suggestions.
 
                     liveSuggestions.push({
                         id: i,
