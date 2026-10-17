@@ -16,7 +16,7 @@ function setup(navigator = {userAgent:'Mozilla/5.0 Android Chrome/140.0 Mobile S
     });
     const html = fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
     vm.runInContext(html.slice(html.indexOf('    // --- PWA INSTALL PROMPT'),html.indexOf('    // Register Service Worker')),context);
-    return {events,elements,click:()=>element('btnPwaInstall').click(),current:()=>context.installFromCurrentBrowser(true)};
+    return {events,elements,context,click:()=>element('btnPwaInstall').click(),current:()=>context.installFromCurrentBrowser(true)};
 }
 
 test('accepted browser prompt offers help without claiming installation completed', async () => {
@@ -87,5 +87,31 @@ test('double click cannot reuse a one-shot installation prompt', async () => {
     resolve({outcome:'dismissed'});
     await first;
     assert.equal(calls,1);
+    assert.equal(s.elements.btnPwaInstall.disabled,false);
+});
+
+test('ordinary fullscreen mode must not hide installation', () => {
+    const s = setup();
+    s.context.window.matchMedia = query => ({matches:query === '(display-mode: fullscreen)'});
+    s.events.DOMContentLoaded();
+    assert.equal(s.elements.installCard.hidden, false);
+    assert.equal(s.elements.btnPwaInstall.hidden, false);
+});
+
+test('embedded browsers show external-browser instructions without using a prompt', async () => {
+    const s = setup({userAgent:'Mozilla/5.0 Android; wv) Chrome/140.0 Instagram'});
+    let calls = 0;
+    s.events.beforeinstallprompt({preventDefault(){},prompt(){calls++;}});
+    await s.click();
+    assert.equal(calls,0);
+    assert.match(s.elements.installDeviceSteps.textContent,/الخارجي/);
+});
+
+test('an appinstalled event during prompt acceptance does not reopen help', async () => {
+    const s = setup();
+    s.events.beforeinstallprompt({preventDefault(){},async prompt(){s.events.appinstalled();},userChoice:Promise.resolve({outcome:'accepted'})});
+    await s.click();
+    assert.equal(s.elements.installCard.hidden,true);
+    assert.notEqual(s.elements.installHelp?.open,true);
     assert.equal(s.elements.btnPwaInstall.disabled,false);
 });

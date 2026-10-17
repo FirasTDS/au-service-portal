@@ -19,14 +19,14 @@
     <meta name="theme-color" content="#0f4c42">
     <link rel="icon" type="image/png" href="Asset%201.png">
     <link rel="apple-touch-icon" href="Asset%201.png">
-    <script src="shared.js?v=48"></script>
+    <script src="shared.js?v=49"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=48">
-    <script src="portal-features.js?v=48"></script>
-    <script src="rates.js?v=48"></script>
-    <script src="ratings.js?v=48"></script>
+    <link rel="stylesheet" href="style.css?v=49">
+    <script src="portal-features.js?v=49"></script>
+    <script src="rates.js?v=49"></script>
+    <script src="ratings.js?v=49"></script>
 </head>
 <body>
 
@@ -1916,7 +1916,7 @@
 
     function isInstalledDisplay() {
         return installReported || navigator.standalone === true ||
-            window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches;
+            window.matchMedia('(display-mode: standalone)').matches;
     }
 
     function updateInstallUI() {
@@ -1938,7 +1938,7 @@
         document.getElementById('installDeviceSteps').textContent = steps;
         document.getElementById('installSubtitle').textContent = platform.ios ? 'على iPhone وiPad: إضافة إلى الشاشة الرئيسية عبر Safari'
             : platform.samsung ? 'على Samsung Internet: التثبيت عبر Chrome أو إنشاء اختصار'
-            : 'تثبيت عبر المتصفح — البيانات المحفوظة متاحة دون إنترنت بعد أول زيارة ناجحة';
+            : 'تثبيت عبر المتصفح للوصول السريع — تصفّح دون إنترنت بعد اكتمال حفظ ملفات الدليل';
         document.getElementById('installAndroidActions').hidden = !platform.android || installed;
         document.getElementById('installCurrentBrowser').hidden = !deferredPrompt || installed || platform.ios || platform.embedded;
         document.getElementById('installOpenChrome').href = 'intent://firastds.github.io/au-service-portal/#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' +
@@ -1975,7 +1975,9 @@
                 const { outcome } = await prompt.userChoice;
                 // Accepting a prompt does not confirm that Android installed the package.
                 if (outcome === 'accepted') {
-                    showInstallHelp('تم قبول طلب التثبيت. أكمل الخطوات في المتصفح؛ إذا ظهر تحذير الإصدار القديم، اتبع الإرشادات أعلاه.');
+                    if (!isInstalledDisplay()) showInstallHelp('تم قبول طلب التثبيت. أكمل الخطوات في المتصفح؛ إذا ظهر تحذير الإصدار القديم، اتبع الإرشادات أعلاه.');
+                } else {
+                    showInstallHelp('تم إلغاء طلب التثبيت. يمكنك المحاولة من قائمة المتصفح أو إنشاء اختصار.');
                 }
                 updateInstallUI();
             } catch {
@@ -2005,7 +2007,9 @@
     // Register Service Worker for Offline Directory Browsing
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js').catch(() => {});
+            navigator.serviceWorker.register('sw.js').catch(() => {
+                document.getElementById('installProgress').textContent = 'تعذر تجهيز التصفح دون إنترنت. تحقق من اتصالك وأعد تحميل الصفحة؛ يمكنك متابعة استخدام الدليل عبر المتصفح.';
+            });
         });
     }
 
@@ -2217,7 +2221,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v48';
+    const APP_VERSION = 'v49';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.
