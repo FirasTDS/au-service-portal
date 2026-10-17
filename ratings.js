@@ -39,6 +39,7 @@ async function fetchRatingsJSON(url) {
 
 function acceptRatings(data) {
     const previous = visitorRatings;
+    if (previous && Date.parse(data.fetched_at) < Date.parse(previous.fetched_at)) return false;
     visitorRatings = data;
     try { portalStorage.set(RATINGS_CACHE, JSON.stringify(data)); } catch (e) { /* private mode */ }
     // Only re-render when the published numbers actually changed.

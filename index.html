@@ -19,14 +19,14 @@
     <meta name="theme-color" content="#0f4c42">
     <link rel="icon" type="image/png" href="Asset%201.png">
     <link rel="apple-touch-icon" href="Asset%201.png">
-    <script src="shared.js?v=13"></script>
+    <script src="shared.js?v=45"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=44">
-    <script src="portal-features.js?v=44"></script>
-    <script src="rates.js?v=44"></script>
-    <script src="ratings.js?v=44"></script>
+    <link rel="stylesheet" href="style.css?v=45">
+    <script src="portal-features.js?v=45"></script>
+    <script src="rates.js?v=45"></script>
+    <script src="ratings.js?v=45"></script>
 </head>
 <body>
 
@@ -695,7 +695,7 @@
       </div>
       <div id="reportError" class="form-error"></div>
       <div id="reportSuccess" style="display:none; font-size:0.82rem; font-weight:700; color:var(--color-teal); background:var(--color-teal-soft); border:1px solid var(--color-teal-border); padding:0.65rem 0.85rem; border-radius:var(--radius-md);">
-        تم إرسال البلاغ للمراجعة؛ لا يمكن تأكيد استلام Google من المتصفح.
+        تم إرسال البلاغ للمراجعة. شكراً لمساهمتك!
       </div>
     </div>
     <div class="modal-footer">
@@ -2187,7 +2187,7 @@
             setTimeout(() => {
                 successEl.style.display = 'none';
                 closeModal('reportModal');
-                showToast("تم إرسال البلاغ؛ لا يمكن تأكيد استلام Google من المتصفح.");
+                showToast("تم إرسال البلاغ للمراجعة. شكراً لمساهمتك!");
             }, 1200);
         } catch (err) {
             errEl.textContent = 'تعذر الإرسال. تحقق من اتصال الإنترنت.';
@@ -2199,7 +2199,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v44';
+    const APP_VERSION = 'v45';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.

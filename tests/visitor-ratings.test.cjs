@@ -61,6 +61,15 @@ test('visitor averages render beside the local stars and never show a zero', () 
     assert.ok(index.includes('ratings.js?v='), 'ratings.js loaded with cache busting');
 });
 
+test('an older fallback snapshot cannot overwrite newer visitor averages', () => {
+    const {context} = ratingsContext();
+    const fresh = {source:'google-sheet', fetched_at:'2026-10-17T21:00:00Z', total_ratings:1,
+        places:{'0991111111':{avg:5, count:1}}};
+    assert.equal(context.acceptRatings(fresh), true);
+    assert.equal(context.acceptRatings({...fresh, fetched_at:'2026-10-16T21:00:00Z', total_ratings:0, places:{}}), false);
+    assert.equal(context.visitorRatingFor('0991111111').avg, 5);
+});
+
 test('nightly ratings workflow aggregates the form sheet without manual approval', () => {
     const yaml = read('.github/workflows/update-ratings.yml');
     assert.ok(yaml.includes('scripts/update-ratings.py'), 'workflow runs the aggregator');
