@@ -1,8 +1,8 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-10-18T16:18:33+00:00",
-  "total_ratings": 18,
+  "fetched_at": "2026-10-18T22:41:52+00:00",
+  "total_ratings": 21,
   "places": {
     "0933574279\nشاهين": {
       "avg": 5.0,
@@ -33,8 +33,8 @@
       "count": 1
     },
     "https://www.google.com/maps/place/MA+Donut+shop/@35.103549,36.162327,14z/data=!4m8!1m2!2m1!1sMA+Donut+shop!3m4!1s0x1523ef003039bd1b:0xdb0b9334ac978873!8m2!3d35.103549!4d36.162327\nMA Donut shop": {
-      "avg": 1.0,
-      "count": 1
+      "avg": 2.5,
+      "count": 2
     },
     "0944866328\nمكتب الحسن للإعمار": {
       "avg": 5.0,
@@ -61,7 +61,11 @@
       "count": 1
     },
     "0983162723\nFriends  cafe": {
-      "avg": 5.0,
+      "avg": 4.5,
+      "count": 2
+    },
+    "0942320907\nماركت ذوالفقار": {
+      "avg": 4.0,
       "count": 1
     }
   }
