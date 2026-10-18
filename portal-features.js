@@ -84,10 +84,11 @@ function planReportCorrection(data, report) {
 }
 
 function reportNotesSummary(notes) {
+    const displayNotes = String(notes || '').replace(/\[(?:طلب|تقييم):[a-f0-9-]{36}\]/g, '').replace(/\[القسم: [^\]\n]+\]/g, '').trim();
     try {
         const patch = parseReportCorrection(notes);
-        if (!patch) return notes;
-        return String(notes).replace(/\[تصحيح:[^\]\n]+\]/, '').trim() + '\n' +
+        if (!patch) return displayNotes || '—';
+        return displayNotes.replace(/\[تصحيح:[^\]\n]+\]/, '').trim() + '\n' +
             Object.entries(patch.changes).map(([key,value]) => `${REPORT_FIELDS[key]?.[0] || key}: ${value}`).join('\n');
     } catch { return 'تصحيح غير صالح — راجع البلاغ الأصلي يدوياً.\n' + String(notes); }
 }

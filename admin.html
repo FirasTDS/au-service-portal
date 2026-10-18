@@ -6,12 +6,12 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=50"></script>
+    <script src="shared.js?v=51"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=50">
-    <script src="portal-features.js?v=50"></script>
+    <link rel="stylesheet" href="style.css?v=51">
+    <script src="portal-features.js?v=51"></script>
 </head>
 <body>
 
@@ -1083,6 +1083,11 @@
 
         function updateBulkCount() {
             const n = bulkSelectedIds().length;
+            const total = document.querySelectorAll('input[data-bulk]').length;
+            const all = document.getElementById('bulkSelectAll');
+            all.checked = total > 0 && n === total;
+            all.indeterminate = n > 0 && n < total;
+            all.disabled = total === 0;
             document.getElementById('bulkCount').textContent = n ? `تم تحديد ${n}` : '';
         }
 
@@ -1346,6 +1351,8 @@
                 }
 
                 if (liveSuggestions.length === 0) {
+                    tbody.replaceChildren();
+                    updateBulkCount();
                     loadingEl.textContent = 'لا توجد أي اقتراحات أو بلاغات جديدة في الجدول حالياً.';
                     loadingEl.style.display = 'block';
                     return;
@@ -1368,7 +1375,7 @@
                     return `
                         <tr style="border-bottom: 1px solid var(--color-slate-200); background-color: ${isReport ? 'var(--color-red-soft)' : 'var(--surface)'};">
                             <td class="inbox-select" data-label="تحديد" style="padding: 0.65rem 0.5rem; text-align:center;">
-                                ${!decision && !isReport && !isRating && !alreadyExists && !contact.error ? `<input type="checkbox" data-bulk="${item.id}" onchange="updateBulkCount()" aria-label="تحديد ${escapeHtml(item.name)}">` : ''}
+                                ${!decision && !isReport && !isRating && !alreadyExists && !contact.error ? `<label class="inbox-select-label"><input type="checkbox" data-bulk="${item.id}" onchange="updateBulkCount()" aria-label="تحديد ${escapeHtml(item.name)}"><span>تحديد</span></label>` : '<span class="inbox-unselectable" title="هذا الإدخال غير متاح للاعتماد الجماعي">—</span>'}
                             </td>
                             <td data-label="النوع" style="padding: 0.65rem 0.75rem;">
                                 <span class="admin-badge ${badgeClass}">${badgeText}</span>
@@ -1413,6 +1420,7 @@
                     `;
                 }).join('');
 
+                updateBulkCount();
                 loadingEl.style.display = 'none';
                 tableContainer.style.display = 'block';
             } catch (err) {

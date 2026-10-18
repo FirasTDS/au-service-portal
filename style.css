@@ -772,19 +772,31 @@ body {
 .inbox-action-buttons { display:flex; flex-direction:column; align-items:stretch; gap:.4rem; }
 .inbox-action-buttons > button { white-space:normal; overflow-wrap:anywhere; min-width:0; width:100%; margin-top:0 !important; }
 .inbox-action-buttons svg { flex-shrink:0; }
-@media (max-width:900px) {
+.inbox-select-label { display:flex; align-items:center; justify-content:center; gap:.5rem; min-height:44px; cursor:pointer; }
+.inbox-select-label span { display:none; }
+.inbox-select-label input, #bulkSelectAll { width:20px; height:20px; flex:0 0 20px; margin:0; accent-color:var(--color-teal); cursor:pointer; }
+.inbox-select-label input:focus-visible, #bulkSelectAll:focus-visible { outline:2px solid var(--color-teal); outline-offset:3px; }
+.inbox-table tr:has(input[data-bulk]:checked) { box-shadow:inset -4px 0 var(--color-teal); }
+#bulkBar > label { min-height:44px; }
+.inbox-table .admin-badge { max-width:100%; white-space:normal; text-align:center; line-height:1.6; }
+@media (max-width:1100px) {
   .inbox-table, .inbox-table tbody { display:block; }
   .inbox-table colgroup { display:none; }
   .inbox-table thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
   .inbox-table tbody { display:grid; gap:1rem; }
   .inbox-table tbody tr { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border:1px solid var(--color-slate-200); border-radius:12px; padding:.35rem; }
-  .inbox-table tbody td { display:block; text-align:start !important; }
+  .inbox-table tbody td { display:block; text-align:start !important; padding:.6rem .75rem !important; }
   .inbox-table td::before { content:attr(data-label); display:block; color:var(--color-slate-500); font:700 .7rem 'Cairo',sans-serif; margin-bottom:.25rem; }
   .inbox-table td.inbox-select { display:flex; align-items:center; gap:.5rem; }
-  .inbox-table td.inbox-select::before { margin:0; }
+  .inbox-table td.inbox-select::before { display:none; }
+  .inbox-select-label span { display:inline; }
   .inbox-table td.inbox-notes, .inbox-table td.inbox-actions { grid-column:1/-1; }
   .inbox-action-buttons { flex-direction:row; flex-wrap:wrap; }
-  .inbox-action-buttons > button { flex:1 1 9rem; width:auto; }
+  .inbox-action-buttons > button { flex:0 1 auto; width:auto; min-width:min(8rem,100%); min-height:40px; }
+}
+@media (max-width:480px) {
+  .inbox-table tbody tr { grid-template-columns:minmax(0,1fr); }
+  .inbox-table td.inbox-select:has(input) { border-bottom:1px solid var(--color-slate-200); }
 }
 @media (min-width:700px) { .extra-fields { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width:500px) {

@@ -14,6 +14,18 @@ function setup(data) {
     return context;
 }
 
+test('inbox selection keeps select-all checked, mixed and empty states in sync', () => {
+    const all = {}, count = {};
+    let selected = [], total = 3;
+    const ctx = vm.createContext({bulkSelectedIds:()=>selected,document:{
+        querySelectorAll:()=>Array(total).fill({}), getElementById:id=>id === 'bulkSelectAll' ? all : count}});
+    vm.runInContext(extractFn(read('admin.html'),'function updateBulkCount('),ctx);
+    ctx.updateBulkCount(); assert.equal(all.checked,false); assert.equal(all.indeterminate,false);
+    selected=[1]; ctx.updateBulkCount(); assert.equal(all.indeterminate,true);
+    selected=[1,2,3]; ctx.updateBulkCount(); assert.equal(all.checked,true); assert.equal(all.indeterminate,false);
+    selected=[]; total=0; ctx.updateBulkCount(); assert.equal(all.disabled,true); assert.equal(all.checked,false);
+});
+
 test('admin inbox bounds long contacts and has labelled responsive rows', () => {
     const admin = read('admin.html');
     const css = read('style.css');
