@@ -1,5 +1,5 @@
 // Cache only this application's public assets, never API calls or credentials.
-const CACHE_NAME = 'au-portal-v56';
+const CACHE_NAME = 'au-portal-v57';
 const ASSETS_TO_CACHE = ['index.html', 'style.css', 'shared.js', 'portal-features.js', 'rates.js', 'rates.json', 'ratings.js', 'ratings.json', 'data.json', 'manifest.json', 'Asset%201.png', 'Vertical%20Trans.png', 'Horiszontal.png', 'app-logo-192.png', 'app-logo-512.png'];
 ASSETS_TO_CACHE.push('smsa-logo.png', 'smsa-emblem.png', 'union-logo-horizontal.png');
 ASSETS_TO_CACHE.push('submissions.js');

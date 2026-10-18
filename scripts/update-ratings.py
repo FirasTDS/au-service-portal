@@ -24,6 +24,7 @@ CSV_URL = f'https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:cs
 OUT_PATH = 'ratings.json'
 EDIT_RE = re.compile(r'\[تعديل تقييم\].*?من\s*(\d)\s*إلى\s*(\d)')
 RECEIPT_RE = re.compile(r'\[تقييم:([a-f0-9-]{36})\]')
+REVISION_RE = re.compile(r'\[نسخة تقييم:([0-9]{1,16})\]')
 
 
 def parse_csv(text):
@@ -87,7 +88,12 @@ def aggregate(rows, aliases=None):
         key = (aliases or {}).get(key, key)
         receipt = RECEIPT_RE.search(item.get('notes') or '')
         if receipt:
-            identified.setdefault(key, {})[receipt.group(1)] = stars
+            revision_match = REVISION_RE.search(item.get('notes') or '')
+            revision = int(revision_match.group(1)) if revision_match else 0
+            votes = identified.setdefault(key, {})
+            previous = votes.get(receipt.group(1))
+            if previous is None or revision >= previous[0]:
+                votes[receipt.group(1)] = (revision, stars)
             continue
         bucket = values.setdefault(key, [])
         edit = EDIT_RE.search(item.get('notes') or '')
@@ -103,7 +109,7 @@ def aggregate(rows, aliases=None):
         else:
             bucket.append(stars)
     for key, votes in identified.items():
-        values.setdefault(key, []).extend(votes.values())
+        values.setdefault(key, []).extend(stars for revision, stars in votes.values())
     return {key: {'avg': round(sum(v) / len(v), 2), 'count': len(v)}
             for key, v in values.items() if v}
 
@@ -139,6 +145,8 @@ def selftest():
         return {'type': 'تقييم خدمة موجودة حالياً', 'phone': '0990000000', 'rating': str(stars),
                 'notes': f'[تقييم:{receipt}]' + notes}
     a, b = 'a' * 36, 'b' * 36
+    assert aggregate([vote(a, 5, '[نسخة تقييم:2]'), vote(a, 1, '[نسخة تقييم:1]')]) == {
+        '0990000000': {'avg': 5.0, 'count': 1}}
     assert aggregate([vote(a, 5), vote(b, 5), vote(a, 2), vote(a, 2)]) == {
         '0990000000': {'avg': 3.5, 'count': 2}}
     assert aggregate([vote(a, 5, '[بلاغ خطأ]')]) == {}

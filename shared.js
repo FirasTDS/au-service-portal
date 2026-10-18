@@ -138,7 +138,7 @@ function parseHoursText(text) {
         const pad = value => String(value).padStart(2, '0') + ':' + mm;
         if (mer === 'pm') return pad(h === 12 ? 12 : h + 12);
         if (mer === 'am') return pad(h % 12);
-        if (mer === 'noon') return pad(h);
+        if (mer === 'noon') return pad(h === 12 ? 12 : h + 12);
         if (mer === 'night') return pad(h < 6 ? h : (h === 12 ? 0 : h + 12));
         return pad(h); // already 24h or plain morning hour
     };

@@ -14,6 +14,24 @@ function setup(data) {
     return context;
 }
 
+test('favorites use corrected directory contacts and never revive removed numbers', () => {
+    const ctx=setup({services:{},transport:[]});
+    const favorite={name:'Hospital',phone:'0437553700',key:'0437553700'};
+    const data={services:{emergency:[{name:'Hospital',phone:''}],pharmacies:[{name:'Pharmacy',phone:'0437553700'}]},transport:[]};
+    assert.equal(ctx.resolveFavoriteItem(data,favorite).phone,'');
+    data.services.emergency[0].phone='0437559999';
+    assert.equal(ctx.resolveFavoriteItem(data,favorite).phone,'0437559999');
+    data.services.emergency=[];
+    assert.equal(ctx.resolveFavoriteItem(data,favorite).phone,'');
+});
+
+test('rating revisions are persistent and monotonically increasing', () => {
+    const ctx=setup({services:{},transport:[]});const store={};
+    ctx.portalStorage={get:key=>store[key],set:(key,value)=>{store[key]=value;return true;}};
+    assert.equal(ctx.nextRatingRevision('test'),1);assert.equal(ctx.nextRatingRevision('test'),2);
+    ctx.portalStorage.set=()=>false;assert.throws(()=>ctx.nextRatingRevision('test'));
+});
+
 test('multiple weekly periods drive open-now including split days and overnight shifts', () => {
     const ctx=setup({services:{},transport:[]});
     const hours=ctx.validateReportHours({periods:[
@@ -437,6 +455,7 @@ test('hours free text parses into structured hours and drives the open/closed ba
     assert.deepEqual(hours('08:00-22:00'), {open:'08:00',close:'22:00'});
     assert.deepEqual(hours('8ص-10م'), {open:'08:00',close:'22:00'});
     assert.deepEqual(hours('من 8 صباحاً حتى 12 ظهراً'), {open:'08:00',close:'12:00'});
+    assert.deepEqual(hours('8ص-1ظهراً'), {open:'08:00',close:'13:00'});
     assert.deepEqual(hours('٩:٣٠-١٨:٠٠'), {open:'09:30',close:'18:00'});
     assert.deepEqual(hours('11 ص - 1 ليلاً'), {open:'11:00',close:'01:00'});
     assert.equal(ctx.parseHoursText('مفتوح دائما'), null);

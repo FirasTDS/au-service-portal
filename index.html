@@ -19,15 +19,15 @@
     <meta name="theme-color" content="#0f4c42">
     <link rel="icon" type="image/png" href="Asset%201.png">
     <link rel="apple-touch-icon" href="Asset%201.png">
-    <script src="shared.js?v=56"></script>
+    <script src="shared.js?v=57"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=56">
-    <script src="portal-features.js?v=56"></script>
-    <script src="rates.js?v=56"></script>
-    <script src="ratings.js?v=56"></script>
-    <script src="submissions.js?v=56"></script>
+    <link rel="stylesheet" href="style.css?v=57">
+    <script src="portal-features.js?v=57"></script>
+    <script src="rates.js?v=57"></script>
+    <script src="ratings.js?v=57"></script>
+    <script src="submissions.js?v=57"></script>
 </head>
 <body>
 
@@ -1061,8 +1061,8 @@
     // --- RATINGS SYSTEM (One editable local rating per service) ---
     async function rateItem(key, stars, itemName, contact) {
         if (!Number.isInteger(stars) || stars < 1 || stars > 5) return;
-        let receipt;
-        try { receipt = ratingReceipt(key); }
+        let receipt, revision;
+        try { receipt = ratingReceipt(key); revision = nextRatingRevision(receipt); }
         catch { showToast('تعذر حفظ التقييم في هذا المتصفح', 'error'); return; }
         const userRatings = getLocalUserRatings();
         const previousStars = Object.hasOwn(userRatings, key) ? userRatings[key] : null;
@@ -1091,11 +1091,11 @@
             fd.append(ENTRIES.name, itemName);
             fd.append(ENTRIES.phone, contact);
             fd.append(ENTRIES.rating, stars.toString());
-            fd.append(ENTRIES.notes, `[تقييم:${receipt}]` + (previousStars
+            fd.append(ENTRIES.notes, `[تقييم:${receipt}]\n[نسخة تقييم:${revision}]` + (previousStars
                 ? `\n[تعديل تقييم]: من ${previousStars} إلى ${stars} نجوم — تحديث لتقييم سابق وليس تقييماً مستقلاً` : ''));
 
             const delivery = await submitWithReceipt(fd);
-            showToast(delivery.confirmed ? 'تم تأكيد استلام تقييمك.' : 'التقييم محفوظ وبانتظار تأكيد الاستلام — راجع صندوق الإرسال.');
+            if (Number(portalStorage.get('portal_rating_revision:' + receipt)) === revision) showToast(delivery.confirmed ? 'تم تأكيد استلام تقييمك.' : 'التقييم محفوظ وبانتظار تأكيد الاستلام — راجع صندوق الإرسال.');
         } catch (err) {
             showToast('التقييم محفوظ على جهازك، لكن تعذر إرساله. أعد الضغط على النجمة للمحاولة.', 'error');
         }
@@ -1142,7 +1142,7 @@
     }
 
     // --- ITEM ROW RENDERING (Safe, Escaped, Accessible) ---
-    function createContactRow(item, searchContext = "") {
+    function createContactRow(item, searchContext = "", favoriteKey = '') {
         const contact = normalizeContactInput(item.link || item.phone);
         const isUrl = Boolean(contact.link);
         const targetUrl = sanitizeUrl(contact.link);
@@ -1173,6 +1173,7 @@
                         </button>` : ''}
                     </div>
                     <div class="contact-tool-actions">
+                        ${favoriteKey ? `<button type="button" class="btn-secondary" data-action="toggle-fav" data-key="${escapeHtml(favoriteKey)}" data-name="${nameEscaped}" data-phone="${targetUrl}">إزالة من المفضلة</button>` : ''}
                         <button type="button" class="btn-icon btn-report" data-action="report" data-name="${nameEscaped}" data-phone="${targetUrl}" title="إبلاغ عن رابط غير صالح" aria-label="إبلاغ عن رابط معطل">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
                         </button>
@@ -1187,7 +1188,7 @@
         const hoursEscaped = escapeHtml(hoursLabel(item.hours));
         const openStatusHtml = getOpenStatusBadge(item);
 
-        const favKey = item.phone || item.link || item.name;
+        const favKey = favoriteKey || item.phone || item.link || item.name;
         const userFavs = getLocalFavorites();
         const isFav = userFavs.some(f => f.key === favKey);
 
@@ -1549,10 +1550,8 @@
         const favList = document.getElementById('list-favorites');
         if (favSec && favList) {
             if (favs.length > 0) {
-                const entries = directoryEntries(portalData);
                 favList.innerHTML = favs.map(f => {
-                    const current = entries.find(e => e.item.name === f.name && contactsOverlap(e.item.phone || e.item.link, f.phone));
-                    return createContactRow(current?.item || { name: f.name, phone: f.phone }, f.context || 'المفضلة');
+                    return createContactRow(resolveFavoriteItem(portalData, f), f.context || 'المفضلة', f.key);
                 }).join('');
                 favSec.style.display = 'block';
             } else {
@@ -1786,7 +1785,7 @@
         const dutySection = document.getElementById('section-duty');
         const hasDutySchedule = portalData.pharmacies_duty?.schedule?.length > 0;
         if (dutySection && hasDutySchedule) {
-            if (!showServices || openOnly) {
+            if (!showServices || openOnly || (!browsing && !normalizedQuery)) {
                 dutySection.style.display = 'none';
             } else if (!normalizedQuery) {
                 dutySection.style.display = 'block';
@@ -1842,6 +1841,7 @@
         secServices.style.display = showServices && [...secServices.querySelectorAll('.category-card')].some(card => card.style.display !== 'none') ? 'block' : 'none';
         secTransport.style.display = showTransport && [...secTransport.querySelectorAll('.category-card')].some(card => card.style.display !== 'none') ? 'block' : 'none';
         const emptyState = document.getElementById('emptyState');
+        if (browsing) totalVisibleInActiveTab += [...document.querySelectorAll('.category-tile')].filter(tile => !tile.hidden).length;
         emptyState.style.display = totalVisibleInActiveTab === 0 ? 'block' : 'none';
         if (totalVisibleInActiveTab === 0 && normalizedQuery && normalizedQuery.length >= 2) logEmptySearch(rawQuery);
     }
@@ -2227,7 +2227,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v56';
+    const APP_VERSION = 'v57';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.

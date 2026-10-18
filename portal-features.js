@@ -69,6 +69,16 @@ function placeRatingKey(contact, name) {
     return String(contact || '').trim() + '\n' + String(name || '').trim();
 }
 
+function resolveFavoriteItem(data, favorite) {
+    const entries = directoryEntries(data).map(entry => entry.item);
+    const exact = entries.filter(item => item.name === favorite.name && contactsOverlap(item.phone || item.link, favorite.phone));
+    if (exact.length === 1) return exact[0];
+    const named = entries.filter(item => item.name === favorite.name);
+    if (named.length === 1) return named[0];
+    // Never keep calling a removed or reassigned number from a stale favorite.
+    return {name:favorite.name,phone:'',note:'تغيّرت بيانات هذه الجهة أو أُزيلت من الدليل. ابحث عنها مجدداً أو أزلها من المفضلة.'};
+}
+
 const REPORT_FIELDS = {contact:['رقم الهاتف','reportPhone'], name:['الاسم','reportName'], address:['العنوان','reportAddress'], hours:['ساعات الدوام','reportHours'], note:['معلومة أخرى','reportOther']};
 
 function reportValue(item, key) {
@@ -229,7 +239,7 @@ function planReportCorrection(data, report) {
 }
 
 function reportNotesSummary(notes) {
-    const displayNotes = String(notes || '').replace(/\[(?:طلب|تقييم|إرسال):[a-f0-9-]{36}\]/g, '').replace(/\[القسم: [^\]\n]+\]/g, '').trim();
+    const displayNotes = String(notes || '').replace(/\[(?:طلب|تقييم|إرسال):[a-f0-9-]{36}\]/g, '').replace(/\[نسخة تقييم:\d+\]/g, '').replace(/\[القسم: [^\]\n]+\]/g, '').trim();
     try {
         const patch = parseReportCorrection(notes);
         if (!patch) return displayNotes || '—';
@@ -263,6 +273,14 @@ function ratingReceipt(key) {
         if (!portalStorage.set(storageKey, id)) throw new Error('تعذر حفظ معرّف التقييم');
     }
     return id;
+}
+
+function nextRatingRevision(receipt) {
+    const key = 'portal_rating_revision:' + receipt;
+    const previous = Number(portalStorage.get(key) || 0);
+    const revision = Number.isSafeInteger(previous) && previous >= 0 ? previous + 1 : 1;
+    if (!Number.isSafeInteger(revision) || !portalStorage.set(key, String(revision))) throw new Error('تعذر حفظ إصدار التقييم');
+    return revision;
 }
 
 function categoryFromLabel(label) {

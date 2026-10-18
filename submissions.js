@@ -3,6 +3,7 @@ const OUTBOX_KEY = 'portal_outbox_v1';
 const RECEIPT_SHEET = 'https://docs.google.com/spreadsheets/d/1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI/gviz/tq?tqx=out:csv';
 let checkingOutbox = false;
 const sendingReceipts = new Set();
+const acknowledgedReceipts = new Set();
 
 function readOutbox() {
     try { const rows = JSON.parse(portalStorage.get(OUTBOX_KEY) || '[]'); return Array.isArray(rows) ? rows.filter(r => r && /^[a-f0-9-]{36}$/.test(r.id) && Array.isArray(r.fields)) : []; }
@@ -27,7 +28,10 @@ async function checkOutbox() {
     checkingOutbox = true;
     try {
         const text = await sheetReceipts();
-        saveOutbox(readOutbox().filter(row => !text.includes(`[إرسال:${row.id}]`)));
+        saveOutbox(readOutbox().filter(row => {
+            if (!text.includes(`[إرسال:${row.id}]`)) return true;
+            acknowledgedReceipts.add(row.id); return false;
+        }));
     } catch { /* Retain uncertain deliveries, never claim success. */ }
     finally { checkingOutbox = false; renderOutbox(); }
 }
@@ -52,24 +56,26 @@ async function submitWithReceipt(data) {
     const fingerprint = JSON.stringify(fields);
     const rows = readOutbox();
     const pending = rows.find(row => row.fingerprint === fingerprint);
-    if (pending) { await checkOutbox(); return {id:pending.id,confirmed:!readOutbox().some(r=>r.id===pending.id)}; }
-    if (rows.length >= 50) throw new Error('لديك طلبات بانتظار التأكيد. راجع صندوق الإرسال أولاً.');
+    if (pending) { await checkOutbox(); return {id:pending.id,confirmed:acknowledgedReceipts.has(pending.id)}; }
     const id = crypto.randomUUID();
     const notesKey = 'entry.40821348';
     const index = fields.findIndex(([key]) => key === notesKey);
     if (index < 0) fields.push([notesKey,`[إرسال:${id}]`]);
     else fields[index][1] += `\n[إرسال:${id}]`;
     const row = {id,fields,fingerprint,name:data.get('entry.1549210706') || 'طلب',created:new Date().toISOString()};
-    saveOutbox([...rows,row]);
+    const vote = String(data.get(notesKey) || '').match(/\[تقييم:([a-f0-9-]{36})\]/)?.[1];
+    const kept = vote ? rows.filter(old => old.name !== row.name || !old.fields.some(([key,value]) => key === notesKey && String(value).includes(`[تقييم:${vote}]`))) : rows;
+    if (kept.length >= 50) throw new Error('لديك طلبات بانتظار التأكيد. راجع صندوق الإرسال أولاً.');
+    saveOutbox([...kept,row]);
     await postReceipt(row);
-    return {id,confirmed:!readOutbox().some(r=>r.id===id)};
+    return {id,confirmed:acknowledgedReceipts.has(id)};
 }
 async function retrySubmission(id) {
     if (sendingReceipts.has(id)) return;
     // Check first: a delayed acknowledgement must not cause a new submission.
     try {
         const text = await sheetReceipts();
-        if (text.includes(`[إرسال:${id}]`)) { saveOutbox(readOutbox().filter(row=>row.id!==id)); return; }
+        if (text.includes(`[إرسال:${id}]`)) { acknowledgedReceipts.add(id); saveOutbox(readOutbox().filter(row=>row.id!==id)); return; }
     } catch { showToast('تعذر التحقق من الاستلام. حاول لاحقاً لتجنب التكرار.', 'error'); return; }
     const row = readOutbox().find(row=>row.id===id);
     if (row) await postReceipt(row); // Same receipt; admin also deduplicates it.

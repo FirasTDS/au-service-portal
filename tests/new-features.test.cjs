@@ -56,6 +56,19 @@ test('storage failure prevents sending an untracked request',async()=>{
     const s=queueSetup();s.ctx.portalStorage.set=()=>false;
     await assert.rejects(()=>s.ctx.submitWithReceipt(form()));assert.equal(s.posts,0);
 });
+
+test('a newer pending rating supersedes its old queued vote without inventing acknowledgement',async()=>{
+    const s=queueSetup();s.offline=true;
+    const old=form();old.set('entry.40821348','[تقييم:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa] [نسخة تقييم:1]');
+    const first=await s.ctx.submitWithReceipt(old);
+    const next=form();next.set('entry.40821348','[تقييم:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa] [نسخة تقييم:2]');
+    const second=await s.ctx.submitWithReceipt(next);
+    assert.equal(first.confirmed,false);assert.equal(second.confirmed,false);
+    assert.equal(s.ctx.readOutbox().length,1);assert.equal(s.ctx.readOutbox()[0].id,second.id);
+    s.offline=false;s.ack(first.id);await s.ctx.checkOutbox();
+    assert.equal(s.ctx.readOutbox().length,1,'acknowledging the old vote does not acknowledge the new one');
+    await s.ctx.retrySubmission(first.id);assert.equal(s.posts,0,'superseded votes cannot be resent');
+});
 test('inbox classification prioritizes corrections and reports over ratings',()=>{
     const ctx=vm.createContext({URL,document:{addEventListener(){}}});vm.runInContext(read('portal-features.js'),ctx);
     assert.equal(ctx.inboxKind({type:'تقييم',notes:'[بلاغ خطأ] [تصحيح:x]'}),'correction');
