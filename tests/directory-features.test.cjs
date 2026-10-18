@@ -14,6 +14,13 @@ function setup(data) {
     return context;
 }
 
+test('pending inbox rows are selectable and ratings clearly need no approval', () => {
+    const admin = read('admin.html');
+    assert.ok(admin.includes('${!decision ? `<label class="inbox-select-label">'));
+    assert.ok(admin.includes('يُحتسب تلقائياً — لا يحتاج اعتماداً'));
+    assert.ok(!admin.includes("isRating ? '<span>للمراجعة</span>'"));
+});
+
 test('inbox selection keeps select-all checked, mixed and empty states in sync', () => {
     const all = {}, count = {};
     let selected = [], total = 3;

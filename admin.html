@@ -6,12 +6,12 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=51"></script>
+    <script src="shared.js?v=52"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=51">
-    <script src="portal-features.js?v=51"></script>
+    <link rel="stylesheet" href="style.css?v=52">
+    <script src="portal-features.js?v=52"></script>
 </head>
 <body>
 
@@ -147,11 +147,12 @@
                         <label style="display:flex; align-items:center; gap:0.35rem; font-size:0.78rem; font-weight:800; cursor:pointer;">
                             <input type="checkbox" id="bulkSelectAll" onchange="toggleBulkSelectAll(this.checked)"> تحديد الكل
                         </label>
-                        <button type="button" onclick="bulkApprove()" id="btnBulkApprove" class="btn-primary" style="font-size:0.75rem; padding:0.4rem 0.8rem;">اعتماد المحدد ونشر</button>
+                        <button type="button" onclick="bulkApprove()" id="btnBulkApprove" class="btn-primary" style="font-size:0.75rem; padding:0.4rem 0.8rem;">اعتماد اقتراحات الإضافة المحددة</button>
                         <button type="button" onclick="bulkIgnore()" id="btnBulkIgnore" class="btn-secondary" style="font-size:0.75rem; padding:0.4rem 0.8rem;">رفض / تجاهل المحدد</button>
                         <button type="button" onclick="reloadAdminFromGitHub()" id="btnSyncGitHub" class="btn-secondary" style="font-size:0.75rem; padding:0.4rem 0.8rem;">مزامنة من GitHub</button>
                         <span id="bulkCount" style="font-size:0.75rem; color:var(--color-slate-500);"></span>
                     </div>
+                    <p class="contact-note">التقييمات تُحتسب تلقائياً. الاعتماد للإضافات فقط؛ تجاهل التقييم من الوارد لا يحذفه من المتوسط.</p>
                     <table class="inbox-table" aria-label="اقتراحات وبلاغات الطلاب الواردة">
                         <colgroup><col class="inbox-col-select"><col class="inbox-col-type"><col class="inbox-col-category"><col class="inbox-col-city"><col class="inbox-col-name"><col class="inbox-col-contact"><col class="inbox-col-notes"><col class="inbox-col-actions"></colgroup>
                         <thead>
@@ -1375,7 +1376,7 @@
                     return `
                         <tr style="border-bottom: 1px solid var(--color-slate-200); background-color: ${isReport ? 'var(--color-red-soft)' : 'var(--surface)'};">
                             <td class="inbox-select" data-label="تحديد" style="padding: 0.65rem 0.5rem; text-align:center;">
-                                ${!decision && !isReport && !isRating && !alreadyExists && !contact.error ? `<label class="inbox-select-label"><input type="checkbox" data-bulk="${item.id}" onchange="updateBulkCount()" aria-label="تحديد ${escapeHtml(item.name)}"><span>تحديد</span></label>` : '<span class="inbox-unselectable" title="هذا الإدخال غير متاح للاعتماد الجماعي">—</span>'}
+                                ${!decision ? `<label class="inbox-select-label"><input type="checkbox" data-bulk="${item.id}" onchange="updateBulkCount()" aria-label="تحديد ${escapeHtml(item.name)}"><span>تحديد</span></label>` : '<span class="inbox-unselectable" title="تمت معالجة هذا الإدخال">—</span>'}
                             </td>
                             <td data-label="النوع" style="padding: 0.65rem 0.75rem;">
                                 <span class="admin-badge ${badgeClass}">${badgeText}</span>
@@ -1405,7 +1406,7 @@
                                         <span>تم الحل</span>
                                     </button>
                                     <button type="button" onclick="deleteReportedEntry(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem; color:var(--color-red);">حذف الرقم من الدليل</button>
-                                ` : isRating ? '<span>للمراجعة</span>' : alreadyExists ? `
+                                ` : isRating ? '<span class="admin-badge admin-badge-teal">يُحتسب تلقائياً — لا يحتاج اعتماداً</span>' : alreadyExists ? `
                                     <span class="admin-badge admin-badge-teal" style="font-size: 0.7rem;">موجود بالفعل ✓</span>
                                 ` : `
                                     <button type="button" onclick="approveSuggestion(${item.id})" class="btn-primary" style="font-size: 0.725rem; padding: 0.35rem 0.65rem;" ${contact.error ? 'disabled' : ''}>
