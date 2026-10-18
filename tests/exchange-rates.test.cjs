@@ -120,6 +120,7 @@ function approvalContext(data) {
     vm.runInContext(shared.slice(shared.indexOf('function normalizeContactInput('), shared.indexOf('function validatePortalData(')), ctx);
     const features = read('portal-features.js');
     loadFn(ctx, features, 'function categoryFromLabel(');
+    loadFn(ctx, features, 'function canonicalCityName(');
     loadFn(ctx, features, 'function cleanSuggestionNotes(');
     const admin = read('admin.html');
     loadFn(ctx, admin, 'function checkItemExists(');

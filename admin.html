@@ -6,12 +6,12 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=52"></script>
+    <script src="shared.js?v=53"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=52">
-    <script src="portal-features.js?v=52"></script>
+    <link rel="stylesheet" href="style.css?v=53">
+    <script src="portal-features.js?v=53"></script>
 </head>
 <body>
 
@@ -143,6 +143,11 @@
                 </div>
 
                 <div id="suggestionsTableContainer" style="display: none;">
+                    <div class="inbox-filters">
+                        <label>نوع الوارد<select id="inboxKind" class="form-select" onchange="applyInboxFilters()"><option value="">الكل</option><option value="suggestion">إضافات</option><option value="correction">تصحيحات</option><option value="report">بلاغات</option><option value="rating">تقييمات</option></select></label>
+                        <label>الحالة<select id="inboxStatus" class="form-select" onchange="applyInboxFilters()"><option value="">الكل</option><option value="pending">غير معالج</option><option value="processed">معالج</option></select></label>
+                        <span id="inboxFilterCount" role="status"></span>
+                    </div>
                     <div id="bulkBar" style="display:flex; flex-wrap:wrap; align-items:center; gap:0.5rem; padding:0.6rem 0.25rem;">
                         <label style="display:flex; align-items:center; gap:0.35rem; font-size:0.78rem; font-weight:800; cursor:pointer;">
                             <input type="checkbox" id="bulkSelectAll" onchange="toggleBulkSelectAll(this.checked)"> تحديد الكل
@@ -154,11 +159,12 @@
                     </div>
                     <p class="contact-note">التقييمات تُحتسب تلقائياً. الاعتماد للإضافات فقط؛ تجاهل التقييم من الوارد لا يحذفه من المتوسط.</p>
                     <table class="inbox-table" aria-label="اقتراحات وبلاغات الطلاب الواردة">
-                        <colgroup><col class="inbox-col-select"><col class="inbox-col-type"><col class="inbox-col-category"><col class="inbox-col-city"><col class="inbox-col-name"><col class="inbox-col-contact"><col class="inbox-col-notes"><col class="inbox-col-actions"></colgroup>
+                        <colgroup><col class="inbox-col-select"><col class="inbox-col-type"><col class="inbox-col-rating"><col class="inbox-col-category"><col class="inbox-col-city"><col class="inbox-col-name"><col class="inbox-col-contact"><col class="inbox-col-notes"><col class="inbox-col-actions"></colgroup>
                         <thead>
                             <tr style="background-color: var(--color-slate-100); border-bottom: 2px solid var(--color-slate-200); color: var(--color-slate-700);">
                                 <th style="padding: 0.65rem 0.75rem; text-align:center;">✓</th>
                                 <th style="padding: 0.65rem 0.75rem;">النوع</th>
+                                <th style="padding: 0.65rem 0.75rem;">التقييم</th>
                                 <th style="padding: 0.65rem 0.75rem;">التصنيف</th>
                                 <th style="padding: 0.65rem 0.75rem;">المحافظة</th>
                                 <th style="padding: 0.65rem 0.75rem;">الاسم</th>
@@ -916,7 +922,7 @@
         function handleAddItem(e) {
             e.preventDefault();
             const cat = document.getElementById('newCategory').value;
-            const city = document.getElementById('newCity').value.trim();
+            const city = canonicalCityName(document.getElementById('newCity').value);
             const name = document.getElementById('newName').value.trim();
             const contact = normalizeContactInput(document.getElementById('newPhone').value);
             if (contact.error) return showToast(contact.error, 'error');
@@ -1074,17 +1080,17 @@
         }
 
         function bulkSelectedIds() {
-            return [...document.querySelectorAll('input[data-bulk]:checked')].map(el => parseInt(el.getAttribute('data-bulk'), 10));
+            return [...document.querySelectorAll('input[data-bulk]:checked:not(:disabled)')].map(el => parseInt(el.getAttribute('data-bulk'), 10));
         }
 
         function toggleBulkSelectAll(checked) {
-            document.querySelectorAll('input[data-bulk]').forEach(el => { el.checked = checked; });
+            document.querySelectorAll('input[data-bulk]:not(:disabled)').forEach(el => { el.checked = checked; });
             updateBulkCount();
         }
 
         function updateBulkCount() {
             const n = bulkSelectedIds().length;
-            const total = document.querySelectorAll('input[data-bulk]').length;
+            const total = document.querySelectorAll('input[data-bulk]:not(:disabled)').length;
             const all = document.getElementById('bulkSelectAll');
             all.checked = total > 0 && n === total;
             all.indeterminate = n > 0 && n < total;
@@ -1151,7 +1157,7 @@
                 }
             }
             if (cleanedNotes) newItem.note = cleanedNotes;
-            return { cat, newItem, city: item.city.trim() };
+            return { cat, newItem, city: canonicalCityName(item.city) };
         }
 
         async function bulkApprove() {
@@ -1333,9 +1339,13 @@
 
                 // Row 0 is header: ['Timestamp', 'نوع المشاركة', 'التصنيف', 'اسم المحافظة...', 'اسم المكان...', 'رقم الهاتف...', 'التقييم...', 'ملاحظات...']
                 liveSuggestions = [];
+                const seenReceipts = new Set();
                 for (let i = 1; i < rows.length; i++) {
                     const r = rows[i];
                     if (!r || r.length < 5 || !r[4]) continue; // Skip empty rows
+                    const receipt = (r[7] || '').match(/\[إرسال:([a-f0-9-]{36})\]/)?.[1];
+                    if (receipt && seenReceipts.has(receipt)) continue;
+                    if (receipt) seenReceipts.add(receipt);
                     if ((r[1] || '').trim() === 'بحث بدون نتائج' || (r[7] || '').includes('[بحث بدون نتائج]')) continue; // Analytics are not suggestions.
 
                     liveSuggestions.push({
@@ -1365,7 +1375,7 @@
                     const isReport = item.category.includes('إبلاغ') || item.notes.includes('[بلاغ');
                     const isRating = !isReport && item.type.includes('تقييم');
                     const badgeClass = isReport ? 'admin-badge-red' : 'admin-badge-teal';
-                    const badgeText = isReport ? 'بلاغ مشكلة' : isRating ? `تقييم: ${escapeHtml(item.rating)}/5` : 'اقتراح جديد';
+                    const badgeText = isReport ? (inboxKind(item) === 'correction' ? 'تصحيح' : 'بلاغ مشكلة') : isRating ? 'تقييم' : 'اقتراح جديد';
 
                     // Check if already in adminData
                     const alreadyExists = checkItemExists(item.name, item.phone, item.category);
@@ -1374,13 +1384,14 @@
                     const contact = normalizeContactInput(item.phone);
 
                     return `
-                        <tr style="border-bottom: 1px solid var(--color-slate-200); background-color: ${isReport ? 'var(--color-red-soft)' : 'var(--surface)'};">
+                        <tr data-kind="${inboxKind(item)}" data-status="${decision ? 'processed' : 'pending'}" style="border-bottom: 1px solid var(--color-slate-200); background-color: ${isReport ? 'var(--color-red-soft)' : 'var(--surface)'};">
                             <td class="inbox-select" data-label="تحديد" style="padding: 0.65rem 0.5rem; text-align:center;">
                                 ${!decision ? `<label class="inbox-select-label"><input type="checkbox" data-bulk="${item.id}" onchange="updateBulkCount()" aria-label="تحديد ${escapeHtml(item.name)}"><span>تحديد</span></label>` : '<span class="inbox-unselectable" title="تمت معالجة هذا الإدخال">—</span>'}
                             </td>
                             <td data-label="النوع" style="padding: 0.65rem 0.75rem;">
                                 <span class="admin-badge ${badgeClass}">${badgeText}</span>
                             </td>
+                            <td data-label="التقييم" style="padding:.65rem .75rem;"><bdi dir="ltr">${isRating && /^[1-5]$/.test(item.rating.trim()) ? escapeHtml(item.rating.trim()) + '/5' : '—'}</bdi></td>
                             <td data-label="التصنيف" style="padding: 0.65rem 0.75rem; font-weight: 700; color: var(--color-slate-700);">
                                 ${escapeHtml(item.category || '—')}
                             </td>
@@ -1421,7 +1432,7 @@
                     `;
                 }).join('');
 
-                updateBulkCount();
+                applyInboxFilters();
                 loadingEl.style.display = 'none';
                 tableContainer.style.display = 'block';
             } catch (err) {

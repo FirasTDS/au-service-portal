@@ -19,14 +19,15 @@
     <meta name="theme-color" content="#0f4c42">
     <link rel="icon" type="image/png" href="Asset%201.png">
     <link rel="apple-touch-icon" href="Asset%201.png">
-    <script src="shared.js?v=51"></script>
+    <script src="shared.js?v=53"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=51">
-    <script src="portal-features.js?v=51"></script>
-    <script src="rates.js?v=51"></script>
-    <script src="ratings.js?v=51"></script>
+    <link rel="stylesheet" href="style.css?v=53">
+    <script src="portal-features.js?v=53"></script>
+    <script src="rates.js?v=53"></script>
+    <script src="ratings.js?v=53"></script>
+    <script src="submissions.js?v=53"></script>
 </head>
 <body>
 
@@ -183,6 +184,8 @@
     </div>
   </div>
 
+  <label class="open-now-filter"><input type="checkbox" id="openNowOnly" onchange="filterItems()"> مفتوح الآن فقط <small>حسب الدوام المسجّل بتوقيت سوريا؛ الجهات بلا دوام لا تظهر</small></label>
+  <section id="submissionOutbox" class="outbox-panel" aria-live="polite" hidden></section>
   <section id="categoryBrowser" aria-label="أقسام الدليل" tabindex="-1">
     <div id="categoryTiles">
       <section class="category-group" data-category-group="services" aria-labelledby="localCategoriesTitle">
@@ -1082,11 +1085,8 @@
             fd.append(ENTRIES.notes, `[تقييم:${receipt}]` + (previousStars
                 ? `\n[تعديل تقييم]: من ${previousStars} إلى ${stars} نجوم — تحديث لتقييم سابق وليس تقييماً مستقلاً` : ''));
 
-            await fetch(GOOGLE_FORM_URL, {
-                method: "POST",
-                mode: "no-cors",
-                body: fd
-            });
+            const delivery = await submitWithReceipt(fd);
+            showToast(delivery.confirmed ? 'تم تأكيد استلام تقييمك.' : 'التقييم محفوظ وبانتظار تأكيد الاستلام — راجع صندوق الإرسال.');
         } catch (err) {
             showToast('التقييم محفوظ على جهازك، لكن تعذر إرساله. أعد الضغط على النجمة للمحاولة.', 'error');
         }
@@ -1143,9 +1143,9 @@
 
         if (isUrl) {
             return `
-            <div class="contact-item" data-search="${nameEscaped} ${escapeHtml(item.address || '')} ${escapeHtml(item.note || '')} ${escapeHtml(item.link || item.phone || '')} ${searchContextEscaped}">
+            <div class="contact-item" data-hours="${escapeHtml(JSON.stringify(item.hours || null))}" data-search="${nameEscaped} ${escapeHtml(item.address || '')} ${escapeHtml(item.note || '')} ${escapeHtml(item.link || item.phone || '')} ${searchContextEscaped}">
                 <div class="contact-header">
-                    <span class="contact-name">${nameEscaped}</span>
+                    <span class="contact-name">${nameEscaped}</span><span class="hours-status">${getOpenStatusBadge(item)}</span>
                     ${item.address ? `<div class="contact-note">📍 ${escapeHtml(item.address)}</div>` : ''}
                     ${item.note ? `<div class="contact-note">${escapeHtml(item.note)}</div>` : ''}
                     ${typeof contactDetailsHtml === 'function' ? contactDetailsHtml(item) : ''}
@@ -1185,7 +1185,7 @@
         const phones = contact.phones;
 
         return `
-        <div class="contact-item" data-search="${nameEscaped} ${addressEscaped} ${phoneEscaped} ${phones.join(' ')} ${noteEscaped} ${scheduleEscaped} ${searchContextEscaped}">
+        <div class="contact-item" data-hours="${escapeHtml(JSON.stringify(item.hours || null))}" data-search="${nameEscaped} ${addressEscaped} ${phoneEscaped} ${phones.join(' ')} ${noteEscaped} ${scheduleEscaped} ${searchContextEscaped}">
             <div class="contact-header">
                 <span class="contact-name">${nameEscaped}</span>
                 <div class="contact-phone-row">
@@ -1194,7 +1194,7 @@
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
                         موثق
                     </span>` : ''}
-                    ${openStatusHtml}
+                    <span class="hours-status">${openStatusHtml}</span>
                 </div>
                 ${noteEscaped ? `<div class="contact-note">${noteEscaped}</div>` : ''}
                 ${addressEscaped ? `<div class="contact-note">📍 ${addressEscaped}</div>` : ''}
@@ -1715,6 +1715,7 @@
     }
 
     function backToCategories() {
+        document.getElementById('openNowOnly').checked = false;
         const previous = selectedCategory;
         selectedCategory = null;
         history.replaceState(null, '', location.pathname + location.search);
@@ -1750,7 +1751,8 @@
         const secServices = document.getElementById('section-services');
         const secTransport = document.getElementById('section-transport');
 
-        const browsing = !normalizedQuery && !selectedCategory;
+        const openOnly = document.getElementById('openNowOnly').checked;
+        const browsing = !normalizedQuery && !selectedCategory && !openOnly;
         const showServices = !!normalizedQuery || currentTab === 'all' || currentTab === 'services';
         const showTransport = !!normalizedQuery || currentTab === 'all' || currentTab === 'transport';
         document.getElementById('categoryBrowser').hidden = !browsing;
@@ -1765,7 +1767,7 @@
         const selectedList = selectedCategory && document.getElementById(selectedCategory);
         const shareButton = document.getElementById('shareCategory');
         if (shareButton) shareButton.hidden = !selectedCategory || !!normalizedQuery;
-        document.getElementById('browseStatus').textContent = normalizedQuery ? 'نتائج البحث في كل الدليل' : selectedList?.closest('.category-card').querySelector('.category-title').textContent || '';
+        document.getElementById('browseStatus').textContent = normalizedQuery ? 'نتائج البحث في كل الدليل' : selectedList?.closest('.category-card').querySelector('.category-title').textContent || (openOnly ? 'المفتوح الآن' : '');
 
         secServices.style.display = showServices ? 'block' : 'none';
         secTransport.style.display = showTransport ? 'block' : 'none';
@@ -1774,7 +1776,7 @@
         const dutySection = document.getElementById('section-duty');
         const hasDutySchedule = portalData.pharmacies_duty?.schedule?.length > 0;
         if (dutySection && hasDutySchedule) {
-            if (!showServices) {
+            if (!showServices || openOnly) {
                 dutySection.style.display = 'none';
             } else if (!normalizedQuery) {
                 dutySection.style.display = 'block';
@@ -1806,22 +1808,22 @@
                 const searchStr = item.getAttribute('data-search') || '';
                 const normalizedSearch = normalizeArabic(searchStr);
 
-                if (!normalizedQuery || normalizedSearch.includes(normalizedQuery)) {
+                if ((!normalizedQuery || normalizedSearch.includes(normalizedQuery)) && (!openOnly || openHoursMatch(item))) {
                     item.style.display = 'flex';
                     visibleInCard++;
-                    totalVisibleInActiveTab++;
                 } else {
                     item.style.display = 'none';
                 }
             });
 
-            card.style.display = visibleInCard > 0 && (hasQuery || selectedCategory === listId) ? 'flex' : 'none';
+            card.style.display = visibleInCard > 0 && (hasQuery || selectedCategory === listId || (openOnly && !selectedCategory)) ? 'flex' : 'none';
+            if (card.style.display !== 'none') totalVisibleInActiveTab += visibleInCard;
         });
 
         if (!hasDutySchedule) dutySection.style.display = browsing && showServices ? 'block' : 'none';
         const favoriteItems = [...document.querySelectorAll('#list-favorites .contact-item')];
         favoriteItems.forEach(item => {
-            item.style.display = normalizeArabic(item.dataset.search).includes(normalizedQuery) ? 'flex' : 'none';
+            item.style.display = normalizeArabic(item.dataset.search).includes(normalizedQuery) && (!openOnly || openHoursMatch(item)) ? 'flex' : 'none';
         });
         const visibleFavorites = favoriteItems.filter(item => item.style.display !== 'none');
         const showFavorites = (normalizedQuery || browsing && currentTab === 'all') && visibleFavorites.length > 0;
@@ -2117,14 +2119,11 @@
         fd.append(ENTRIES.notes, `${notes}\n[القسم: ${category}]\n[طلب:${trackingId}]`);
 
         try {
-            await fetch(GOOGLE_FORM_URL, {
-                method: "POST",
-                mode: "no-cors",
-                body: fd
-            });
+            const delivery = await submitWithReceipt(fd);
 
             rememberSuggestion(trackingId, name);
             successEl.style.display = 'block';
+            successEl.textContent = delivery.confirmed ? 'تم تأكيد استلام اقتراحك. شكراً!' : 'طلبك محفوظ وبانتظار تأكيد الاستلام — راجع صندوق الإرسال.';
             document.getElementById('sugName').value = '';
             document.getElementById('sugPhone').value = '';
             document.getElementById('sugNotes').value = '';
@@ -2134,7 +2133,7 @@
             setTimeout(() => {
                 successEl.style.display = 'none';
                 closeModal('suggestModal');
-                showToast("أُرسل طلبك — تابع حالته من «متابعة اقتراحاتي».");
+                showToast(delivery.confirmed ? 'تم تأكيد استلام طلبك — تابع حالته من «متابعة اقتراحاتي».' : 'طلبك محفوظ وبانتظار التأكيد في صندوق الإرسال.');
             }, 1200);
         } catch (err) {
             errEl.textContent = 'تعذر الإرسال بسبب انقطاع الاتصال. يرجى المحاولة لاحقاً.';
@@ -2199,17 +2198,14 @@
         fd.append(ENTRIES.notes, `[بلاغ خطأ | ${field}]: ${note}` + (correction ? `\n[تصحيح:${encodeURIComponent(JSON.stringify(correction))}]` : ''));
 
         try {
-            await fetch(GOOGLE_FORM_URL, {
-                method: "POST",
-                mode: "no-cors",
-                body: fd
-            });
+            const delivery = await submitWithReceipt(fd);
 
             successEl.style.display = 'block';
+            successEl.textContent = delivery.confirmed ? 'تم تأكيد استلام البلاغ. شكراً!' : 'البلاغ محفوظ وبانتظار تأكيد الاستلام — راجع صندوق الإرسال.';
             setTimeout(() => {
                 successEl.style.display = 'none';
                 closeModal('reportModal');
-                showToast("تم إرسال البلاغ للمراجعة. شكراً لمساهمتك!");
+                showToast(delivery.confirmed ? 'تم تأكيد استلام البلاغ للمراجعة.' : 'البلاغ محفوظ وبانتظار التأكيد في صندوق الإرسال.');
             }, 1200);
         } catch (err) {
             errEl.textContent = 'تعذر الإرسال. تحقق من اتصال الإنترنت.';
@@ -2221,7 +2217,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v51';
+    const APP_VERSION = 'v53';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.

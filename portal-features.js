@@ -1,6 +1,59 @@
 // Shared directory features. Data changes stay in the admin draft until publishing.
 function cityListId(city) { return 'list-city-' + encodeURIComponent(city); }
 
+function canonicalCityName(city) {
+    const name = String(city || '').normalize('NFKC').replace(/[\u064B-\u065F\u0640]/g,'').replace(/\s+/g,' ').trim();
+    return name === 'حماه' ? 'حماة' : name;
+}
+
+function inboxKind(item) {
+    if (String(item.notes || '').includes('[بلاغ')) return String(item.notes).includes('[تصحيح:') ? 'correction' : 'report';
+    return String(item.type || '').includes('تقييم') ? 'rating' : 'suggestion';
+}
+
+function applyInboxFilters() {
+    const kind = document.getElementById('inboxKind').value;
+    const status = document.getElementById('inboxStatus').value;
+    let visible = 0;
+    document.querySelectorAll('#suggestionsTableBody tr').forEach(row => {
+        row.hidden = !!((kind && row.dataset.kind !== kind) || (status && row.dataset.status !== status));
+        row.querySelectorAll('input[data-bulk]').forEach(input => { input.disabled = row.hidden; if (row.hidden) input.checked = false; });
+        if (!row.hidden) visible++;
+    });
+    document.getElementById('inboxFilterCount').textContent = `عدد النتائج: ${visible}`;
+    updateBulkCount();
+}
+
+function placeMapUrl(item) {
+    const value = item.map_url || item.link || '';
+    try {
+        const url = new URL(value);
+        if (url.protocol !== 'https:') return '';
+        if (url.hostname === 'maps.app.goo.gl' || url.hostname === 'maps.google.com' ||
+            (['google.com','www.google.com'].includes(url.hostname) && /^\/maps(?:\/|$)/.test(url.pathname))) return url.href;
+    } catch {}
+    return '';
+}
+
+function openHoursMatch(element) {
+    try { return getOpenStatusBadge({hours:JSON.parse(element.dataset.hours || 'null')}).includes('status-badge-open'); }
+    catch { return false; }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (!document.getElementById('openNowOnly')) return;
+    const refresh = () => {
+        document.querySelectorAll('.contact-item[data-hours]').forEach(card => {
+            const slot = card.querySelector('.hours-status');
+            if (!slot) return;
+            try { const html = getOpenStatusBadge({hours:JSON.parse(card.dataset.hours)}); if (slot.innerHTML !== html) slot.innerHTML = html; } catch {}
+        });
+        if (document.getElementById('openNowOnly').checked) filterItems();
+    };
+    setInterval(() => { if (!document.hidden) refresh(); },60000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+});
+
 // Keep distinct businesses separate even when they share a telephone number.
 function placeRatingKey(contact, name) {
     return String(contact || '').trim() + '\n' + String(name || '').trim();
@@ -84,7 +137,7 @@ function planReportCorrection(data, report) {
 }
 
 function reportNotesSummary(notes) {
-    const displayNotes = String(notes || '').replace(/\[(?:طلب|تقييم):[a-f0-9-]{36}\]/g, '').replace(/\[القسم: [^\]\n]+\]/g, '').trim();
+    const displayNotes = String(notes || '').replace(/\[(?:طلب|تقييم|إرسال):[a-f0-9-]{36}\]/g, '').replace(/\[القسم: [^\]\n]+\]/g, '').trim();
     try {
         const patch = parseReportCorrection(notes);
         if (!patch) return displayNotes || '—';
@@ -156,7 +209,8 @@ function contactsOverlap(a, b) {
 
 function contactDetailsHtml(item) {
     const d = item.delivery || {};
-    return `<div class="contact-note">${item.last_verified ? `آخر تحقق: ${escapeHtml(item.last_verified)}` : 'لم يُسجّل تاريخ تحقق بعد'}</div>` +
+    const map = placeMapUrl(item);
+    return (map ? `<a class="btn-secondary map-link" href="${escapeHtml(map)}" target="_blank" rel="noopener noreferrer">الموقع على الخريطة ↗</a>` : '') + `<div class="contact-note">${item.last_verified ? `آخر تحقق: ${escapeHtml(item.last_verified)}` : 'لم يُسجّل تاريخ تحقق بعد'}</div>` +
         [item.specialty && `الاختصاص: ${item.specialty}`,
          d.areas && `مناطق التوصيل: ${d.areas}`, d.fee && `أجرة التوصيل: ${d.fee}`, d.kind && `نوع الطلبات: ${d.kind}`]
         .filter(Boolean).map(text => `<div class="contact-note">${escapeHtml(text)}</div>`).join('');
@@ -173,10 +227,11 @@ function extraFields(prefix, anchor, includeDate = true) {
     const box = document.createElement('fieldset'); box.id = prefix + 'Extras'; box.className = 'extra-fields';
     const legend = document.createElement('legend'); legend.textContent = includeDate ? 'التحقق وتفاصيل التوصيل (اختياري)' : 'تفاصيل التوصيل (اختياري)'; box.append(legend);
     const fields = [['Areas','مناطق التوصيل'], ['Fee','أجرة التوصيل (مثال: حسب المسافة)'], ['Kind','نوع الطلبات (أكل / مشاوير / كلاهما)'], ['Specialty','الاختصاص (للأطباء والعيادات فقط)']];
-    if (includeDate) fields.unshift(['Verified','تاريخ آخر تحقق فعلي من الرقم']);
+    if (includeDate) fields.unshift(['Verified','تاريخ آخر تحقق فعلي من الرقم'], ['Map','رابط Google Maps المؤكد (اختياري)']);
     fields.forEach(([key, text]) => {
         const label = document.createElement('label'); label.className = 'form-label'; label.textContent = text;
         const input = document.createElement('input'); input.id = prefix + key; input.className = 'form-input'; input.type = key === 'Verified' ? 'date' : 'text';
+        if (key === 'Map') { input.type = 'url'; input.oninput = () => input.setCustomValidity(!input.value || placeMapUrl({map_url:input.value}) ? '' : 'أدخل رابط Google Maps صالحاً يبدأ بـ https'); }
         if (key === 'Verified') input.max = new Date().toISOString().slice(0,10);
         label.append(input); box.append(label);
     });
@@ -184,12 +239,13 @@ function extraFields(prefix, anchor, includeDate = true) {
 }
 
 function fillExtraFields(prefix, item) {
-    const values = {Verified:item.last_verified || '', Areas:item.delivery?.areas || '', Fee:item.delivery?.fee || '', Kind:item.delivery?.kind || '', Specialty:item.specialty || ''};
+    const values = {Map:item.map_url || '', Verified:item.last_verified || '', Areas:item.delivery?.areas || '', Fee:item.delivery?.fee || '', Kind:item.delivery?.kind || '', Specialty:item.specialty || ''};
     Object.entries(values).forEach(([key, value]) => { const el = document.getElementById(prefix + key); if (el) el.value = value; });
 }
 
 function applyExtraFields(prefix, item) {
     const value = key => document.getElementById(prefix + key)?.value.trim() || '';
+    if (value('Map')) item.map_url = placeMapUrl({map_url:value('Map')}); else delete item.map_url;
     if (value('Verified')) item.last_verified = value('Verified'); else delete item.last_verified;
     const delivery = {areas:value('Areas'), fee:value('Fee'), kind:value('Kind')};
     if (Object.values(delivery).some(Boolean)) item.delivery = delivery; else delete item.delivery;
@@ -205,7 +261,7 @@ function suggestionDeliveryNotes() {
     }).join('');
 }
 
-function cleanSuggestionNotes(notes) { return String(notes || '').replace(/\[طلب:[a-f0-9-]{36}\]/g, '').replace(/\[القسم: [^\]\n]+\]/g, '').trim(); }
+function cleanSuggestionNotes(notes) { return String(notes || '').replace(/\[(?:طلب|إرسال):[a-f0-9-]{36}\]/g, '').replace(/\[القسم: [^\]\n]+\]/g, '').trim(); }
 
 // Optional opening hours from the suggestion form travel inside the notes entry.
 function suggestionHoursNotes() {

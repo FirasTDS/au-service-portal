@@ -303,6 +303,7 @@ test('report modal specifies which info is wrong and submits it with the report'
     vm.runInContext(extractFn(index, 'async function submitReport('), ctx);
     ctx.prepareReportCorrections = () => {};
     ctx.collectReportCorrections = () => null;
+    ctx.submitWithReceipt = async data => { posted = data; return {confirmed:true}; };
     ctx.openReportModal('مكتبة الفيصل', '0949071072');
     // Empty selection is rejected, then multiple corrections share one submission.
     els.reportNote.value = 'الاسم ناقص';
