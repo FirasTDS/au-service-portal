@@ -1,8 +1,8 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-10-17T22:47:59+00:00",
-  "total_ratings": 14,
+  "fetched_at": "2026-10-18T16:07:57+00:00",
+  "total_ratings": 18,
   "places": {
     "0933574279\nشاهين": {
       "avg": 5.0,
@@ -26,7 +26,7 @@
     },
     "0947785541\nمطعم برايم فود": {
       "avg": 5.0,
-      "count": 1
+      "count": 2
     },
     "0996538589\nمطعم الأحمد": {
       "avg": 5.0,
@@ -40,7 +40,7 @@
       "avg": 5.0,
       "count": 1
     },
-    "https://www.instagram.com/sugarbar2026?srtk=c2Q0cTc3cjMybnBv\nSugar bar": {
+    "0940698958\nSugar bar": {
       "avg": 5.0,
       "count": 1
     },
@@ -51,6 +51,18 @@
     "0992571491\nأحمد موتور توصيل": {
       "avg": 5.0,
       "count": 2
+    },
+    "0982899566\nشيكن هاوس": {
+      "avg": 1.0,
+      "count": 1
+    },
+    "0940447761\nمطعم الملك": {
+      "avg": 1.0,
+      "count": 1
+    },
+    "0983162723\nFriends  cafe": {
+      "avg": 5.0,
+      "count": 1
     }
   }
 }
