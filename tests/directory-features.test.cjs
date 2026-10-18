@@ -14,6 +14,38 @@ function setup(data) {
     return context;
 }
 
+test('report form values survive Sheet notes encoding and become an applicable admin patch', () => {
+    const original={name:'A',phone:'0991111111',address:'old',note:'keep'};
+    const data={services:{restaurants:[original]},transport:[]};
+    const ctx=setup(data);
+    const elements={reportPhone:{value:'0992222222'},reportName:{value:'New A'},reportAddress:{value:'new address'},
+        reportOther:{value:''},reportHours:{value:''},reportHoursAllDay:{checked:false},reportHoursOpen:{value:'22:00'},reportHoursClose:{value:'02:00'}};
+    ctx.document.getElementById=id=>elements[id];
+    ctx.document.querySelectorAll=()=>[{value:'5'},{value:'6'}];
+    const correction=ctx.collectReportCorrections({name:'A',phone:'0991111111',original},['رقم الهاتف','الاسم','العنوان','ساعات الدوام']);
+    const notes='[بلاغ خطأ | تصحيحات]: تفاصيل\n[تصحيح:'+encodeURIComponent(JSON.stringify(correction))+']';
+    const plan=ctx.planReportCorrection(data,{name:'A',phone:'0991111111',notes});
+    assert.equal(plan.next.phone,'0992222222');assert.equal(plan.next.name,'New A');
+    assert.equal(plan.next.address,'new address');assert.equal(plan.next.note,'keep');
+    assert.equal(plan.next.hours.open,'22:00');assert.deepEqual(Array.from(plan.next.hours.days),[5,6]);
+    assert.ok(ctx.reportNotesSummary(notes).includes('22:00 - 02:00'));
+    assert.equal(original.phone,'0991111111','nothing is applied until admin approves');
+});
+
+test('structured report hours apply explicit days and support overnight and 24-hour shifts', () => {
+    const ctx=setup({services:{},transport:[]});
+    const old={name:'A',phone:'0991111111',hours:{open:'08:00',close:'12:00',days:[0,1]}};
+    const patch={base:{hours:old.hours},changes:{hours:{open:'22:00',close:'02:00',days:[5,6]}}};
+    const next=ctx.validatedReportChanges(old,patch);
+    assert.equal(next.hours.open,'22:00');assert.equal(next.hours.close,'02:00');
+    assert.deepEqual(Array.from(next.hours.days),[5,6]);
+    patch.changes.hours={allday:true,days:[0,2]};
+    assert.equal(ctx.validatedReportChanges(old,patch).hours.allday,true);
+    for(const hours of [{open:'09:00',close:'09:00',days:[1]},{allday:true,days:[]},{allday:true,days:[7]}]) {
+        assert.throws(()=>ctx.validateReportHours(hours));
+    }
+});
+
 test('pending inbox rows are selectable and ratings clearly need no approval', () => {
     const admin = read('admin.html');
     assert.ok(admin.includes('${!decision ? `<label class="inbox-select-label">'));

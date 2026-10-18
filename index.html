@@ -19,15 +19,15 @@
     <meta name="theme-color" content="#0f4c42">
     <link rel="icon" type="image/png" href="Asset%201.png">
     <link rel="apple-touch-icon" href="Asset%201.png">
-    <script src="shared.js?v=54"></script>
+    <script src="shared.js?v=55"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=54">
-    <script src="portal-features.js?v=54"></script>
-    <script src="rates.js?v=54"></script>
-    <script src="ratings.js?v=54"></script>
-    <script src="submissions.js?v=54"></script>
+    <link rel="stylesheet" href="style.css?v=55">
+    <script src="portal-features.js?v=55"></script>
+    <script src="rates.js?v=55"></script>
+    <script src="ratings.js?v=55"></script>
+    <script src="submissions.js?v=55"></script>
 </head>
 <body>
 
@@ -673,18 +673,17 @@
     <div class="modal-header modal-header-alert">
       <div class="modal-header-title">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <h2 id="reportModalTitle">الإبلاغ عن خطأ أو اقتراح تعديل</h2>
+        <h2 id="reportModalTitle">اقتراح تعديل أو الإبلاغ عن مشكلة</h2>
       </div>
       <button class="modal-close-btn" onclick="closeModal('reportModal')" aria-label="إغلاق">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
     <div class="modal-body">
-      <p style="font-size:0.82rem; color:var(--color-slate-600);">الجهة التي ستُبلَّغ عنها:</p>
-      <p id="reportItemName" style="font-size:1rem; font-weight:800; color:var(--color-slate-800); margin-top:0.25rem;"></p>
+      <div class="report-recipient"><span>الجهة المعنية</span><p id="reportItemName"></p></div>
       <div class="form-group" style="margin-top:0.5rem;">
         <fieldset id="reportField" class="extra-fields">
-          <legend>المعلومات المطلوب تعديلها * (يمكن اختيار أكثر من معلومة)</legend>
+          <legend>ما الذي تريد تعديله؟</legend>
           <label><input type="checkbox" name="reportFields" value="رقم الهاتف" checked> رقم الهاتف</label>
           <label><input type="checkbox" name="reportFields" value="الاسم"> الاسم</label>
           <label><input type="checkbox" name="reportFields" value="العنوان"> العنوان</label>
@@ -693,11 +692,21 @@
         </fieldset>
       </div>
       <div id="reportCorrections" class="extra-fields">
-        <p class="contact-note">اختر المعلومات أعلاه ثم اكتب القيم الصحيحة أدناه. اترك القيمة فارغة إذا كنت تبلغ عن مشكلة فقط.</p>
+        <p class="contact-note">يمكن اختيار أكثر من معلومة. أدخل التصحيح إن كنت تعرفه، أو اترك الحقول فارغة واكتب تفاصيل المشكلة أدناه.</p>
         <label class="form-label" data-correction="رقم الهاتف">الرقم الصحيح أو رابط الصفحة<input id="reportPhone" class="form-input" dir="ltr"></label>
         <label class="form-label" data-correction="الاسم">الاسم الصحيح<input id="reportName" class="form-input"></label>
         <label class="form-label" data-correction="العنوان">العنوان الصحيح<input id="reportAddress" class="form-input"></label>
-        <label class="form-label" data-correction="ساعات الدوام">ساعات الدوام الصحيحة<input id="reportHours" class="form-input" placeholder="08:00-22:00 أو 24 ساعة"></label>
+        <fieldset class="report-hours" data-correction="ساعات الدوام">
+          <legend>ساعات الدوام الصحيحة</legend>
+          <input id="reportHours" type="hidden" value="">
+          <label class="report-check"><input type="checkbox" id="reportHoursAllDay" onchange="updateReportHoursUI()"> مفتوح 24 ساعة في الأيام المحددة</label>
+          <div class="report-times"><label>يفتح عند<input type="time" id="reportHoursOpen" class="form-input" dir="ltr"></label><label>يغلق عند<input type="time" id="reportHoursClose" class="form-input" dir="ltr"></label></div>
+          <p class="contact-note">إذا كان الإغلاق أبكر من الفتح، فالدوام يمتد إلى اليوم التالي.</p>
+          <div id="reportHoursDays" class="report-days" aria-label="أيام بدء الدوام">
+            <label><input type="checkbox" value="6"><span>السبت</span></label><label><input type="checkbox" value="0"><span>الأحد</span></label><label><input type="checkbox" value="1"><span>الاثنين</span></label><label><input type="checkbox" value="2"><span>الثلاثاء</span></label><label><input type="checkbox" value="3"><span>الأربعاء</span></label><label><input type="checkbox" value="4"><span>الخميس</span></label><label><input type="checkbox" value="5"><span>الجمعة</span></label>
+          </div>
+          <div class="report-day-actions"><button type="button" class="btn-secondary" onclick="selectReportDays(true)">كل الأيام</button><button type="button" class="btn-secondary" onclick="selectReportDays(false)">إلغاء تحديد الأيام</button></div>
+        </fieldset>
         <label class="form-label" data-correction="معلومة أخرى">الملاحظة الصحيحة (ستستبدل الملاحظة الحالية)<textarea id="reportOther" class="form-textarea"></textarea></label>
       </div>
       <div class="form-group" style="margin-top:0.5rem;">
@@ -1094,7 +1103,7 @@
 
     function createStarsHtml(item) {
         const contact = item.phone || item.link || item.name;
-        const key = placeRatingKey(contact, item.name);
+        const key = placeRatingKey(item.rating_contact || contact, item.name);
         const userRatings = getLocalUserRatings();
         const userStars = userRatings[key];
         const place = typeof visitorRatingFor === 'function' ? visitorRatingFor(key) : null;
@@ -1189,7 +1198,7 @@
             <div class="contact-header">
                 <span class="contact-name">${nameEscaped}</span>
                 <div class="contact-phone-row">
-                    ${phones.length ? phones.map(phone => `<span class="contact-phone" dir="ltr">${phone}</span>`).join('') : `<span class="contact-phone" dir="ltr">${phoneEscaped}</span><span class="contact-note">الرقم يحتاج مراجعة</span>`}
+                    ${phones.length ? phones.map(phone => `<span class="contact-phone" dir="ltr">${phone}</span>`).join('') : `<span class="contact-note">${item.phone ? 'الرقم يحتاج مراجعة' : 'الرقم غير متوفر'}</span>`}
                     ${item.verified === true ? `<span class="verified-badge">
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
                         موثق
@@ -1210,6 +1219,7 @@
             </div>
             <div class="contact-footer">
                 <div class="contact-primary-actions">
+                    ${!phones.length ? `<button type="button" class="btn-secondary" data-action="suggest-details" data-name="${nameEscaped}">اقترح الرقم الصحيح</button>` : ''}
                     ${phones.map((phone, index) => { const waUrl = whatsappUrl(phone); const suffix = phones.length > 1 ? ` ${index + 1}` : ''; return `
                     <a href="tel:${phone}" class="btn-call" title="${phone}" aria-label="اتصال بـ ${nameEscaped} على ${phone}">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -2217,7 +2227,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v54';
+    const APP_VERSION = 'v55';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.

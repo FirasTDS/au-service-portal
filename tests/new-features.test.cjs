@@ -22,6 +22,19 @@ function queueSetup(){
     return {ctx,get posts(){return posts;},set offline(value){offline=value;},set confirm(value){confirm=value;},ack(id){sheet+='\n[إرسال:'+id+']';}};
 }
 const form=()=>{const fd=new FormData();fd.set('entry.1549210706','Test');fd.set('entry.40821348','details');return fd;};
+test('confirmed duplicate merges preserve contacts and pharmacy ownership',()=>{
+    const data=JSON.parse(read('data.json'));
+    const entries=Object.values(data.services).flat();
+    const sugar=entries.filter(i=>i.name==='Sugar bar');assert.equal(sugar.length,1);
+    assert.equal(sugar[0].phone,'0940698958');assert.ok(sugar[0].website.includes('instagram.com/sugarbar2026'));
+    const ali=entries.filter(i=>i.name==='علي موتور توصيل');assert.equal(ali.length,1);
+    assert.ok(ali[0].phone.includes('0993160270')&&ali[0].phone.includes('0997645644'));
+    assert.equal(entries.find(i=>i.name==='مشفى القدموس الوطني').phone,'');
+    assert.equal(entries.find(i=>i.name==='مستوصف القدموس الصحي').phone,'');
+    assert.equal(entries.find(i=>i.name==='صيدلية ديما حسن').phone,'0437553700');
+    assert.equal(entries.find(i=>i.name==='صيدلية رهف خدام').phone,'0437553917');
+    assert.equal(entries.filter(i=>i.phone==='0951460666').length,2);
+});
 test('opaque POST does not claim delivery; receipt in Sheet confirms it',async()=>{
     const s=queueSetup(); const result=await s.ctx.submitWithReceipt(form());
     assert.equal(result.confirmed,false);assert.equal(s.ctx.readOutbox().length,1);

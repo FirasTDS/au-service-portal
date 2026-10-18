@@ -3,16 +3,18 @@
     "emergency": [
       {
         "name": "مشفى القدموس الوطني",
-        "phone": "0437553700",
-        "note": "إسعاف وطوارئ 24 ساعة - مدخل المشفى · العنوان: 445X+2Q2",
+        "phone": "",
+        "contact_history": [{"phone":"0437553700","reason":"الرقم يعود لصيدلية ديما حسن، بتأكيد المشرف"}],
+        "note": "إسعاف وطوارئ 24 ساعة - مدخل المشفى · العنوان: 445X+2Q2 · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»",
         "hours": {
           "allday": true
         }
       },
       {
         "name": "مستوصف القدموس الصحي",
-        "phone": "0437553917",
-        "note": "رعاية صحية أولية ولقاحات - غرب المستوصف"
+        "phone": "",
+        "contact_history": [{"phone":"0437553917","reason":"الرقم يعود لصيدلية رهف خدام، بتأكيد المشرف"}],
+        "note": "رعاية صحية أولية ولقاحات - غرب المستوصف · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
       },
       {
         "name": "منظومة الإسعاف السريع (الهلال الأحمر)",
@@ -243,6 +245,8 @@
       {
         "name": "Sugar bar",
         "phone": "0940698958",
+        "website": "https://www.instagram.com/sugarbar2026?srtk=c2Q0cTc3cjMybnBv",
+        "rating_aliases": ["https://www.instagram.com/sugarbar2026?srtk=c2Q0cTc3cjMybnBv"],
         "hours": {
           "open": "08:00",
           "close": "12:00"
@@ -504,11 +508,9 @@
       },
       {
         "name": "علي موتور توصيل",
-        "phone": "0993160270"
-      },
-      {
-        "name": "علي موتور توصيل",
-        "phone": "0997645644"
+        "phone": "0993160270 / 0997645644",
+        "rating_contact": "0993160270",
+        "rating_aliases": ["0993160270", "0997645644"]
       },
       {
         "name": "علي العيسى موتور توصيل",
@@ -640,10 +642,6 @@
       {
         "name": "M7",
         "link": "https://www.instagram.com/m7_cafe_1?psln=Mzk3MnN5NTN6a25o"
-      },
-      {
-        "name": "Sugar bar",
-        "link": "https://www.instagram.com/sugarbar2026?srtk=c2Q0cTc3cjMybnBv"
       },
       {
         "name": "كافيه شهلا",

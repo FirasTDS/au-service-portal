@@ -79,6 +79,12 @@ function prepareReportCorrections(target) {
     const matches = directoryEntries(portalData).filter(e => e.item.name === target.name && (e.item.phone || e.item.link || '') === target.phone);
     target.original = matches.length === 1 ? structuredClone(matches[0].item) : null;
     Object.values(REPORT_FIELDS).forEach(([,id]) => { document.getElementById(id).value = ''; });
+    document.getElementById('reportHoursOpen').value = target.original?.hours?.open || '';
+    document.getElementById('reportHoursClose').value = target.original?.hours?.close || '';
+    document.getElementById('reportHoursAllDay').checked = !!target.original?.hours?.allday;
+    const days = target.original?.hours?.days || [0,1,2,3,4,5,6];
+    document.querySelectorAll('#reportHoursDays input').forEach(input => { input.checked = days.includes(Number(input.value)); });
+    updateReportHoursUI();
     const update = () => {
         const selected = [...document.querySelectorAll('#reportField input:checked')].map(input => input.value);
         document.querySelectorAll('[data-correction]').forEach(label => { label.hidden = !selected.includes(label.dataset.correction); });
@@ -90,8 +96,9 @@ function prepareReportCorrections(target) {
 function collectReportCorrections(target, selected) {
     const changes = {}, base = {};
     for (const [key, [label,id]] of Object.entries(REPORT_FIELDS)) {
-        const value = document.getElementById(id).value.trim();
-        if (!selected.includes(label) || !value) continue;
+        if (!selected.includes(label)) continue;
+        const value = key === 'hours' && document.getElementById('reportHoursOpen') ? collectStructuredReportHours() : document.getElementById(id).value.trim();
+        if (!value) continue;
         if (!target.original) throw new Error('تعذر تحديد إدخال وحيد للتعديل. أرسل تفاصيل المشكلة فقط.');
         changes[key] = value;
         base[key] = reportValue(target.original, key);
@@ -119,6 +126,10 @@ function validatedReportChanges(original, patch) {
     for (const key of keys) {
         if (!Object.hasOwn(patch.base, key) || JSON.stringify(reportValue(original, key)) !== JSON.stringify(patch.base[key])) throw new Error('تغيرت البيانات منذ إرسال البلاغ. راجعها يدوياً.');
         const value = patch.changes[key];
+        if (key === 'hours' && value && typeof value === 'object') {
+            next.hours = validateReportHours(value);
+            continue;
+        }
         if (typeof value !== 'string' || !value.trim() || value.length > 2000) throw new Error('قيمة التصحيح غير صالحة');
         if (key === 'contact') {
             const contact = normalizeContactInput(value);
@@ -134,6 +145,28 @@ function validatedReportChanges(original, patch) {
         } else next[key] = value.trim();
     }
     return next;
+}
+
+function updateReportHoursUI() {
+    const allday = document.getElementById('reportHoursAllDay').checked;
+    for (const id of ['reportHoursOpen','reportHoursClose']) document.getElementById(id).disabled = allday;
+}
+function selectReportDays(checked) {
+    document.querySelectorAll('#reportHoursDays input').forEach(input => { input.checked = checked; });
+}
+function validateReportHours(hours) {
+    if (!Array.isArray(hours.days) || !hours.days.length || hours.days.some(day => !Number.isInteger(day) || day < 0 || day > 6)) throw new Error('اختر يوماً واحداً على الأقل للدوام.');
+    const days = [...new Set(hours.days)];
+    if (hours.allday === true) return {allday:true,days};
+    if (!isValidTime(hours.open) || !isValidTime(hours.close) || hours.open === hours.close) throw new Error('حدّد وقت فتح وإغلاق صحيحين، أو اختر 24 ساعة.');
+    return {open:hours.open,close:hours.close,days};
+}
+function collectStructuredReportHours() {
+    const allday = document.getElementById('reportHoursAllDay').checked;
+    const open = document.getElementById('reportHoursOpen').value;
+    const close = document.getElementById('reportHoursClose').value;
+    if (!allday && !open && !close) return null;
+    return validateReportHours({allday,open,close,days:[...document.querySelectorAll('#reportHoursDays input:checked')].map(input => Number(input.value))});
 }
 
 function planReportCorrection(data, report) {
@@ -152,7 +185,7 @@ function reportNotesSummary(notes) {
         const patch = parseReportCorrection(notes);
         if (!patch) return displayNotes || '—';
         return displayNotes.replace(/\[تصحيح:[^\]\n]+\]/, '').trim() + '\n' +
-            Object.entries(patch.changes).map(([key,value]) => `${REPORT_FIELDS[key]?.[0] || key}: ${value}`).join('\n');
+            Object.entries(patch.changes).map(([key,value]) => `${REPORT_FIELDS[key]?.[0] || key}: ${key === 'hours' && typeof value === 'object' ? hoursLabel(value) : value}`).join('\n');
     } catch { return 'تصحيح غير صالح — راجع البلاغ الأصلي يدوياً.\n' + String(notes); }
 }
 
@@ -220,7 +253,9 @@ function contactsOverlap(a, b) {
 function contactDetailsHtml(item) {
     const d = item.delivery || {};
     const map = placeMapUrl(item);
-    return (map ? `<a class="btn-secondary map-link" href="${escapeHtml(map)}" target="_blank" rel="noopener noreferrer">الموقع على الخريطة ↗</a>` : '') + `<div class="contact-note">${item.last_verified ? `آخر تحقق: ${escapeHtml(item.last_verified)}` : 'لم يُسجّل تاريخ تحقق بعد'}</div>` +
+    let website = '';
+    try { const url = new URL(item.website); if (url.protocol === 'https:') website = url.href; } catch {}
+    return (website ? `<a class="btn-secondary map-link" href="${escapeHtml(website)}" target="_blank" rel="noopener noreferrer">صفحة المكان ↗</a>` : '') + (map ? `<a class="btn-secondary map-link" href="${escapeHtml(map)}" target="_blank" rel="noopener noreferrer">الموقع على الخريطة ↗</a>` : '') + `<div class="contact-note">${item.last_verified ? `آخر تحقق: ${escapeHtml(item.last_verified)}` : 'لم يُسجّل تاريخ تحقق بعد'}</div>` +
         [item.specialty && `الاختصاص: ${item.specialty}`,
          d.areas && `مناطق التوصيل: ${d.areas}`, d.fee && `أجرة التوصيل: ${d.fee}`, d.kind && `نوع الطلبات: ${d.kind}`]
         .filter(Boolean).map(text => `<div class="contact-note">${escapeHtml(text)}</div>`).join('');

@@ -66,7 +66,7 @@ def rating_value(raw):
     return int(match.group(1)) if match else None
 
 
-def aggregate(rows):
+def aggregate(rows, aliases=None):
     """rows: iterable of dicts with type/name/phone/rating/notes. Returns {key: {avg, count}}."""
     values = {}
     identified = {}
@@ -84,6 +84,7 @@ def aggregate(rows):
         name = (item.get('name') or '').strip()
         if name:
             key += '\n' + name
+        key = (aliases or {}).get(key, key)
         receipt = RECEIPT_RE.search(item.get('notes') or '')
         if receipt:
             identified.setdefault(key, {})[receipt.group(1)] = stars
@@ -107,8 +108,21 @@ def aggregate(rows):
             for key, v in values.items() if v}
 
 
-def build_snapshot(rows):
-    places = aggregate(rows)
+def rating_alias_map(data):
+    aliases = {}
+    entries = [item for group in data.get('services', {}).values() for item in group]
+    entries += [item for group in data.get('transport', []) for item in group['items']]
+    for item in entries:
+        name = item['name'].strip()
+        contact = item.get('phone') or item.get('link') or name
+        canonical = item.get('rating_contact') or contact
+        for alias in [contact] + item.get('rating_aliases', []):
+            aliases[alias.strip() + '\n' + name] = canonical.strip() + '\n' + name
+    return aliases
+
+
+def build_snapshot(rows, aliases=None):
+    places = aggregate(rows, aliases)
     return {
         'source': 'google-sheet',
         'sheet_id': SHEET_ID,
@@ -119,6 +133,8 @@ def build_snapshot(rows):
 
 
 def selftest():
+    aliases = rating_alias_map({'services': {'taxis': [{'name':'A','phone':'0991111111 / 0992222222','rating_contact':'0991111111','rating_aliases':['0992222222']}]}})
+    assert aliases['0992222222\nA'] == '0991111111\nA'
     def vote(receipt, stars, notes=''):
         return {'type': 'تقييم خدمة موجودة حالياً', 'phone': '0990000000', 'rating': str(stars),
                 'notes': f'[تقييم:{receipt}]' + notes}
@@ -165,7 +181,9 @@ def main():
         if len(row) < 8 or not (row[4] or '').strip():
             continue
         entries.append({'type': row[1], 'name': row[4], 'phone': row[5], 'rating': row[6], 'notes': row[7] if len(row) > 7 else ''})
-    snapshot = build_snapshot(entries)
+    with open('data.json', encoding='utf-8') as data_file:
+        aliases = rating_alias_map(json.load(data_file))
+    snapshot = build_snapshot(entries, aliases)
     with open(OUT_PATH, 'w', encoding='utf-8') as handle:
         json.dump(snapshot, handle, ensure_ascii=False, indent=2)
         handle.write('\n')

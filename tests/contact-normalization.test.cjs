@@ -74,7 +74,10 @@ test('duplicate detection matches formatting and order but preserves new second 
 test('existing directory numbers remain supported and page scripts compile', () => {
     const data = JSON.parse(read('data.json'));
     const items = [...Object.values(data.services).flat(), ...data.transport.flatMap(group => group.items), ...data.pharmacies_duty.schedule];
-    for (const item of items) assert.equal(parse(item.phone || item.link).error, '', item.phone || item.link);
+    for (const item of items) {
+        if (!item.phone && !item.link) { assert.ok((item.note || '').includes('الرقم غير متوفر'), item.name); continue; }
+        assert.equal(parse(item.phone || item.link).error, '', item.phone || item.link);
+    }
     for (const file of ['index.html', 'admin.html']) {
         for (const script of read(file).matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)) new vm.Script(script[1]);
     }
