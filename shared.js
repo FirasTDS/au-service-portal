@@ -81,6 +81,7 @@ function damascusNow() {
 
 function hoursLabel(hours) {
     if (!hours || typeof hours !== 'object') return '';
+    if (Array.isArray(hours.periods)) return hours.periods.slice(0,14).filter(period => period && !period.periods).map(hoursLabel).filter(Boolean).join(' • ');
     const days = Array.isArray(hours.days) && hours.days.length && hours.days.length < 7
         ? ' (' + hours.days.map(d => AR_DAY_NAMES[d]).filter(Boolean).join('، ') + ')' : '';
     if (hours.allday) return 'مفتوح 24 ساعة' + days;
@@ -148,6 +149,13 @@ function parseHoursText(text) {
 function getOpenStatusBadge(item, now = damascusNow()) {
     const hours = item && item.hours;
     if (!hours || typeof hours !== 'object') return '';
+    if (Array.isArray(hours.periods)) {
+        const periods = hours.periods.slice(0,14).filter(period => period && !period.periods && hoursLabel(period));
+        if (!periods.length) return '';
+        const badges = periods.map(period => getOpenStatusBadge({hours:period}, now));
+        if (badges.some(badge => badge.includes('status-badge-open'))) return `<span class="status-badge status-badge-open" title="${hoursLabel(hours)}"><span class="status-dot"></span>مفتوح الآن</span>`;
+        return '<span class="status-badge status-badge-closed"><span class="status-dot"></span>مغلق حالياً</span>';
+    }
     const days = Array.isArray(hours.days) && hours.days.length ? hours.days : [0, 1, 2, 3, 4, 5, 6];
     if (hours.allday) {
         if (!days.includes(now.day)) return '<span class="status-badge status-badge-closed"><span class="status-dot"></span>مغلق اليوم</span>';

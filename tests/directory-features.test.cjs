@@ -14,6 +14,30 @@ function setup(data) {
     return context;
 }
 
+test('multiple weekly periods drive open-now including split days and overnight shifts', () => {
+    const ctx=setup({services:{},transport:[]});
+    const hours=ctx.validateReportHours({periods:[
+        {open:'08:00',close:'12:00',days:[6,0,1,2,3]},
+        {open:'16:00',close:'20:00',days:[6,0,1,2,3]},
+        {open:'09:00',close:'13:00',days:[4]},
+        {open:'22:00',close:'02:00',days:[6]}
+    ]});
+    const open=(day,minutes)=>ctx.getOpenStatusBadge({hours},{day,minutes}).includes('status-badge-open');
+    assert.equal(open(1,9*60),true);assert.equal(open(1,13*60),false);assert.equal(open(1,17*60),true);
+    assert.equal(open(4,10*60),true);assert.equal(open(4,17*60),false);
+    assert.equal(open(5,10*60),false,'Friday omitted: closed');
+    assert.equal(open(0,60),true,'Saturday shift extends into Sunday');
+    assert.equal(open(1,60),false);
+    assert.ok(ctx.hoursLabel(hours).includes('08:00 - 12:00'));
+    assert.ok(ctx.hoursLabel(hours).includes('16:00 - 20:00'));
+    assert.throws(()=>ctx.validateReportHours({periods:[]}));
+    assert.throws(()=>ctx.validateReportHours({periods:[{periods:[]}]}));
+    const original={name:'A',phone:'0991111111',hours:{allday:true}};
+    const next=ctx.validatedReportChanges(original,{base:{hours:original.hours},changes:{hours}});
+    assert.equal(next.hours.periods.length,4);
+    assert.equal(original.hours.allday,true,'review does not mutate the original');
+});
+
 test('report form values survive Sheet notes encoding and become an applicable admin patch', () => {
     const original={name:'A',phone:'0991111111',address:'old',note:'keep'};
     const data={services:{restaurants:[original]},transport:[]};

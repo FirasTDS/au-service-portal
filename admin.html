@@ -6,12 +6,12 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=55"></script>
+    <script src="shared.js?v=56"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=55">
-    <script src="portal-features.js?v=55"></script>
+    <link rel="stylesheet" href="style.css?v=56">
+    <script src="portal-features.js?v=56"></script>
 </head>
 <body>
 
@@ -910,17 +910,15 @@
             const close = document.getElementById(`${prefix}HoursClose`).value;
             const allday = document.getElementById(`${prefix}HoursAllDay`).checked;
             const days = [...document.querySelectorAll(`#${prefix}HoursDays input:checked`)].map(el => parseInt(el.value, 10));
-            if (!open && !close && !allday) return undefined;
-            if (!allday && (!isValidTime(open) || !isValidTime(close))) {
-                showToast('أوقات الدوام غير مكتملة — حدد وقت الفتح والإغلاق أو اختر 24 ساعة.', 'error');
-                return 'ERROR';
-            }
-            const hours = allday ? { allday: true } : { open, close };
-            if (days.length && days.length < 7) hours.days = days.sort();
-            return hours;
+            try {
+                const first = !open && !close && !allday ? null : validateReportHours({allday,open,close,days});
+                return collectExtraPeriods(prefix, first) || undefined;
+            } catch (error) { showToast(error.message, 'error'); return 'ERROR'; }
         }
 
         function fillHours(prefix, hours) {
+            fillExtraPeriods(prefix, hours);
+            hours = hours?.periods?.[0] || hours;
             document.getElementById(`${prefix}HoursOpen`).value = (hours && hours.open) || '';
             document.getElementById(`${prefix}HoursClose`).value = (hours && hours.close) || '';
             document.getElementById(`${prefix}HoursAllDay`).checked = Boolean(hours && hours.allday);

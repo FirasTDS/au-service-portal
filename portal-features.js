@@ -79,11 +79,13 @@ function prepareReportCorrections(target) {
     const matches = directoryEntries(portalData).filter(e => e.item.name === target.name && (e.item.phone || e.item.link || '') === target.phone);
     target.original = matches.length === 1 ? structuredClone(matches[0].item) : null;
     Object.values(REPORT_FIELDS).forEach(([,id]) => { document.getElementById(id).value = ''; });
-    document.getElementById('reportHoursOpen').value = target.original?.hours?.open || '';
-    document.getElementById('reportHoursClose').value = target.original?.hours?.close || '';
-    document.getElementById('reportHoursAllDay').checked = !!target.original?.hours?.allday;
-    const days = target.original?.hours?.days || [0,1,2,3,4,5,6];
+    const first = target.original?.hours?.periods?.[0] || target.original?.hours;
+    document.getElementById('reportHoursOpen').value = first?.open || '';
+    document.getElementById('reportHoursClose').value = first?.close || '';
+    document.getElementById('reportHoursAllDay').checked = !!first?.allday;
+    const days = first?.days || [0,1,2,3,4,5,6];
     document.querySelectorAll('#reportHoursDays input').forEach(input => { input.checked = days.includes(Number(input.value)); });
+    fillExtraPeriods('report', target.original?.hours);
     updateReportHoursUI();
     const update = () => {
         const selected = [...document.querySelectorAll('#reportField input:checked')].map(input => input.value);
@@ -155,6 +157,10 @@ function selectReportDays(checked) {
     document.querySelectorAll('#reportHoursDays input').forEach(input => { input.checked = checked; });
 }
 function validateReportHours(hours) {
+    if (Array.isArray(hours.periods)) {
+        if (!hours.periods.length || hours.periods.length > 14 || hours.periods.some(period => !period || period.periods)) throw new Error('أدخل من فترة واحدة إلى 14 فترة مستقلة.');
+        return {periods:hours.periods.map(validateReportHours)};
+    }
     if (!Array.isArray(hours.days) || !hours.days.length || hours.days.some(day => !Number.isInteger(day) || day < 0 || day > 6)) throw new Error('اختر يوماً واحداً على الأقل للدوام.');
     const days = [...new Set(hours.days)];
     if (hours.allday === true) return {allday:true,days};
@@ -165,8 +171,51 @@ function collectStructuredReportHours() {
     const allday = document.getElementById('reportHoursAllDay').checked;
     const open = document.getElementById('reportHoursOpen').value;
     const close = document.getElementById('reportHoursClose').value;
-    if (!allday && !open && !close) return null;
-    return validateReportHours({allday,open,close,days:[...document.querySelectorAll('#reportHoursDays input:checked')].map(input => Number(input.value))});
+    const first = !allday && !open && !close ? null : validateReportHours({allday,open,close,days:[...document.querySelectorAll('#reportHoursDays input:checked')].map(input => Number(input.value))});
+    return collectExtraPeriods('report', first);
+}
+
+function ensurePeriodsEditor(prefix) {
+    if (document.getElementById(prefix + 'ExtraPeriods')) return;
+    const anchor = document.getElementById(prefix + 'HoursDays');
+    if (!anchor) return;
+    const box = document.createElement('div'); box.id = prefix + 'ExtraPeriods'; box.className = 'extra-periods';
+    const button = featureButton('+ إضافة فترة دوام', () => addHoursPeriod(prefix));
+    const hint = document.createElement('p'); hint.className = 'contact-note'; hint.textContent = 'أضف فترة لأيام مختلفة أو فترة مسائية. الأيام غير المحددة في أي فترة تُعد مغلقة. الدوام الليلي يبدأ في اليوم المحدد.';
+    anchor.parentElement.append(box,button,hint);
+}
+function addHoursPeriod(prefix, period = {}) {
+    ensurePeriodsEditor(prefix);
+    const box = document.getElementById(prefix + 'ExtraPeriods');
+    if (box.children.length >= 13) return showToast('الحد الأقصى 14 فترة دوام.', 'error');
+    const row = document.createElement('fieldset'); row.className = 'hours-period';
+    row.innerHTML = '<legend>فترة إضافية</legend><label class="report-check"><input type="checkbox" class="period-allday"> 24 ساعة</label><div class="report-times"><label>يفتح عند<input type="time" class="form-input period-open" dir="ltr"></label><label>يغلق عند<input type="time" class="form-input period-close" dir="ltr"></label></div><div class="report-days"></div>';
+    const dayBox = row.querySelector('.report-days');
+    [6,0,1,2,3,4,5].forEach(day => {
+        const label = document.createElement('label'), input = document.createElement('input'), text = document.createElement('span');
+        input.type = 'checkbox'; input.className = 'period-day'; input.value = day; input.checked = (period.days || [0,1,2,3,4,5,6]).includes(day);
+        text.textContent = AR_DAY_NAMES[day]; label.append(input,text); dayBox.append(label);
+    });
+    const open = row.querySelector('.period-open'), close = row.querySelector('.period-close'), allday = row.querySelector('.period-allday');
+    open.value = period.open || ''; close.value = period.close || ''; allday.checked = !!period.allday;
+    allday.onchange = () => { open.disabled = close.disabled = allday.checked; }; allday.onchange();
+    row.append(featureButton('حذف هذه الفترة', () => row.remove())); box.append(row);
+}
+function fillExtraPeriods(prefix, hours) {
+    ensurePeriodsEditor(prefix);
+    const box = document.getElementById(prefix + 'ExtraPeriods');
+    if (!box) return;
+    box.replaceChildren();
+    (hours?.periods || []).slice(1).forEach(period => addHoursPeriod(prefix, period));
+}
+function collectExtraPeriods(prefix, first) {
+    const box = document.getElementById(prefix + 'ExtraPeriods');
+    const periods = first ? [first] : [];
+    if (box?.children) [...box.children].forEach(row => {
+        periods.push(validateReportHours({allday:row.querySelector('.period-allday').checked,open:row.querySelector('.period-open').value,close:row.querySelector('.period-close').value,
+            days:[...row.querySelectorAll('.period-day:checked')].map(input => Number(input.value))}));
+    });
+    return periods.length > 1 ? {periods} : (periods[0] || null);
 }
 
 function planReportCorrection(data, report) {
@@ -612,6 +661,8 @@ function initAdminNavigation() {
 
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('adminListsContainer')) {
+        ensurePeriodsEditor('new'); ensurePeriodsEditor('edit');
+        fillHours('new', null);
         extraFields('new', document.getElementById('newNote').parentElement);
         extraFields('edit', document.getElementById('editNote').parentElement);
         document.getElementById('newNote').parentElement.style.gridColumn = '1 / -1';
