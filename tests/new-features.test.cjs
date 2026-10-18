@@ -71,3 +71,16 @@ test('city normalization merges spelling variants without conflating nearby area
     assert.equal(data.transport.filter(g=>ctx.canonicalCityName(g.city)==='حماة').length,1);
     assert.ok(data.transport.find(g=>g.city==='حماة').items.some(x=>x.phone==='0932659464'));
 });
+
+test('inbox filter buttons default to additions and update only their own group',()=>{
+    const values={inboxKind:{value:'suggestion'},inboxStatus:{value:''}};
+    const a={dataset:{filter:'inboxKind',value:'suggestion'},setAttribute(k,v){this[k]=v;}};
+    const b={dataset:{filter:'inboxKind',value:'rating'},setAttribute(k,v){this[k]=v;}};
+    const ctx=vm.createContext({URL,document:{addEventListener(){},getElementById:id=>values[id],querySelectorAll:()=>[a,b]}});
+    vm.runInContext(read('portal-features.js'),ctx);
+    let calls=0;ctx.applyInboxFilters=()=>calls++;
+    ctx.setInboxFilter(b);
+    assert.equal(values.inboxKind.value,'rating');assert.equal(values.inboxStatus.value,'');
+    assert.equal(a['aria-pressed'],'false');assert.equal(b['aria-pressed'],'true');assert.equal(calls,1);
+    assert.ok(read('admin.html').includes('id="inboxKind" value="suggestion"'));
+});

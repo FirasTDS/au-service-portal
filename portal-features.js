@@ -24,6 +24,16 @@ function applyInboxFilters() {
     updateBulkCount();
 }
 
+function setInboxFilter(button) {
+    const key = button.dataset.filter;
+    if (!['inboxKind','inboxStatus'].includes(key)) return;
+    document.getElementById(key).value = button.dataset.value;
+    document.querySelectorAll(`button[data-filter="${key}"]`).forEach(candidate => {
+        candidate.setAttribute('aria-pressed', String(candidate === button));
+    });
+    applyInboxFilters();
+}
+
 function placeMapUrl(item) {
     const value = item.map_url || item.link || '';
     try {

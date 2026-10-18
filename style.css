@@ -767,7 +767,12 @@ body {
 .inbox-col-notes { width:20%; }
 .inbox-col-actions { width:14%; }
 .inbox-filters, .open-now-filter, .outbox-row { display:flex; align-items:center; flex-wrap:wrap; gap:.75rem; margin:.75rem 0; }
-.inbox-filters label { flex:1 1 10rem; min-width:0; }
+.inbox-filter-group { flex:1 1 20rem; min-width:0; border:1px solid var(--color-slate-200); border-radius:12px; padding:.75rem; margin:0; }
+.inbox-filter-group legend { font-weight:800; font-size:.85rem; padding:0 .4rem; color:var(--color-slate-700); }
+.inbox-filter-buttons { display:flex; flex-wrap:wrap; gap:.5rem; padding-top:.35rem; }
+.inbox-filter-buttons button { flex:1 1 auto; min-height:44px; justify-content:center; }
+.inbox-filter-buttons button[aria-pressed="true"] { background:var(--color-teal); color:#fff; border-color:var(--color-teal); box-shadow:inset 0 -3px rgba(0,0,0,.18); }
+.inbox-filter-buttons button:focus-visible { outline:2px solid var(--color-teal); outline-offset:3px; }
 .open-now-filter { padding:.75rem; border:1px solid var(--color-slate-200); border-radius:12px; cursor:pointer; }
 .open-now-filter input { width:20px; height:20px; accent-color:var(--color-teal); }
 .open-now-filter small { color:var(--color-slate-500); }

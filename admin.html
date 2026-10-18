@@ -6,12 +6,12 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=53"></script>
+    <script src="shared.js?v=54"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=53">
-    <script src="portal-features.js?v=53"></script>
+    <link rel="stylesheet" href="style.css?v=54">
+    <script src="portal-features.js?v=54"></script>
 </head>
 <body>
 
@@ -144,8 +144,18 @@
 
                 <div id="suggestionsTableContainer" style="display: none;">
                     <div class="inbox-filters">
-                        <label>نوع الوارد<select id="inboxKind" class="form-select" onchange="applyInboxFilters()"><option value="">الكل</option><option value="suggestion">إضافات</option><option value="correction">تصحيحات</option><option value="report">بلاغات</option><option value="rating">تقييمات</option></select></label>
-                        <label>الحالة<select id="inboxStatus" class="form-select" onchange="applyInboxFilters()"><option value="">الكل</option><option value="pending">غير معالج</option><option value="processed">معالج</option></select></label>
+                        <fieldset class="inbox-filter-group"><legend>نوع الوارد</legend><input type="hidden" id="inboxKind" value="suggestion"><div class="inbox-filter-buttons">
+                            <button type="button" class="btn-secondary" data-filter="inboxKind" data-value="" aria-pressed="false" onclick="setInboxFilter(this)">الكل</button>
+                            <button type="button" class="btn-secondary" data-filter="inboxKind" data-value="suggestion" aria-pressed="true" onclick="setInboxFilter(this)">إضافات</button>
+                            <button type="button" class="btn-secondary" data-filter="inboxKind" data-value="correction" aria-pressed="false" onclick="setInboxFilter(this)">تصحيحات</button>
+                            <button type="button" class="btn-secondary" data-filter="inboxKind" data-value="report" aria-pressed="false" onclick="setInboxFilter(this)">بلاغات</button>
+                            <button type="button" class="btn-secondary" data-filter="inboxKind" data-value="rating" aria-pressed="false" onclick="setInboxFilter(this)">تقييمات</button>
+                        </div></fieldset>
+                        <fieldset class="inbox-filter-group"><legend>الحالة</legend><input type="hidden" id="inboxStatus" value=""><div class="inbox-filter-buttons">
+                            <button type="button" class="btn-secondary" data-filter="inboxStatus" data-value="" aria-pressed="true" onclick="setInboxFilter(this)">الكل</button>
+                            <button type="button" class="btn-secondary" data-filter="inboxStatus" data-value="pending" aria-pressed="false" onclick="setInboxFilter(this)">غير معالج</button>
+                            <button type="button" class="btn-secondary" data-filter="inboxStatus" data-value="processed" aria-pressed="false" onclick="setInboxFilter(this)">معالج</button>
+                        </div></fieldset>
                         <span id="inboxFilterCount" role="status"></span>
                     </div>
                     <div id="bulkBar" style="display:flex; flex-wrap:wrap; align-items:center; gap:0.5rem; padding:0.6rem 0.25rem;">
