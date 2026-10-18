@@ -239,6 +239,14 @@
           "close": "01:00"
         },
         "note": "يوجد توصيل وطلبات خارجية وجميع أنواع الاكل والمشاريب"
+      },
+      {
+        "name": "Sugar bar",
+        "phone": "0940698958",
+        "hours": {
+          "open": "08:00",
+          "close": "12:00"
+        }
       }
     ],
     "supermarkets": [
@@ -1237,7 +1245,8 @@
     "56636464b184efbc493b60127c6ad0868efeae136d85880b74b3f168340d50c2": "approved",
     "2dd5ef55ae37e23962b85f4ac5eaa035eebc008c03bf2182b196d0a7ad04b102": "approved",
     "372cd9b8c047e4e377f355afff454a1300ddee718f9811d3f399e07dbcbe970f": "approved",
-    "a4ac8930a50cdf740d18f0d058c9a3aff0db1a4caeb98171960bc0cdedcf3384": "approved"
+    "a4ac8930a50cdf740d18f0d058c9a3aff0db1a4caeb98171960bc0cdedcf3384": "approved",
+    "f6c5cd8fb0b96e559b7aa2abd3e07fd4fdafe9e284ac24838b6585118b676d64": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1383,6 +1392,10 @@
     "90815108-c843-4a90-8aff-113a8c62c617": {
       "status": "approved",
       "updated": "2026-10-17"
+    },
+    "9ea714a0-02af-4b62-b945-f755a88a6587": {
+      "status": "approved",
+      "updated": "2026-10-18"
     }
   },
   "trash": [
