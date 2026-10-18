@@ -216,10 +216,6 @@
         "note": "مختص في الصندويشات و المشاوي"
       },
       {
-        "name": "مكتبة عمار",
-        "phone": "0933368162"
-      },
-      {
         "name": "مطعم عشتار",
         "phone": "0934596402"
       },
@@ -1424,6 +1420,18 @@
         "link": "https://www.google.com/maps/place/%D8%B7%D8%B1%D8%B7%D9%88%D8%B3+%D8%A7%D9%84%D9%82%D8%AF%D9%85%D9%88%D8%B3/@35.1012166,36.162192999999995,14z/data=!4m8!1m2!2m1!1s%D8%B7%D8%B1%D8%B7%D9%88%D8%B3+%D8%A7%D9%84%D9%82%D8%AF%D9%85%D9%88%D8%B3!3m4!1s0x1523ef0007ebc8d7:0x9cbd2f419495ce35!8m2!3d35.1012166!4d36.162192999999995",
         "note": "4526+FVP, Al Qadmus, Syria · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
       }
+    },
+    {
+      "id": "4338b5d6-a256-43d9-8b5a-6285187700b1",
+      "type": "service",
+      "category": "restaurants",
+      "city": null,
+      "position": 9,
+      "deleted_at": "2026-10-18T15:45:11.453Z",
+      "item": {
+        "name": "مكتبة عمار",
+        "phone": "0933368162"
+      }
     }
   ],
   "duplicate_reviews": [
@@ -1602,15 +1610,16 @@
     "list-clinics",
     "list-bakeries",
     "list-butchers",
+    "list-city-%D8%B7%D8%B1%D8%B7%D9%88%D8%B3",
+    "list-city-%D8%A7%D9%84%D9%84%D8%A7%D8%B0%D9%82%D9%8A%D8%A9",
     "list-city-%D8%AF%D9%85%D8%B4%D9%82",
     "list-city-%D8%AD%D9%84%D8%A8",
-    "list-city-%D8%AD%D9%85%D8%B5",
     "list-city-%D8%AD%D9%85%D8%A7%D8%A9",
-    "list-city-%D8%A7%D9%84%D9%84%D8%A7%D8%B0%D9%82%D9%8A%D8%A9",
-    "list-city-%D8%B7%D8%B1%D8%B7%D9%88%D8%B3",
+    "list-city-%D8%AD%D9%85%D8%B5",
     "list-city-%D8%A7%D9%84%D8%AD%D8%B3%D9%83%D8%A9%20%2F%20%D9%82%D8%A7%D9%85%D8%B4%D9%84%D9%8A",
     "list-city-%D8%A7%D9%84%D8%B1%D9%82%D8%A9",
     "list-city-%D8%AD%D9%85%D8%A7%D9%87",
-    "list-city-%D8%AF%D9%85%D8%B4%D9%82-%20%D8%A7%D9%84%D9%82%D8%AF%D9%85%D9%88%D8%B3%20%D9%81%D8%A7%D9%86"
+    "list-city-%D8%AF%D9%85%D8%B4%D9%82-%20%D8%A7%D9%84%D9%82%D8%AF%D9%85%D9%88%D8%B3%20%D9%81%D8%A7%D9%86",
+    "list-city-%D8%B1%D9%8A%D9%81%20%D8%A7%D9%84%D9%84%D8%A7%D8%B0%D9%82%D9%8A%D8%A9%20(%D8%A7%D9%84%D8%AD%D9%81%D8%A9)"
   ]
 }
