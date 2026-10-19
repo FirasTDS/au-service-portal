@@ -27,6 +27,8 @@ test('inbox is a compact list with visible actions and no forced wide table',()=
     assert.ok(!css.includes('min-width:1210px'));
     assert.ok(css.includes('.inbox-table td.inbox-actions { display:block;'));
     assert.ok(read('admin.html').includes('id="inboxDetailsModal"'));
+    assert.ok(read('admin.html').includes('class="inbox-list-head"'));
+    assert.ok(css.includes('grid-template-columns:2.75rem minmax(0,1fr) 7rem 17rem'));
 });
 test('inbox details open separately without hiding list actions or injecting markup',()=>{
     const content={items:[],replaceChildren(){this.items=[];},append(...items){this.items.push(...items);}};
