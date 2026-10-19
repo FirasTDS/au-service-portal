@@ -587,6 +587,14 @@
         "name": "جعفر ابو سلطان",
         "phone": "0992623300",
         "note": "طلبات داخل القدموس و خارجها و محترم و يؤتمن عبر مصاري امين بكلشي و يونثق فيو و يحترم الحرمة الحدود مع النساء"
+      },
+      {
+        "name": "تكسي يعرب القاضي",
+        "phone": "0935807772",
+        "hours": {
+          "allday": true
+        },
+        "note": "داخل وخارج القدموس ليلاً نهاراً"
       }
     ],
     "sweets": [
@@ -1279,7 +1287,8 @@
     "a4ac8930a50cdf740d18f0d058c9a3aff0db1a4caeb98171960bc0cdedcf3384": "approved",
     "f6c5cd8fb0b96e559b7aa2abd3e07fd4fdafe9e284ac24838b6585118b676d64": "approved",
     "b36a9fea226d42d80ef733c7289d03fc830d8ce3181650fc81948abb8b480543": "approved",
-    "9f341b31e925082c4e21fa0248b99e9756fbd50310a02a0929963259f3e80cee": "approved"
+    "9f341b31e925082c4e21fa0248b99e9756fbd50310a02a0929963259f3e80cee": "approved",
+    "c51f5e6881c959e0678d0dc9ee956abd93a9a83c77c4945d282f2781ed7764a7": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1435,6 +1444,10 @@
       "updated": "2026-10-19"
     },
     "c23a22b9-b29b-4e15-bf9c-257260284a7d": {
+      "status": "approved",
+      "updated": "2026-10-19"
+    },
+    "71ac2bd5-39c2-47ec-bfe4-5d3e9c5461ca": {
       "status": "approved",
       "updated": "2026-10-19"
     }
