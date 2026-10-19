@@ -832,24 +832,28 @@ body {
 .inbox-table tr:has(input[data-bulk]:checked) { box-shadow:inset -4px 0 var(--color-teal); }
 #bulkBar > label { min-height:44px; }
 .inbox-table .admin-badge { max-width:100%; white-space:normal; text-align:center; line-height:1.6; }
+.inbox-toggle { display:none; }
 @media (max-width:1100px) {
   .inbox-table, .inbox-table tbody { display:block; }
   .inbox-table colgroup { display:none; }
   .inbox-table thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
-  .inbox-table tbody { display:grid; gap:1rem; }
-  .inbox-table tbody tr { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border:1px solid var(--color-slate-200); border-radius:12px; padding:.35rem; }
-  .inbox-table tbody td { display:block; text-align:start !important; padding:.6rem .75rem !important; }
+  .inbox-table tbody { display:grid; gap:.5rem; }
+  .inbox-table tbody tr { display:grid; grid-template-columns:2.5rem minmax(0,1fr) auto; border:1px solid var(--color-slate-200); border-radius:10px; padding:.4rem; align-items:center; }
+  .inbox-table tbody td { display:none; text-align:start !important; padding:.25rem .4rem !important; }
   .inbox-table td::before { content:attr(data-label); display:block; color:var(--color-slate-500); font:700 .7rem 'Cairo',sans-serif; margin-bottom:.25rem; }
-  .inbox-table td.inbox-select { display:flex; align-items:center; gap:.5rem; }
+  .inbox-table td.inbox-select { display:flex; align-items:center; justify-content:center; grid-column:1; grid-row:1/3; padding:0 !important; }
   .inbox-table td.inbox-select::before { display:none; }
-  .inbox-select-label span { display:inline; }
-  .inbox-table td.inbox-notes, .inbox-table td.inbox-actions { grid-column:1/-1; }
+  .inbox-table td[data-label="الاسم"] { display:block; grid-column:2; grid-row:1; font-size:.85rem; }
+  .inbox-table td[data-label="النوع"] { display:block; grid-column:3; grid-row:1; font-size:.7rem; }
+  .inbox-table td.inbox-contact-cell { display:flex; align-items:center; gap:.5rem; grid-column:2/4; grid-row:2; }
+  .inbox-table td[data-label="الاسم"]::before, .inbox-table td[data-label="النوع"]::before, .inbox-table td.inbox-contact-cell::before { display:none; }
+  .inbox-table .inbox-contact { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .inbox-toggle { display:inline-flex; min-height:44px; padding:.3rem .6rem; font-size:.75rem; flex-shrink:0; }
+  .inbox-table tr.inbox-expanded td:not(.inbox-select):not([data-label="الاسم"]):not([data-label="النوع"]):not(.inbox-contact-cell) { display:block; grid-column:1/-1; order:2; padding:.5rem .65rem !important; }
+  .inbox-table tr.inbox-expanded .inbox-contact { white-space:normal; overflow-wrap:anywhere; }
+  .inbox-table tr.inbox-expanded .inbox-notes { border-top:1px solid var(--color-slate-200); }
   .inbox-action-buttons { flex-direction:row; flex-wrap:wrap; }
   .inbox-action-buttons > button { flex:0 1 auto; width:auto; min-width:min(8rem,100%); min-height:40px; }
-}
-@media (max-width:480px) {
-  .inbox-table tbody tr { grid-template-columns:minmax(0,1fr); }
-  .inbox-table td.inbox-select:has(input) { border-bottom:1px solid var(--color-slate-200); }
 }
 @media (min-width:700px) { .extra-fields { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width:500px) {

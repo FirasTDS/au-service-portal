@@ -6,12 +6,12 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=57"></script>
+    <script src="shared.js?v=58"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=57">
-    <script src="portal-features.js?v=57"></script>
+    <link rel="stylesheet" href="style.css?v=58">
+    <script src="portal-features.js?v=58"></script>
 </head>
 <body>
 
@@ -1411,6 +1411,7 @@
                             </td>
                             <td class="inbox-contact-cell" data-label="الرقم / الرابط" style="padding: 0.65rem 0.75rem;">
                                 <bdi class="inbox-contact" dir="ltr">${escapeHtml(contact.value)}</bdi>
+                                <button type="button" class="btn-secondary inbox-toggle" aria-expanded="false" onclick="toggleInboxDetails(this)">تفاصيل</button>
                                 ${contact.error ? '<span class="admin-badge admin-badge-amber">يحتاج تصحيح الرقم</span>' : ''}
                             </td>
                             <td class="inbox-notes" data-label="ملاحظات / بلاغ" style="padding: 0.65rem 0.75rem; font-size: 0.75rem; color: var(--color-slate-600);">

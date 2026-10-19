@@ -34,6 +34,12 @@ function setInboxFilter(button) {
     applyInboxFilters();
 }
 
+function toggleInboxDetails(button) {
+    const expanded = button.closest('tr').classList.toggle('inbox-expanded');
+    button.setAttribute('aria-expanded', String(expanded));
+    button.textContent = expanded ? 'إخفاء' : 'تفاصيل';
+}
+
 function placeMapUrl(item) {
     const value = item.map_url || item.link || '';
     try {

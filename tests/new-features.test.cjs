@@ -22,6 +22,15 @@ function queueSetup(){
     return {ctx,get posts(){return posts;},set offline(value){offline=value;},set confirm(value){confirm=value;},ack(id){sheet+='\n[إرسال:'+id+']';}};
 }
 const form=()=>{const fd=new FormData();fd.set('entry.1549210706','Test');fd.set('entry.40821348','details');return fd;};
+test('compact inbox details can be expanded and collapsed accessibly',()=>{
+    const ctx=vm.createContext({URL,document:{addEventListener(){}}});vm.runInContext(read('portal-features.js'),ctx);
+    let expanded=false;
+    const row={classList:{toggle:()=>expanded=!expanded}};
+    const button={closest:()=>row,setAttribute(key,value){this[key]=value;}};
+    ctx.toggleInboxDetails(button);assert.equal(button['aria-expanded'],'true');assert.equal(button.textContent,'إخفاء');
+    ctx.toggleInboxDetails(button);assert.equal(button['aria-expanded'],'false');assert.equal(button.textContent,'تفاصيل');
+    assert.ok(read('admin.html').includes('class="btn-secondary inbox-toggle"'));
+});
 test('confirmed duplicate merges preserve contacts and pharmacy ownership',()=>{
     const data=JSON.parse(read('data.json'));
     const entries=Object.values(data.services).flat();
