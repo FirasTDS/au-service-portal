@@ -595,6 +595,15 @@
           "allday": true
         },
         "note": "داخل وخارج القدموس ليلاً نهاراً"
+      },
+      {
+        "name": "محسن مسعود",
+        "phone": "0933703389",
+        "hours": {
+          "open": "06:00",
+          "close": "19:00"
+        },
+        "note": "داخل وخارج القدموس"
       }
     ],
     "sweets": [
@@ -1288,7 +1297,8 @@
     "f6c5cd8fb0b96e559b7aa2abd3e07fd4fdafe9e284ac24838b6585118b676d64": "approved",
     "b36a9fea226d42d80ef733c7289d03fc830d8ce3181650fc81948abb8b480543": "approved",
     "9f341b31e925082c4e21fa0248b99e9756fbd50310a02a0929963259f3e80cee": "approved",
-    "c51f5e6881c959e0678d0dc9ee956abd93a9a83c77c4945d282f2781ed7764a7": "approved"
+    "c51f5e6881c959e0678d0dc9ee956abd93a9a83c77c4945d282f2781ed7764a7": "approved",
+    "7f25fe0ca0454d3e3756f12547f580fef1b15a611d79dfdd6fb94fad75305898": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1448,6 +1458,10 @@
       "updated": "2026-10-19"
     },
     "71ac2bd5-39c2-47ec-bfe4-5d3e9c5461ca": {
+      "status": "approved",
+      "updated": "2026-10-19"
+    },
+    "63a40cb8-7290-42b1-b4b8-93233fdf7af3": {
       "status": "approved",
       "updated": "2026-10-19"
     }
