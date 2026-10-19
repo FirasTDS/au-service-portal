@@ -263,6 +263,10 @@
           "open": "08:00",
           "close": "12:00"
         }
+      },
+      {
+        "name": "مطعم البستان(فلافل)",
+        "phone": "0958313131"
       }
     ],
     "supermarkets": [
@@ -1274,7 +1278,8 @@
     "372cd9b8c047e4e377f355afff454a1300ddee718f9811d3f399e07dbcbe970f": "approved",
     "a4ac8930a50cdf740d18f0d058c9a3aff0db1a4caeb98171960bc0cdedcf3384": "approved",
     "f6c5cd8fb0b96e559b7aa2abd3e07fd4fdafe9e284ac24838b6585118b676d64": "approved",
-    "b36a9fea226d42d80ef733c7289d03fc830d8ce3181650fc81948abb8b480543": "approved"
+    "b36a9fea226d42d80ef733c7289d03fc830d8ce3181650fc81948abb8b480543": "approved",
+    "9f341b31e925082c4e21fa0248b99e9756fbd50310a02a0929963259f3e80cee": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1426,6 +1431,10 @@
       "updated": "2026-10-18"
     },
     "cbf73a73-fd78-424d-8777-bb1e85b3b4a3": {
+      "status": "approved",
+      "updated": "2026-10-19"
+    },
+    "c23a22b9-b29b-4e15-bf9c-257260284a7d": {
       "status": "approved",
       "updated": "2026-10-19"
     }
