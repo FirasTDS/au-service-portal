@@ -22,20 +22,21 @@ function queueSetup(){
     return {ctx,get posts(){return posts;},set offline(value){offline=value;},set confirm(value){confirm=value;},ack(id){sheet+='\n[إرسال:'+id+']';}};
 }
 const form=()=>{const fd=new FormData();fd.set('entry.1549210706','Test');fd.set('entry.40821348','details');return fd;};
-test('desktop inbox uses readable column widths instead of splitting Arabic words',()=>{
+test('inbox is a compact list with visible actions and no forced wide table',()=>{
     const css=read('style.css');
-    assert.ok(css.includes('.inbox-col-city { width:100px; }'));
-    assert.ok(css.includes('min-width:1210px'));
-    assert.ok(css.includes('.inbox-table th { white-space:nowrap; }'));
-    assert.ok(read('admin.html').includes('class="inbox-table-scroll"'));
+    assert.ok(!css.includes('min-width:1210px'));
+    assert.ok(css.includes('.inbox-table td.inbox-actions { display:block;'));
+    assert.ok(read('admin.html').includes('id="inboxDetailsModal"'));
 });
-test('compact inbox details can be expanded and collapsed accessibly',()=>{
-    const ctx=vm.createContext({URL,document:{addEventListener(){}}});vm.runInContext(read('portal-features.js'),ctx);
-    let expanded=false;
-    const row={classList:{toggle:()=>expanded=!expanded}};
-    const button={closest:()=>row,setAttribute(key,value){this[key]=value;}};
-    ctx.toggleInboxDetails(button);assert.equal(button['aria-expanded'],'true');assert.equal(button.textContent,'إخفاء');
-    ctx.toggleInboxDetails(button);assert.equal(button['aria-expanded'],'false');assert.equal(button.textContent,'تفاصيل');
+test('inbox details open separately without hiding list actions or injecting markup',()=>{
+    const content={items:[],replaceChildren(){this.items=[];},append(...items){this.items.push(...items);}};
+    let opened=false;
+    const ctx=vm.createContext({URL,document:{addEventListener(){},createElement(){return {};},
+        getElementById:id=>id==='inboxDetailsContent'?content:{classList:{add(){opened=true;}}}}});
+    vm.runInContext(read('portal-features.js'),ctx);
+    const row={querySelectorAll:()=>[{dataset:{label:'ملاحظات / بلاغ'},textContent:'<script>unsafe</script>',classList:{contains:()=>false}}]};
+    ctx.toggleInboxDetails({closest:()=>row});assert.equal(opened,true);
+    assert.equal(content.items[1].textContent,'<script>unsafe</script>');
     assert.ok(read('admin.html').includes('class="btn-secondary inbox-toggle"'));
 });
 test('confirmed duplicate merges preserve contacts and pharmacy ownership',()=>{

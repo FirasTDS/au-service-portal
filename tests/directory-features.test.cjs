@@ -115,7 +115,7 @@ test('admin inbox bounds long contacts and has labelled responsive rows', () => 
     for (const label of ['تحديد','النوع','التصنيف','المحافظة','الاسم','الرقم / الرابط','ملاحظات / بلاغ','إجراء']) {
         assert.ok(admin.includes(`data-label="${label}"`), label);
     }
-    assert.ok(css.includes('table-layout:fixed'));
+    assert.ok(css.includes('.inbox-table, .inbox-table tbody { display:block; min-width:0; }'));
     assert.ok(css.includes('.inbox-contact {') && css.includes('overflow-wrap:anywhere'));
     assert.ok(css.includes('.inbox-table tbody tr { display:grid;'));
     assert.ok(css.includes('.inbox-action-buttons > button'));

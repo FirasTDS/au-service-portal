@@ -6,12 +6,12 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=59"></script>
+    <script src="shared.js?v=60"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=59">
-    <script src="portal-features.js?v=59"></script>
+    <link rel="stylesheet" href="style.css?v=60">
+    <script src="portal-features.js?v=60"></script>
 </head>
 <body>
 
@@ -168,7 +168,7 @@
                         <span id="bulkCount" style="font-size:0.75rem; color:var(--color-slate-500);"></span>
                     </div>
                     <p class="contact-note">التقييمات تُحتسب تلقائياً. الاعتماد للإضافات فقط؛ تجاهل التقييم من الوارد لا يحذفه من المتوسط.</p>
-                    <div class="inbox-table-scroll" tabindex="0" role="region" aria-label="جدول الوارد، قابل للتمرير أفقياً">
+                    <div class="inbox-table-scroll" role="region" aria-label="قائمة الوارد">
                     <table class="inbox-table" aria-label="اقتراحات وبلاغات الطلاب الواردة">
                         <colgroup><col class="inbox-col-select"><col class="inbox-col-type"><col class="inbox-col-rating"><col class="inbox-col-category"><col class="inbox-col-city"><col class="inbox-col-name"><col class="inbox-col-contact"><col class="inbox-col-notes"><col class="inbox-col-actions"></colgroup>
                         <thead>
@@ -381,6 +381,12 @@
         </div>
     </div>
 
+    <div id="inboxDetailsModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="inboxDetailsTitle">
+        <div class="modal-dialog">
+            <div class="modal-header"><h2 id="inboxDetailsTitle">تفاصيل الوارد</h2><button type="button" class="modal-close-btn" aria-label="إغلاق" onclick="document.getElementById('inboxDetailsModal').classList.remove('modal-open')">✕</button></div>
+            <div class="modal-body"><dl id="inboxDetailsContent"></dl></div>
+        </div>
+    </div>
     <script>
         const GITHUB_OWNER = "FirasTDS";
         const GITHUB_REPO = "au-service-portal";
@@ -1413,7 +1419,7 @@
                             </td>
                             <td class="inbox-contact-cell" data-label="الرقم / الرابط" style="padding: 0.65rem 0.75rem;">
                                 <bdi class="inbox-contact" dir="ltr">${escapeHtml(contact.value)}</bdi>
-                                <button type="button" class="btn-secondary inbox-toggle" aria-expanded="false" onclick="toggleInboxDetails(this)">تفاصيل</button>
+                                <button type="button" class="btn-secondary inbox-toggle" aria-haspopup="dialog" onclick="toggleInboxDetails(this)">تفاصيل</button>
                                 ${contact.error ? '<span class="admin-badge admin-badge-amber">يحتاج تصحيح الرقم</span>' : ''}
                             </td>
                             <td class="inbox-notes" data-label="ملاحظات / بلاغ" style="padding: 0.65rem 0.75rem; font-size: 0.75rem; color: var(--color-slate-600);">

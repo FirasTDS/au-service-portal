@@ -35,9 +35,18 @@ function setInboxFilter(button) {
 }
 
 function toggleInboxDetails(button) {
-    const expanded = button.closest('tr').classList.toggle('inbox-expanded');
-    button.setAttribute('aria-expanded', String(expanded));
-    button.textContent = expanded ? 'إخفاء' : 'تفاصيل';
+    const row = button.closest('tr');
+    const content = document.getElementById('inboxDetailsContent');
+    content.replaceChildren();
+    row.querySelectorAll('td[data-label]').forEach(cell => {
+        if (['تحديد','إجراء'].includes(cell.dataset.label)) return;
+        const term = document.createElement('dt'), value = document.createElement('dd');
+        term.textContent = cell.dataset.label;
+        value.textContent = cell.classList.contains('inbox-contact-cell') ? cell.querySelector('.inbox-contact').textContent : cell.textContent.trim();
+        if (cell.classList.contains('inbox-contact-cell')) value.dir = 'ltr';
+        content.append(term,value);
+    });
+    document.getElementById('inboxDetailsModal').classList.add('modal-open');
 }
 
 function placeMapUrl(item) {
