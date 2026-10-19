@@ -841,23 +841,30 @@ body {
   .inbox-table td.inbox-select::before { display:none; }
   .inbox-table td[data-label="الاسم"] { display:block; grid-column:2; grid-row:1; font-size:.85rem; }
   .inbox-table td[data-label="النوع"] { display:block; grid-column:3; grid-row:1; font-size:.7rem; }
-  .inbox-table td.inbox-contact-cell { display:flex; align-items:center; gap:.5rem; grid-column:2; grid-row:2; }
+  .inbox-table td.inbox-contact-cell { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; grid-column:2; grid-row:2; }
   .inbox-table td[data-label="التقييم"] { display:block; grid-column:3; grid-row:2; color:var(--color-slate-600); }
   .inbox-table td.inbox-actions { display:block; grid-column:4; grid-row:1/3; }
   .inbox-table td[data-label="الاسم"]::before, .inbox-table td[data-label="النوع"]::before, .inbox-table td.inbox-contact-cell::before { display:none; }
   .inbox-table .inbox-contact { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .inbox-toggle { display:inline-flex; min-height:44px; padding:.3rem .6rem; font-size:.75rem; flex-shrink:0; }
 .inbox-action-buttons { flex-direction:row; flex-wrap:wrap; justify-content:flex-start; align-items:center; gap:.4rem; max-width:100%; }
-.inbox-action-buttons > button { flex:0 1 auto; width:auto; min-height:40px; font-size:.75rem; }
+.inbox-action-buttons > button { flex:0 1 auto; width:auto; min-height:44px; font-size:.75rem !important; padding:.5rem .75rem !important; border-radius:8px; line-height:1.5; overflow-wrap:normal; }
+.inbox-table tbody tr:last-child { border-bottom:0 !important; }
+.inbox-table td.inbox-contact-cell > .admin-badge { flex-basis:100%; text-align:start; }
+#inboxDetailsModal .modal-dialog { width:min(38rem,calc(100% - 2rem)); }
+#inboxDetailsModal .modal-header { background:var(--surface); color:var(--color-slate-900); border-bottom:1px solid var(--color-slate-200); padding:1rem 1.25rem; }
+#inboxDetailsTitle { margin:0; font-size:1.1rem; }
+#inboxDetailsModal .modal-close-btn { color:var(--color-slate-600); }
+#inboxDetailsActions { padding:1rem 1.25rem; border-top:1px solid var(--color-slate-200); background:var(--surface); flex-shrink:0; }
 #inboxDetailsContent { margin:0; }
 #inboxDetailsContent dt { color:var(--color-slate-500); font-size:.75rem; margin-top:.75rem; }
-#inboxDetailsContent dd { margin:.2rem 0 .75rem; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.8; }
+#inboxDetailsContent dd { margin:.2rem 0 .75rem; padding-bottom:.75rem; border-bottom:1px solid var(--color-slate-200); white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.8; }
 @media (max-width:800px) {
   .inbox-list-head, .inbox-table tbody tr { grid-template-columns:2.5rem minmax(0,1fr) 5.5rem; gap:0 .4rem; }
   .inbox-list-head > :last-child { display:none; }
   .inbox-list-head { font-size:.7rem; padding:.7rem .35rem; }
   .inbox-table tbody tr { padding:.6rem .35rem; }
-  .inbox-table td.inbox-actions { grid-column:2/4; grid-row:3; padding-top:.4rem !important; }
+  .inbox-table td.inbox-actions { grid-column:1/-1; grid-row:3; padding-top:.65rem !important; }
   .inbox-table td.inbox-actions::before { content:'الإجراءات'; display:block; font-size:.65rem; color:var(--color-slate-500); margin-bottom:.3rem; }
   .inbox-action-buttons { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); max-width:none; }
   .inbox-action-buttons > button { width:100%; min-width:0; }

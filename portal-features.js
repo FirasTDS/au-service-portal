@@ -46,7 +46,19 @@ function toggleInboxDetails(button) {
         if (cell.classList.contains('inbox-contact-cell')) value.dir = 'ltr';
         content.append(term,value);
     });
-    document.getElementById('inboxDetailsModal').classList.add('modal-open');
+    const modal = document.getElementById('inboxDetailsModal');
+    const actions = document.getElementById('inboxDetailsActions');
+    actions.replaceChildren();
+    row.querySelectorAll('.inbox-action-buttons > :not(.inbox-toggle)').forEach(source => {
+        const copy = source.cloneNode(true);
+        copy.removeAttribute('onclick');
+        if (source.tagName === 'BUTTON') copy.addEventListener('click', () => {
+            modal.classList.remove('modal-open');
+            if (source.isConnected) source.click();
+        });
+        actions.append(copy);
+    });
+    modal.classList.add('modal-open');
 }
 
 function placeMapUrl(item) {

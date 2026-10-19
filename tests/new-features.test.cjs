@@ -32,13 +32,16 @@ test('inbox is a compact list with visible actions and no forced wide table',()=
 });
 test('inbox details open separately without hiding list actions or injecting markup',()=>{
     const content={items:[],replaceChildren(){this.items=[];},append(...items){this.items.push(...items);}};
-    let opened=false;
+    let opened=false, invoked=false, actionClick;
+    const actions={replaceChildren(){},append(){}};
+    const source={tagName:'BUTTON',isConnected:true,click(){invoked=true;},cloneNode(){return {removeAttribute(){},addEventListener(type,fn){actionClick=fn;}};}};
     const ctx=vm.createContext({URL,document:{addEventListener(){},createElement(){return {};},
-        getElementById:id=>id==='inboxDetailsContent'?content:{classList:{add(){opened=true;}}}}});
+        getElementById:id=>id==='inboxDetailsContent'?content:id==='inboxDetailsActions'?actions:{classList:{add(){opened=true;},remove(){opened=false;}}}}});
     vm.runInContext(read('portal-features.js'),ctx);
-    const row={querySelectorAll:()=>[{dataset:{label:'ملاحظات / بلاغ'},textContent:'<script>unsafe</script>',classList:{contains:()=>false}}]};
+    const row={querySelectorAll:selector=>selector==='td[data-label]'?[{dataset:{label:'ملاحظات / بلاغ'},textContent:'<script>unsafe</script>',classList:{contains:()=>false}}]:[source]};
     ctx.toggleInboxDetails({closest:()=>row});assert.equal(opened,true);
     assert.equal(content.items[1].textContent,'<script>unsafe</script>');
+    actionClick();assert.equal(invoked,true);assert.equal(opened,false);
     assert.ok(read('admin.html').includes('class="btn-secondary inbox-toggle"'));
 });
 test('confirmed duplicate merges preserve contacts and pharmacy ownership',()=>{

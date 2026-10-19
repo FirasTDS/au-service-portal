@@ -6,12 +6,12 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=61"></script>
+    <script src="shared.js?v=62"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=61">
-    <script src="portal-features.js?v=61"></script>
+    <link rel="stylesheet" href="style.css?v=62">
+    <script src="portal-features.js?v=62"></script>
 </head>
 <body>
 
@@ -386,6 +386,7 @@
         <div class="modal-dialog">
             <div class="modal-header"><h2 id="inboxDetailsTitle">تفاصيل الوارد</h2><button type="button" class="modal-close-btn" aria-label="إغلاق" onclick="document.getElementById('inboxDetailsModal').classList.remove('modal-open')">✕</button></div>
             <div class="modal-body"><dl id="inboxDetailsContent"></dl></div>
+            <div id="inboxDetailsActions" class="inbox-action-buttons" aria-label="الإجراءات"></div>
         </div>
     </div>
     <script>
@@ -1420,7 +1421,6 @@
                             </td>
                             <td class="inbox-contact-cell" data-label="الرقم / الرابط" style="padding: 0.65rem 0.75rem;">
                                 <bdi class="inbox-contact" dir="ltr">${escapeHtml(contact.value)}</bdi>
-                                <button type="button" class="btn-secondary inbox-toggle" aria-haspopup="dialog" onclick="toggleInboxDetails(this)">تفاصيل</button>
                                 ${contact.error ? '<span class="admin-badge admin-badge-amber">يحتاج تصحيح الرقم</span>' : ''}
                             </td>
                             <td class="inbox-notes" data-label="ملاحظات / بلاغ" style="padding: 0.65rem 0.75rem; font-size: 0.75rem; color: var(--color-slate-600);">
@@ -1428,6 +1428,7 @@
                             </td>
                             <td class="inbox-actions" data-label="إجراء" style="padding: 0.65rem 0.75rem; text-align: center;">
                                 <div class="inbox-action-buttons">
+                                 <button type="button" class="btn-secondary inbox-toggle" aria-haspopup="dialog" onclick="toggleInboxDetails(this)">تفاصيل</button>
                                  ${decision === 'ignored' ? '<span class="admin-badge admin-badge-amber">لم يُعتمد / تم التجاهل</span>' : decision === 'approved' ? '<span class="admin-badge admin-badge-teal">تم الاعتماد والنشر ✓</span>' : decision === 'resolved' ? '<span class="admin-badge admin-badge-teal">تم الحل ✓</span>' : isReport ? `
                                     ${item.notes.includes('[تصحيح:') ? `<button type="button" onclick="applyReportCorrection(${item.id})" class="btn-primary">مراجعة التصحيحات وتطبيقها</button>` : ''}
                                     <button type="button" onclick="resolveReport(${item.id})" class="btn-primary" style="font-size: 0.725rem; padding: 0.35rem 0.65rem;">
