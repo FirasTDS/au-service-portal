@@ -22,6 +22,13 @@ function queueSetup(){
     return {ctx,get posts(){return posts;},set offline(value){offline=value;},set confirm(value){confirm=value;},ack(id){sheet+='\n[إرسال:'+id+']';}};
 }
 const form=()=>{const fd=new FormData();fd.set('entry.1549210706','Test');fd.set('entry.40821348','details');return fd;};
+test('desktop inbox uses readable column widths instead of splitting Arabic words',()=>{
+    const css=read('style.css');
+    assert.ok(css.includes('.inbox-col-city { width:100px; }'));
+    assert.ok(css.includes('min-width:1210px'));
+    assert.ok(css.includes('.inbox-table th { white-space:nowrap; }'));
+    assert.ok(read('admin.html').includes('class="inbox-table-scroll"'));
+});
 test('compact inbox details can be expanded and collapsed accessibly',()=>{
     const ctx=vm.createContext({URL,document:{addEventListener(){}}});vm.runInContext(read('portal-features.js'),ctx);
     let expanded=false;

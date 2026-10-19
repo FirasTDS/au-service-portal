@@ -757,15 +757,18 @@ body {
 #dashboardSection .admin-card { min-width:0; }
 #suggestionsTableContainer { min-width:0; max-width:100%; }
 .inbox-toolbar-actions { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; min-width:0; }
-.inbox-table { width:100%; table-layout:fixed; border-collapse:collapse; font-size:.8rem; text-align:right; }
-.inbox-col-select { width:4%; }
-.inbox-col-type, .inbox-col-rating { width:8%; }
-.inbox-col-category { width:11%; }
-.inbox-col-city { width:7%; }
-.inbox-col-name { width:12%; }
-.inbox-col-contact { width:16%; }
-.inbox-col-notes { width:20%; }
-.inbox-col-actions { width:14%; }
+.inbox-table-scroll { max-width:100%; overflow-x:auto; border:1px solid var(--color-slate-200); border-radius:12px; scrollbar-width:thin; }
+.inbox-table-scroll:focus-visible { outline:2px solid var(--color-teal); outline-offset:3px; }
+.inbox-table { width:100%; min-width:1210px; table-layout:fixed; border-collapse:collapse; font-size:.8rem; text-align:right; }
+.inbox-col-select { width:48px; }
+.inbox-col-type { width:100px; }
+.inbox-col-rating { width:72px; }
+.inbox-col-category { width:160px; }
+.inbox-col-city { width:100px; }
+.inbox-col-name { width:170px; }
+.inbox-col-contact { width:160px; }
+.inbox-col-notes { width:240px; }
+.inbox-col-actions { width:160px; }
 .inbox-filters, .open-now-filter, .outbox-row { display:flex; align-items:center; flex-wrap:wrap; gap:.75rem; margin:.75rem 0; }
 .inbox-filter-group { flex:1 1 20rem; min-width:0; border:1px solid var(--color-slate-200); border-radius:12px; padding:.75rem; margin:0; }
 .inbox-filter-group legend { font-weight:800; font-size:.85rem; padding:0 .4rem; color:var(--color-slate-700); }
@@ -819,12 +822,15 @@ body {
 .hours-period legend { font-size:.85rem; font-weight:800; padding:0 .4rem; }
 .hours-period input[type="checkbox"] { width:18px; height:18px; flex-shrink:0; accent-color:var(--color-teal); }
 #reportNote { min-height:6rem; }
-.inbox-table th, .inbox-table td { min-width:0; vertical-align:top; overflow-wrap:anywhere; line-height:1.7; }
+.inbox-table th, .inbox-table td { min-width:0; vertical-align:top; overflow-wrap:normal; word-break:normal; line-height:1.8; }
+.inbox-table th { white-space:nowrap; }
+.inbox-table td[data-label="المحافظة"], .inbox-table td[data-label="التقييم"] { white-space:nowrap; }
 .inbox-contact { display:block; max-width:100%; font-family:monospace; text-align:left; white-space:normal; overflow-wrap:anywhere; unicode-bidi:isolate; }
-.inbox-notes { white-space:pre-line; }
+.inbox-notes { white-space:pre-line; overflow-wrap:anywhere; }
 .inbox-action-buttons { display:flex; flex-direction:column; align-items:stretch; gap:.4rem; }
 .inbox-action-buttons > button { white-space:normal; overflow-wrap:anywhere; min-width:0; width:100%; margin-top:0 !important; }
 .inbox-action-buttons svg { flex-shrink:0; }
+.inbox-action-buttons > .admin-badge { align-self:flex-start; font-size:.7rem; padding:.2rem .5rem; }
 .inbox-select-label { display:flex; align-items:center; justify-content:center; gap:.5rem; min-height:44px; cursor:pointer; }
 .inbox-select-label span { display:none; }
 .inbox-select-label input, #bulkSelectAll { width:20px; height:20px; flex:0 0 20px; margin:0; accent-color:var(--color-teal); cursor:pointer; }
@@ -834,7 +840,8 @@ body {
 .inbox-table .admin-badge { max-width:100%; white-space:normal; text-align:center; line-height:1.6; }
 .inbox-toggle { display:none; }
 @media (max-width:1100px) {
-  .inbox-table, .inbox-table tbody { display:block; }
+  .inbox-table-scroll { border:0; border-radius:0; overflow:visible; }
+  .inbox-table, .inbox-table tbody { display:block; min-width:0; }
   .inbox-table colgroup { display:none; }
   .inbox-table thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
   .inbox-table tbody { display:grid; gap:.5rem; }
