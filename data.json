@@ -4,7 +4,12 @@
       {
         "name": "مشفى القدموس الوطني",
         "phone": "",
-        "contact_history": [{"phone":"0437553700","reason":"الرقم يعود لصيدلية ديما حسن، بتأكيد المشرف"}],
+        "contact_history": [
+          {
+            "phone": "0437553700",
+            "reason": "الرقم يعود لصيدلية ديما حسن، بتأكيد المشرف"
+          }
+        ],
         "note": "إسعاف وطوارئ 24 ساعة - مدخل المشفى · العنوان: 445X+2Q2 · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»",
         "hours": {
           "allday": true
@@ -13,7 +18,12 @@
       {
         "name": "مستوصف القدموس الصحي",
         "phone": "",
-        "contact_history": [{"phone":"0437553917","reason":"الرقم يعود لصيدلية رهف خدام، بتأكيد المشرف"}],
+        "contact_history": [
+          {
+            "phone": "0437553917",
+            "reason": "الرقم يعود لصيدلية رهف خدام، بتأكيد المشرف"
+          }
+        ],
         "note": "رعاية صحية أولية ولقاحات - غرب المستوصف · الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»"
       },
       {
@@ -246,7 +256,9 @@
         "name": "Sugar bar",
         "phone": "0940698958",
         "website": "https://www.instagram.com/sugarbar2026?srtk=c2Q0cTc3cjMybnBv",
-        "rating_aliases": ["https://www.instagram.com/sugarbar2026?srtk=c2Q0cTc3cjMybnBv"],
+        "rating_aliases": [
+          "https://www.instagram.com/sugarbar2026?srtk=c2Q0cTc3cjMybnBv"
+        ],
         "hours": {
           "open": "08:00",
           "close": "12:00"
@@ -484,6 +496,20 @@
         "name": "احمد ديليفري",
         "phone": "0939534001",
         "note": "اعتمادي و يؤتمن ل ارسال حوالة له ل الدفع في الصندوق و جاهز لتلبية اي شيء في القدموس"
+      },
+      {
+        "name": "دليفري محمد",
+        "phone": "0960008668",
+        "delivery": {
+          "areas": "مدينة القدموس",
+          "fee": "٧٠ل.س.جديد",
+          "kind": "كلاهما"
+        },
+        "hours": {
+          "open": "11:00",
+          "close": "02:00"
+        },
+        "note": "مناطق التوصيل: مدينة القدموس\nأجرة التوصيل: ٧٠ل.س.جديد\nنوع الطلبات: كلاهما"
       }
     ],
     "taxis": [
@@ -510,7 +536,10 @@
         "name": "علي موتور توصيل",
         "phone": "0993160270 / 0997645644",
         "rating_contact": "0993160270",
-        "rating_aliases": ["0993160270", "0997645644"]
+        "rating_aliases": [
+          "0993160270",
+          "0997645644"
+        ]
       },
       {
         "name": "علي العيسى موتور توصيل",
@@ -1244,7 +1273,8 @@
     "2dd5ef55ae37e23962b85f4ac5eaa035eebc008c03bf2182b196d0a7ad04b102": "approved",
     "372cd9b8c047e4e377f355afff454a1300ddee718f9811d3f399e07dbcbe970f": "approved",
     "a4ac8930a50cdf740d18f0d058c9a3aff0db1a4caeb98171960bc0cdedcf3384": "approved",
-    "f6c5cd8fb0b96e559b7aa2abd3e07fd4fdafe9e284ac24838b6585118b676d64": "approved"
+    "f6c5cd8fb0b96e559b7aa2abd3e07fd4fdafe9e284ac24838b6585118b676d64": "approved",
+    "b36a9fea226d42d80ef733c7289d03fc830d8ce3181650fc81948abb8b480543": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1394,6 +1424,10 @@
     "9ea714a0-02af-4b62-b945-f755a88a6587": {
       "status": "approved",
       "updated": "2026-10-18"
+    },
+    "cbf73a73-fd78-424d-8777-bb1e85b3b4a3": {
+      "status": "approved",
+      "updated": "2026-10-19"
     }
   },
   "trash": [
