@@ -25,10 +25,10 @@ const form=()=>{const fd=new FormData();fd.set('entry.1549210706','Test');fd.set
 test('inbox is a compact list with visible actions and no forced wide table',()=>{
     const css=read('style.css');
     assert.ok(!css.includes('min-width:1210px'));
-    assert.ok(css.includes('.inbox-table td.inbox-actions { display:block;'));
+    assert.ok(css.includes('td.inbox-actions {') && css.includes('display:flex;'));
     assert.ok(read('admin.html').includes('id="inboxDetailsModal"'));
     assert.ok(read('admin.html').includes('class="inbox-list-head"'));
-    assert.ok(css.includes('grid-template-columns:2.75rem minmax(0,1fr) 7rem 17rem'));
+    assert.ok(css.includes('grid-template-columns: 2.75rem 1fr 7rem 13rem'));
 });
 test('inbox details open separately without hiding list actions or injecting markup',()=>{
     const content={items:[],replaceChildren(){this.items=[];},append(...items){this.items.push(...items);}};

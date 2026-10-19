@@ -117,7 +117,7 @@ test('admin inbox bounds long contacts and has labelled responsive rows', () => 
     }
     assert.ok(css.includes('.inbox-table, .inbox-table tbody { display:block; min-width:0; }'));
     assert.ok(css.includes('.inbox-contact {') && css.includes('overflow-wrap:anywhere'));
-    assert.ok(css.includes('.inbox-table tbody tr { display:grid;'));
+    assert.ok(css.includes('grid-template-columns: 2.75rem 1fr 7rem 13rem'));
     assert.ok(css.includes('.inbox-action-buttons > button'));
 });
 
