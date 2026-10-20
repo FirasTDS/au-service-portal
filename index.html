@@ -19,15 +19,15 @@
     <meta name="theme-color" content="#0f4c42">
     <link rel="icon" type="image/png" href="Asset%201.png">
     <link rel="apple-touch-icon" href="Asset%201.png">
-    <script src="shared.js?v=63"></script>
+    <script src="shared.js?v=64"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=63">
-    <script src="portal-features.js?v=63"></script>
-    <script src="rates.js?v=63"></script>
-    <script src="ratings.js?v=63"></script>
-    <script src="submissions.js?v=63"></script>
+    <link rel="stylesheet" href="style.css?v=64">
+    <script src="portal-features.js?v=64"></script>
+    <script src="rates.js?v=64"></script>
+    <script src="ratings.js?v=64"></script>
+    <script src="submissions.js?v=64"></script>
 </head>
 <body>
 
@@ -1647,10 +1647,35 @@
         document.getElementById('list-university').innerHTML = sortArray(shownUniversity).map(i => createContactRow(i, "جامعة الأندلس عيادات")).join('');
         document.getElementById('count-university').textContent = shownUniversity.length;
 
-        // Transport Grid
+        // Transport Grid — group ريف اللاذقية (الحفة) under اللاذقية
         const transportGrid = document.getElementById('transport-grid');
-        transportGrid.innerHTML = portalData.transport.map(group => {
+        const transportGroups = [...portalData.transport];
+        const latakiaIndex = transportGroups.findIndex(g => g.city === 'اللاذقية');
+        const rifIndex = transportGroups.findIndex(g => g.city === 'ريف اللاذقية (الحفة)');
+        let renderedGroups = transportGroups;
+        if (latakiaIndex >= 0 && rifIndex >= 0) {
+            const rifGroup = transportGroups[rifIndex];
+            transportGroups[latakiaIndex] = {
+                city: 'اللاذقية',
+                items: transportGroups[latakiaIndex].items,
+                rifSubgroup: rifGroup
+            };
+            renderedGroups = transportGroups.filter((_, i) => i !== rifIndex);
+        }
+        transportGrid.innerHTML = renderedGroups.map(group => {
             const sortedItems = sortArray(group.items);
+            const hasRif = group.rifSubgroup && group.rifSubgroup.items.length;
+            const totalCount = group.items.length + (hasRif ? group.rifSubgroup.items.length : 0);
+            const rifHtml = hasRif ? `
+                <div class="transport-rif-subgroup">
+                    <div class="rif-subgroup-title">
+                        <svg class="rif-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span>ريف اللاذقية (الحفة)</span>
+                    </div>
+                    <div class="category-items-list" id="${escapeHtml(cityListId(group.rifSubgroup.city))}">
+                        ${sortArray(group.rifSubgroup.items).map(item => createContactRow(item, group.rifSubgroup.city + " سرفيس مواصلات بولمان")).join('')}
+                    </div>
+                </div>` : '';
             return `
             <div class="category-card" data-section="transport">
                 <div class="category-header transport-header">
@@ -1658,11 +1683,12 @@
                         <svg class="category-icon" style="color:var(--color-red);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                         <h3 class="category-title">${escapeHtml(group.city)}</h3>
                     </div>
-                    <span class="category-count">${group.items.length}</span>
+                    <span class="category-count">${totalCount}</span>
                 </div>
                 <div class="category-items-list" id="${escapeHtml(cityListId(group.city))}">
                     ${sortedItems.map(item => createContactRow(item, group.city + " سرفيس مواصلات بولمان")).join('')}
                 </div>
+                ${rifHtml}
             </div>`;
         }).join('');
 
@@ -2227,7 +2253,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v63';
+    const APP_VERSION = 'v64';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.
