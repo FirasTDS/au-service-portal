@@ -859,7 +859,7 @@ body {
 .inbox-select-label input:focus-visible, #bulkSelectAll:focus-visible { outline:2px solid var(--color-teal); outline-offset:3px; }
 .inbox-table tr:has(input[data-bulk]:checked) { box-shadow:inset -4px 0 var(--color-teal); }
 #bulkBar > label { min-height:44px; }
-#dashboardSection { display: none !important; }
+/* #dashboardSection is hidden by default in HTML; JS shows it after login */
 .inbox-table .admin-badge { max-width:100%; white-space:normal; text-align:center; line-height:1.6; }
 .inbox-select-label { display:flex; align-items:center; justify-content:center; gap:.4rem; min-height:40px; cursor:pointer; }
 .inbox-select-label span { display:none; }
