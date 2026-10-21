@@ -22,6 +22,20 @@ function queueSetup(){
     return {ctx,get posts(){return posts;},set offline(value){offline=value;},set confirm(value){confirm=value;},ack(id){sheet+='\n[إرسال:'+id+']';}};
 }
 const form=()=>{const fd=new FormData();fd.set('entry.1549210706','Test');fd.set('entry.40821348','details');return fd;};
+test('directory transfers preserve fields and insert at the requested position without crossing service/transport types',()=>{
+    const ctx=vm.createContext({URL,document:{addEventListener(){}}});vm.runInContext(read('portal-features.js'),ctx);
+    const item={name:'A',phone:'0991234567',hours:{allDay:true},rating_contact:'alias'},other={name:'B'};
+    const data={services:{restaurants:[item],sweets:[other],rental:[]},transport:[{items:[other]},{items:[]}]};
+    assert.equal(ctx.transferDirectoryItem(data,'service:restaurants',0,'service:sweets',0),true);
+    assert.deepEqual(data.services.restaurants,[]);assert.equal(data.services.sweets[0],item);
+    assert.equal(ctx.transferDirectoryItem(data,'service:sweets',0,'service:rental'),true);
+    assert.equal(data.services.rental[0],item);
+    assert.equal(ctx.transferDirectoryItem(data,'service:rental',0,'transport:1'),false);
+    assert.equal(ctx.transferDirectoryItem(data,'service:rental',-1,'service:sweets'),false);
+    assert.equal(ctx.transferDirectoryItem(data,'transport:0',0,'transport:1'),true);
+    assert.equal(data.transport[1].items[0],other);
+    assert.ok(read('portal-features.js').includes("let activeAdminPanel = 'inbox'"));
+});
 test('food directory combines subcategories and moving entries preserves all fields and order',()=>{
     const ctx=vm.createContext({URL,document:{addEventListener(){}}});
     vm.runInContext(read('portal-features.js'),ctx);

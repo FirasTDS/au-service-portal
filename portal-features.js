@@ -596,7 +596,7 @@ function mergeDuplicateEntries(keep, remove) {
 }
 
 // Pointer handles support mouse, pen and touch; arrow buttons remain keyboard alternatives.
-function reorderControls(row, group, index, move) {
+function reorderControls(row, group, index, move, transfer) {
     row.dataset.reorderGroup = group; row.dataset.reorderIndex = index;
     const handle = featureButton('⠿', () => {}); handle.classList.add('drag-handle');
     handle.title = 'اسحب لإعادة الترتيب'; handle.setAttribute('aria-label', 'اسحب لإعادة الترتيب، أو استخدم أسهم التحريك');
@@ -607,8 +607,11 @@ function reorderControls(row, group, index, move) {
     handle.onpointermove = event => {
         if (!handle.hasPointerCapture(event.pointerId)) return;
         document.querySelectorAll('.drop-target').forEach(el => el.classList.remove('drop-target'));
-        const target = document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-reorder-group]');
+        const hit = document.elementFromPoint(event.clientX,event.clientY);
+        const target = hit?.closest('[data-reorder-group]');
+        const zone = hit?.closest('[data-directory-group]');
         if (target?.dataset.reorderGroup === group) target.classList.add('drop-target');
+        else if (transfer && zone?.dataset.directoryGroup.startsWith(group.split(':')[0] + ':')) zone.classList.add('drop-target');
         if (event.clientY < 70) window.scrollBy(0,-24);
         if (event.clientY > innerHeight - 70) window.scrollBy(0,24);
     };
@@ -617,8 +620,14 @@ function reorderControls(row, group, index, move) {
         handle.releasePointerCapture(event.pointerId); row.classList.remove('dragging');
         document.querySelectorAll('.drop-target').forEach(el => el.classList.remove('drop-target'));
         if (event.type === 'pointercancel') return;
-        const target = document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-reorder-group]');
+        const hit = document.elementFromPoint(event.clientX,event.clientY);
+        const target = hit?.closest('[data-reorder-group]');
         if (target?.dataset.reorderGroup === group) move(index, Number(target.dataset.reorderIndex));
+        else if (transfer) {
+            const zone = hit?.closest('[data-directory-group]');
+            const destination = target?.dataset.reorderGroup || zone?.dataset.directoryGroup;
+            if (destination?.startsWith(group.split(':')[0] + ':')) transfer(destination, target ? Number(target.dataset.reorderIndex) : undefined);
+        }
     };
     handle.onpointerup = finish; handle.onpointercancel = finish; row.prepend(handle);
 }
@@ -629,14 +638,44 @@ function moveDirectoryItem(list, from, to) {
     renderAdminLists(); showToast('تم تغيير الترتيب — اضغط حفظ ونشر.');
 }
 
+function transferDirectoryItem(data, from, index, destination, position) {
+    const [type, key] = from.split(':'), [nextType, nextKey] = destination.split(':');
+    if (type !== nextType || from === destination || !Number.isInteger(index) || index < 0) return false;
+    const list = (kind, id) => kind === 'service' ? data.services[id] : kind === 'transport' ? data.transport[Number(id)]?.items : null;
+    const source = list(type,key), target = list(nextType,nextKey);
+    if (!source?.[index] || !Array.isArray(target)) return false;
+    const at = Number.isInteger(position) ? Math.max(0,Math.min(position,target.length)) : target.length;
+    target.splice(at,0,source.splice(index,1)[0]);
+    return true;
+}
+
 function enhanceAdminDirectory() {
     const container = document.getElementById('adminListsContainer');
+    Object.keys(SERVICE_LABELS).forEach((key,index) => {
+        const block = container.children[index];
+        if (block) block.dataset.directoryGroup = 'service:' + key;
+    });
     container.querySelectorAll('[data-action="edit-service"], [data-action="edit-transport"]').forEach(button => {
         const service = button.dataset.action === 'edit-service';
         const a = service ? button.dataset.cat : Number(button.dataset.gidx), b = Number(service ? button.dataset.idx : button.dataset.iidx);
         const list = service ? adminData.services[a] : adminData.transport[a].items;
         const row = button.closest('.admin-item-row');
-        reorderControls(row, (service ? 'service:' : 'transport:') + a, b, (from,to) => moveDirectoryItem(list,from,to));
+        const group = (service ? 'service:' : 'transport:') + a;
+        if (!service) row.parentElement.parentElement.dataset.directoryGroup = group;
+        const transfer = (destination, position) => {
+            if (!transferDirectoryItem(adminData,group,b,destination,position)) return;
+            renderAdminLists(); showToast('تم نقل الجهة — راجع الترتيب ثم احفظ وانشر.');
+        };
+        reorderControls(row, group, b, (from,to) => moveDirectoryItem(list,from,to), transfer);
+        const select = document.createElement('select'); select.className = 'form-select directory-move-select';
+        select.setAttribute('aria-label','نقل ' + list[b].name + ' إلى قسم');
+        const placeholder = document.createElement('option'); placeholder.value = ''; placeholder.textContent = 'نقل إلى قسم…'; select.append(placeholder);
+        const destinations = service ? Object.entries(SERVICE_LABELS) : adminData.transport.map((g,i) => [String(i),g.city]);
+        destinations.forEach(([key,label]) => {
+            if (String(key) === String(a)) return;
+            const option = document.createElement('option'); option.value = (service ? 'service:' : 'transport:') + key; option.textContent = label; select.append(option);
+        });
+        select.addEventListener('change', () => { if (select.value) transfer(select.value); }); row.append(select);
         const verify = featureButton('تحققت اليوم ✓', () => { list[b].last_verified = new Date().toISOString().slice(0,10); renderAdminLists(); showToast('تم تسجيل تاريخ التحقق — احفظ وانشر.'); });
         row.append(verify);
         if (list[b].last_verified) { const date = document.createElement('small'); date.textContent = 'آخر تحقق: ' + list[b].last_verified; row.append(date); }
@@ -673,12 +712,13 @@ function enhanceAdminDirectory() {
 }
 
 const adminOpenGroups = new Set();
-let activeAdminPanel = 'records';
+let activeAdminPanel = 'inbox';
 function decorateAdminGroups(container) {
     [...container.children].forEach((block,index) => {
         const heading = block.firstElementChild;
         if (!heading) return;
         const details = document.createElement('details'); details.className = 'admin-group';
+        if (block.dataset.directoryGroup) details.dataset.directoryGroup = block.dataset.directoryGroup;
         const summary = document.createElement('summary'); summary.append(heading);
         details.append(summary);
         while (block.firstChild) details.append(block.firstChild);
@@ -693,12 +733,15 @@ function decorateAdminGroups(container) {
 
 function initAdminNavigation() {
     const dashboard = document.getElementById('dashboardSection');
+    const records = document.getElementById('adminListsContainer').closest('.admin-card');
+    const tools = document.getElementById('directoryTools');
+    if (tools.parentElement !== records) records.append(tools);
+    tools.hidden = false;
     const panels = [
-        ['records','البيانات',document.getElementById('adminListsContainer').closest('.admin-card')],
-        ['add','إضافة جهة',document.getElementById('newName').closest('.admin-card')],
         ['inbox','الوارد',document.getElementById('suggestionsTableBody').closest('.admin-card')],
-        ['duplicates','مراجعة التكرار',document.getElementById('duplicatesResult').closest('.admin-card')],
-        ['tools','الترتيب والاستعادة',document.getElementById('directoryTools')]
+        ['records','البيانات والترتيب والاستعادة',records],
+        ['add','إضافة جهة',document.getElementById('newName').closest('.admin-card')],
+        ['duplicates','مراجعة التكرار',document.getElementById('duplicatesResult').closest('.admin-card')]
     ];
     let nav = document.getElementById('adminNavigation');
     if (!nav) {
