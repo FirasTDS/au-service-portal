@@ -20,6 +20,17 @@ function visitorRatingFor(key) {
     return place && place.count >= 1 ? place : null;
 }
 
+// Stable ties (including unrated places) preserve the administrator's ordering.
+function sortByVisitorRating(items) {
+    const score = item => {
+        const contact = item.rating_contact || item.phone || item.link || item.name;
+        return visitorRatingFor(placeRatingKey(contact, item.name))?.avg || 0;
+    };
+    return items.map((item, index) => ({item, index, score:score(item)}))
+        .sort((a,b) => b.score - a.score || a.index - b.index)
+        .map(entry => entry.item);
+}
+
 // Averages always show fewer digits than the raw mean, never a bare "0".
 function formatVisitorRating(place) {
     return `${place.avg.toFixed(1)} · ${place.count === 1 ? 'تقييم واحد' : `${place.count} تقييمات`}`;

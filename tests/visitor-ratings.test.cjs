@@ -21,6 +21,21 @@ function ratingsContext() {
     return {context, listeners};
 }
 
+test('rating sort ranks published averages, preserves ties and admin order without mutating data', () => {
+    const {context} = ratingsContext();
+    context.placeRatingKey = (contact,name) => contact + ':' + name;
+    const items=[{name:'unrated',phone:'1'},{name:'low',phone:'2'},
+        {name:'high',phone:'3',rating_contact:'alias'},{name:'tie',phone:'4'}];
+    assert.deepEqual(Array.from(context.sortByVisitorRating(items)),items,'no ratings preserves custom order');
+    context.acceptRatings({source:'google-sheet',fetched_at:new Date().toISOString(),total_ratings:3,
+        places:{'2:low':{avg:3,count:1},'alias:high':{avg:5,count:1},'4:tie':{avg:5,count:1}}});
+    assert.deepEqual(Array.from(context.sortByVisitorRating(items),i=>i.name),['high','tie','low','unrated']);
+    assert.equal(items[0].name,'unrated');
+    const html=read('index.html');
+    assert.ok(html.indexOf('<option value="rating">') < html.indexOf('<option value="default">'));
+    assert.ok(html.includes("if (sortBy === 'rating') return sortByVisitorRating(items);"));
+});
+
 test('ratings.json ships a google-sheet snapshot with averaged places', () => {
     const data = JSON.parse(read('ratings.json'));
     assert.equal(data.source, 'google-sheet');
