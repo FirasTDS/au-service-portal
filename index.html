@@ -19,15 +19,15 @@
     <meta name="theme-color" content="#0f4c42">
     <link rel="icon" type="image/png" href="Asset%201.png">
     <link rel="apple-touch-icon" href="Asset%201.png">
-    <script src="shared.js?v=66"></script>
+    <script src="shared.js?v=67"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=66">
-    <script src="portal-features.js?v=66"></script>
-    <script src="rates.js?v=66"></script>
-    <script src="ratings.js?v=66"></script>
-    <script src="submissions.js?v=66"></script>
+    <link rel="stylesheet" href="style.css?v=67">
+    <script src="portal-features.js?v=67"></script>
+    <script src="rates.js?v=67"></script>
+    <script src="ratings.js?v=67"></script>
+    <script src="submissions.js?v=67"></script>
 </head>
 <body>
 
@@ -284,7 +284,7 @@
         <div class="category-header">
           <div class="category-title-wrap">
             <svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg>
-            <h3 class="category-title">صيدليات القدموس</h3>
+            <h3 class="category-title">الصيدليات</h3>
           </div>
           <span class="category-count" id="count-pharmacies">0</span>
         </div>
@@ -311,11 +311,19 @@
         <div class="category-header">
           <div class="category-title-wrap">
             <svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>
-            <h3 class="category-title">المطاعم</h3>
+            <h3 class="category-title">المطاعم والحلويات والكافيهات</h3>
           </div>
           <span class="category-count" id="count-restaurants">0</span>
         </div>
-        <div class="category-items-list" id="list-restaurants" role="list" aria-label="قائمة المطاعم"></div>
+        <div class="card-filter">
+          <label class="form-label" for="foodCategoryFilter">القسم الفرعي:</label>
+          <select id="foodCategoryFilter" class="form-select" onchange="renderAll()">
+            <option value="">الكل</option>
+            <option value="restaurants">المطاعم</option>
+            <option value="sweets">حلويات وكافيه</option>
+          </select>
+        </div>
+        <div class="category-items-list" id="list-restaurants" role="list" aria-label="قائمة المطاعم والحلويات والكافيهات"></div>
       </div>
       <!-- Supermarket Card -->
       <div class="category-card" data-section="services">
@@ -377,7 +385,7 @@
         <div class="category-header">
           <div class="category-title-wrap">
             <svg class="category-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 17H3V9l2-5h14l2 5v8h-2M5 17h14M3 10h18M9 4V2h6v2"/><circle cx="6" cy="17" r="2"/><circle cx="18" cy="17" r="2"/><path d="M6 13h2m8 0h2"/></svg>
-            <h3 class="category-title">تكاسي وموتورات داخل القدموس</h3>
+            <h3 class="category-title">تكاسي وموتورات</h3>
           </div>
           <span class="category-count" id="count-taxis">0</span>
         </div>
@@ -565,21 +573,21 @@
         <div class="form-group">
           <label class="form-label" for="sugCategory">التصنيف *</label>
           <select id="sugCategory" class="form-select" onchange="toggleSugCity()" required>
-            <option value="مطاعم القدموس">مطعم في القدموس</option>
-            <option value="سوبر ماركت">سوبر ماركت في القدموس</option>
+            <option value="مطاعم القدموس">المطاعم</option>
+            <option value="سوبر ماركت">سوبر ماركت</option>
             <option value="صهاريج وتعبئة مياه">صهاريج وتعبئة مياه</option>
             <option value="حوالات وشحن طرود">حوالات وشحن طرود (الهرم / الفؤاد...)</option>
             <option value="مكتبات وطباعة وقرطاسية">مكتبات وطباعة وقرطاسية</option>
             <option value="خدمات وصيانة سكنات">خدمات وصيانة سكنات (كهرباء، صحية، نت)</option>
             <option value="حلويات وكافيه">محل حلويات / كافيه</option>
             <option value="طوارئ ومراكز صحية">طوارئ وصيدليات ومراكز صحية</option>
-            <option value="صيدليات القدموس">صيدليات القدموس</option>
+            <option value="صيدليات القدموس">الصيدليات</option>
             <option value="مكاتب الإيجار">مكاتب الإيجار (شقق وسكن)</option>
             <option value="الأطباء والعيادات">الأطباء والعيادات</option>
             <option value="مخابز">مخابز</option>
             <option value="ملاحم">ملاحم</option>
             <option value="عيادات جامعة الأندلس">عيادات جامعة الأندلس</option>
-            <option value="تكاسي وموتورات داخل القدموس">تكاسي وموتورات داخل القدموس</option>
+            <option value="تكاسي وموتورات داخل القدموس">تكاسي وموتورات</option>
             <option value="ديليفري وتوصيل طلبات">ديليفري وتوصيل طلبات (أكل ومشاوير)</option>
             <option value="شركات المواصلات سرفيس او بولمان">شركة مواصلات / سرفيس</option>
           </select>
@@ -1597,8 +1605,10 @@
             document.getElementById('count-pharmacies').textContent = pharmacies.length;
         }
 
-        document.getElementById('list-restaurants').innerHTML = sortArray(rests).map(i => createContactRow(i, "مطاعم مطعم وجبات فطور غداء")).join('');
-        document.getElementById('count-restaurants').textContent = rests.length;
+        const foodCategory = document.getElementById('foodCategoryFilter').value;
+        const foodItems = foodDirectoryItems(portalData.services, foodCategory);
+        document.getElementById('list-restaurants').innerHTML = sortArray(foodItems).map(i => createContactRow(i, "مطاعم مطعم وجبات فطور غداء حلويات حلو كافيه")).join('');
+        document.getElementById('count-restaurants').textContent = foodItems.length;
 
         document.getElementById('list-supermarkets').innerHTML = sortArray(supers).map(i => createContactRow(i, "سوبر ماركت ماركت دكان بقالة")).join('');
         document.getElementById('count-supermarkets').textContent = supers.length;
@@ -1629,8 +1639,8 @@
             document.getElementById('count-maintenance').textContent = maintenance.length;
         }
 
-        document.getElementById('list-sweets').innerHTML = sortArray(sweets).map(i => createContactRow(i, "حلويات حلو كافيه")).join('');
-        document.getElementById('count-sweets').textContent = sweets.length;
+        document.getElementById('list-sweets').replaceChildren();
+        document.getElementById('count-sweets').textContent = '0';
 
         document.getElementById('list-rental').innerHTML = sortArray(rental).map(i => createContactRow(i, "إيجار إيجارات شقق سكن مكاتب عقارات")).join('');
         document.getElementById('count-rental').textContent = rental.length;
@@ -2255,7 +2265,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v66';
+    const APP_VERSION = 'v67';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.

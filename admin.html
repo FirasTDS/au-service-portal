@@ -6,7 +6,7 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=65"></script>
+    <script src="shared.js?v=67"></script>
     <script>
         // Defensive login gate: never show dashboard options without authentication.
         document.addEventListener('DOMContentLoaded', function() {
@@ -19,8 +19,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=65-inbox2">
-    <script src="portal-features.js?v=65"></script>
+    <link rel="stylesheet" href="style.css?v=67">
+    <script src="portal-features.js?v=67"></script>
 </head>
 <body>
 
@@ -233,20 +233,20 @@
                         <label for="newCategory" class="form-label">القسم الرئيسي *</label>
                         <select id="newCategory" class="form-select" onchange="toggleAdminCityInput()" required>
                             <option value="emergency">طوارئ وصيدليات ومراكز صحية</option>
-                            <option value="pharmacies">صيدليات القدموس (دليل العناوين والأرقام)</option>
-                            <option value="restaurants">المطاعم (القدموس)</option>
-                            <option value="supermarkets">سوبر ماركت (القدموس)</option>
+                            <option value="pharmacies">الصيدليات (دليل العناوين والأرقام)</option>
+                            <option value="restaurants">المطاعم</option>
+                            <option value="supermarkets">سوبر ماركت</option>
                             <option value="water">صهاريج وتعبئة مياه</option>
                             <option value="transfers">حوالات مالية وشحن طرود</option>
                             <option value="printing">مكتبات وطباعة وقرطاسية</option>
                             <option value="maintenance">خدمات وصيانة (كهرباء، صحية، اتصالات)</option>
-                            <option value="sweets">حلويات وكافيه (القدموس)</option>
+                            <option value="sweets">حلويات وكافيه</option>
                             <option value="rental">مكاتب الإيجار (شقق وسكن)</option>
                             <option value="clinics">الأطباء والعيادات</option>
                             <option value="bakeries">مخابز</option>
                             <option value="butchers">ملاحم</option>
                             <option value="university">عيادات جامعة الأندلس</option>
-                            <option value="taxis">تكاسي وموتورات داخل القدموس</option>
+                            <option value="taxis">تكاسي وموتورات</option>
                             <option value="delivery">ديليفري وتوصيل طلبات (أكل ومشاوير)</option>
                             <option value="transport">شركات النقل والمواصلات بين المحافظات</option>
                         </select>
@@ -346,6 +346,11 @@
                 <input type="hidden" id="editIIdx">
 
                 <div class="modal-body">
+                    <div class="form-group" id="editFoodCategoryGroup" hidden>
+                        <label class="form-label" for="editFoodCategory">القسم الفرعي — المطاعم والحلويات والكافيهات</label>
+                        <select id="editFoodCategory" class="form-select"><option value="restaurants">المطاعم</option><option value="sweets">حلويات وكافيه</option></select>
+                        <p class="contact-note">عند النقل يُضاف إلى نهاية القسم الجديد؛ استخدم الأسهم أو السحب لتغيير ترتيبه.</p>
+                    </div>
                     <div class="form-group">
                         <label class="form-label" for="editName">الاسم *</label>
                         <input type="text" id="editName" class="form-input" required>
@@ -560,16 +565,16 @@
         // --- RENDER CURRENT LISTS WITH DELEGATION ---
         const SERVICE_LABELS = {
             emergency: 'طوارئ وصيدليات ومراكز صحية',
-            pharmacies: 'صيدليات القدموس (دليل العناوين والأرقام)',
-            restaurants: 'المطاعم (القدموس)',
-            supermarkets: 'سوبر ماركت (القدموس)',
+            pharmacies: 'الصيدليات (دليل العناوين والأرقام)',
+            restaurants: 'المطاعم',
+            supermarkets: 'سوبر ماركت',
             water: 'صهاريج وتعبئة مياه',
             transfers: 'حوالات مالية وشحن طرود',
             printing: 'مكتبات وطباعة وقرطاسية',
             maintenance: 'خدمات وصيانة (كهرباء، صحية، اتصالات)',
-            taxis: 'تكاسي وموتورات داخل القدموس',
+            taxis: 'تكاسي وموتورات',
             delivery: 'ديليفري وتوصيل طلبات',
-            sweets: 'حلويات وكافيه (القدموس)',
+            sweets: 'حلويات وكافيه',
             rental: 'مكاتب الإيجار (شقق وسكن)',
             clinics: 'الأطباء والعيادات',
             bakeries: 'مخابز',
@@ -800,6 +805,8 @@
             const editScheduleGroup = document.getElementById('editScheduleGroup');
 
             editType.value = type;
+            document.getElementById('editFoodCategoryGroup').hidden = type !== 'service' || !['restaurants','sweets'].includes(p1);
+            document.getElementById('editFoodCategory').value = p1 === 'sweets' ? 'sweets' : 'restaurants';
 
             if (type === 'service') {
                 const cat = p1;
@@ -866,6 +873,9 @@
                 const target = adminData.services[cat][idx];
                 if (target) {
                     applyExtraFields('edit', target);
+                    if (['restaurants','sweets'].includes(cat)) {
+                        moveFoodEntry(adminData.services, cat, document.getElementById('editFoodCategory').value, idx);
+                    }
                     target.name = name;
                     if (isUrl) {
                         target.link = val;

@@ -1,6 +1,20 @@
 // Shared directory features. Data changes stay in the admin draft until publishing.
 function cityListId(city) { return 'list-city-' + encodeURIComponent(city); }
 
+function foodDirectoryItems(services, category = '') {
+    return (category ? [category] : ['restaurants','sweets'])
+        .filter(key => ['restaurants','sweets'].includes(key))
+        .flatMap(key => services[key] || []);
+}
+
+function moveFoodEntry(services, from, to, index) {
+    if (!['restaurants','sweets'].includes(from) || !['restaurants','sweets'].includes(to)) return false;
+    if (from === to || !Number.isInteger(index) || !services[from]?.[index]) return false;
+    const item = services[from].splice(index,1)[0];
+    (services[to] ||= []).push(item);
+    return true;
+}
+
 function canonicalCityName(city) {
     const name = String(city || '').normalize('NFKC').replace(/[\u064B-\u065F\u0640]/g,'').replace(/\s+/g,' ').trim();
     return name === 'حماه' ? 'حماة' : name;

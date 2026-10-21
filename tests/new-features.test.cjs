@@ -22,6 +22,19 @@ function queueSetup(){
     return {ctx,get posts(){return posts;},set offline(value){offline=value;},set confirm(value){confirm=value;},ack(id){sheet+='\n[إرسال:'+id+']';}};
 }
 const form=()=>{const fd=new FormData();fd.set('entry.1549210706','Test');fd.set('entry.40821348','details');return fd;};
+test('food directory combines subcategories and moving entries preserves all fields and order',()=>{
+    const ctx=vm.createContext({URL,document:{addEventListener(){}}});
+    vm.runInContext(read('portal-features.js'),ctx);
+    const a={name:'A',phone:'0991234567',hours:{allDay:true},rating_contact:'alias'},b={name:'B'},c={name:'C'};
+    const services={restaurants:[a,b],sweets:[c]};
+    assert.deepEqual(Array.from(ctx.foodDirectoryItems(services)),[a,b,c]);
+    assert.deepEqual(Array.from(ctx.foodDirectoryItems(services,'sweets')),[c]);
+    assert.equal(ctx.moveFoodEntry(services,'restaurants','sweets',0),true);
+    assert.deepEqual(services.restaurants,[b]);assert.deepEqual(services.sweets,[c,a]);
+    assert.equal(services.sweets[1],a);
+    assert.equal(ctx.moveFoodEntry(services,'sweets','emergency',0),false);
+    assert.equal(ctx.moveFoodEntry(services,'sweets','restaurants',-1),false);
+});
 test('inbox is a compact list with visible actions and no forced wide table',()=>{
     const css=read('style.css');
     assert.ok(!css.includes('min-width:1210px'));
