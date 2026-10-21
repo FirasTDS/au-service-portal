@@ -706,6 +706,33 @@ function enhanceAdminDirectory() {
         label.textContent = `${record.item.name} — ${record.city || SERVICE_LABELS[record.category] || record.category} — ${record.deleted_at.slice(0,10)}`;
         row.append(label, featureButton(record.merge ? 'استعادة / تراجع عن الدمج' : 'استعادة', () => restoreTrash(record.id))); panel.append(row);
     });
+    // Reorder the actual category sections as well as the ordering overview.
+    container.querySelectorAll('[data-directory-group]').forEach(block => {
+        const [type,key] = block.dataset.directoryGroup.split(':');
+        const id = type === 'service' ? 'list-' + key : cityListId(adminData.transport[Number(key)].city);
+        const idx = order.indexOf(id);
+        if (idx < 0) return;
+        block.dataset.categoryOrder = String(idx);
+        const header = block.firstElementChild;
+        const controls = document.createElement('span'); controls.className = 'category-order-controls';
+        // Keep header controls from toggling the containing accordion.
+        controls.addEventListener('click', event => event.stopPropagation());
+        const move = (from,to) => {
+            if (to < 0 || to >= order.length || isTransport(order[from]) !== isTransport(order[to])) return;
+            adminData.category_order = [...order]; moveDirectoryItem(adminData.category_order,from,to);
+        };
+        const up = featureButton('↑', () => move(idx,idx-1)); up.setAttribute('aria-label','تحريك القسم لأعلى');
+        up.disabled = idx === 0 || isTransport(id) !== isTransport(order[idx-1]);
+        const down = featureButton('↓', () => move(idx,idx+1)); down.setAttribute('aria-label','تحريك القسم لأسفل');
+        down.disabled = idx === order.length-1 || isTransport(id) !== isTransport(order[idx+1]);
+        controls.append(up,down); header.append(controls);
+        reorderControls(header,isTransport(id) ? 'section-categories-transport' : 'section-categories-services',idx,move);
+    });
+    const orderedBlocks = [...container.querySelectorAll('[data-category-order]')];
+    new Set(orderedBlocks.map(block => block.parentElement)).forEach(parent => {
+        [...parent.children].sort((a,b) => Number(a.dataset.categoryOrder ?? Infinity)-Number(b.dataset.categoryOrder ?? Infinity))
+            .forEach(block => parent.append(block));
+    });
     renderDuplicateReview();
     decorateAdminGroups(container);
     initAdminNavigation();
@@ -719,13 +746,15 @@ function decorateAdminGroups(container) {
         if (!heading) return;
         const details = document.createElement('details'); details.className = 'admin-group';
         if (block.dataset.directoryGroup) details.dataset.directoryGroup = block.dataset.directoryGroup;
+        if (block.dataset.categoryOrder) details.dataset.categoryOrder = block.dataset.categoryOrder;
         const summary = document.createElement('summary'); summary.append(heading);
         details.append(summary);
         while (block.firstChild) details.append(block.firstChild);
-        details.open = adminOpenGroups.has(index);
+        const groupKey = block.dataset.directoryGroup || 'block:' + index;
+        details.open = adminOpenGroups.has(groupKey);
         details.addEventListener('toggle', () => {
             if (!details.isConnected) return;
-            if (details.open) adminOpenGroups.add(index); else adminOpenGroups.delete(index);
+            if (details.open) adminOpenGroups.add(groupKey); else adminOpenGroups.delete(groupKey);
         });
         block.replaceWith(details);
     });

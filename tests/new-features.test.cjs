@@ -22,6 +22,13 @@ function queueSetup(){
     return {ctx,get posts(){return posts;},set offline(value){offline=value;},set confirm(value){confirm=value;},ack(id){sheet+='\n[إرسال:'+id+']';}};
 }
 const form=()=>{const fd=new FormData();fd.set('entry.1549210706','Test');fd.set('entry.40821348','details');return fd;};
+test('combined admin page exposes category ordering on actual section headers',()=>{
+    const source=read('portal-features.js');
+    assert.ok(source.includes("controls.className = 'category-order-controls'"));
+    assert.ok(source.includes("reorderControls(header,isTransport(id) ? 'section-categories-transport'"));
+    assert.ok(source.includes('parent.append(block)'));
+    assert.ok(source.includes("const groupKey = block.dataset.directoryGroup || 'block:' + index"));
+});
 test('directory transfers preserve fields and insert at the requested position without crossing service/transport types',()=>{
     const ctx=vm.createContext({URL,document:{addEventListener(){}}});vm.runInContext(read('portal-features.js'),ctx);
     const item={name:'A',phone:'0991234567',hours:{allDay:true},rating_contact:'alias'},other={name:'B'};
