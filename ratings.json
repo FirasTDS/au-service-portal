@@ -1,8 +1,8 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-10-20T23:33:54+00:00",
-  "total_ratings": 33,
+  "fetched_at": "2026-10-21T23:51:01+00:00",
+  "total_ratings": 52,
   "places": {
     "0933574279\nشاهين": {
       "avg": 5.0,
@@ -10,7 +10,7 @@
     },
     "0949071072\nمكتبة الفيصل": {
       "avg": 5.0,
-      "count": 2
+      "count": 3
     },
     "0952532845\nستوب اند شوب": {
       "avg": 5.0,
@@ -33,16 +33,16 @@
       "count": 2
     },
     "https://www.google.com/maps/place/MA+Donut+shop/@35.103549,36.162327,14z/data=!4m8!1m2!2m1!1sMA+Donut+shop!3m4!1s0x1523ef003039bd1b:0xdb0b9334ac978873!8m2!3d35.103549!4d36.162327\nMA Donut shop": {
-      "avg": 2.5,
-      "count": 2
+      "avg": 3.33,
+      "count": 3
     },
     "0944866328\nمكتب الحسن للإعمار": {
       "avg": 5.0,
       "count": 1
     },
     "0940698958\nSugar bar": {
-      "avg": 5.0,
-      "count": 2
+      "avg": 4.33,
+      "count": 3
     },
     "0933135318\nتكسي لؤي": {
       "avg": 1.0,
@@ -53,12 +53,12 @@
       "count": 2
     },
     "0982899566\nشيكن هاوس": {
-      "avg": 2.0,
-      "count": 2
+      "avg": 2.67,
+      "count": 3
     },
     "0940447761\nمطعم الملك": {
-      "avg": 2.5,
-      "count": 2
+      "avg": 3.0,
+      "count": 3
     },
     "0983162723\nFriends  cafe": {
       "avg": 4.5,
@@ -81,11 +81,55 @@
       "count": 1
     },
     "0956595857\nمطعم الفوانيس": {
-      "avg": 5.0,
-      "count": 1
+      "avg": 4.0,
+      "count": 2
     },
     "0988929432\nمجموعة طنجور للعقارات": {
       "avg": 5.0,
+      "count": 1
+    },
+    "0982365746\nمطعم الليث": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "0951339026\nفطاير محمود": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "0952532316\nمطعم. gan food": {
+      "avg": 2.5,
+      "count": 2
+    },
+    "0993979581\nمطعم شهد العسل": {
+      "avg": 3.0,
+      "count": 2
+    },
+    "https://www.google.com/maps/search/?api=1&query=%D9%83%D8%A7%D9%81%D9%8A%D8%A9%20%D8%A7%D9%84%D8%B3%D8%AA%20%D9%84%D9%85%D9%8A%D8%A7&query_place_id=ChIJrz6KXwDtIxURg7dMkNh0l58\nكافية الست لميا": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "https://www.google.com/maps/place/%D9%86%D9%8A%D8%B3%D8%A7%D9%86+caf%C3%A9/@35.101242,36.159911,14z/data=!4m8!1m2!2m1!1s%D9%86%D9%8A%D8%B3%D8%A7%D9%86+caf%C3%A9!3m4!1s0x1523ef00679968bf:0xb5719422aff4db12!8m2!3d35.101242!4d36.159911\nنيسان café": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "https://www.google.com/maps/search/?api=1&query=%D9%83%D8%A7%D9%81%D9%8A%D9%87%20%D8%B4%D8%A7%D9%85&query_place_id=ChIJD3awJwDvIxURhSY3z96ULco\nكافيه شام": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "0933368162\nمكتبة عمار": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "0930623404\nمكتبة يولاند": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "0933170880\nسوبر ماركت Golden": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "https://www.google.com/maps/place/%D8%B3%D9%88%D8%A8%D8%B1%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%85%D8%B1%D8%B9%D9%8A/@35.1008676,36.1606573,14z/data=!4m8!1m2!2m1!1s%D8%B3%D9%88%D8%A8%D8%B1%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%85%D8%B1%D8%B9%D9%8A!3m4!1s0x1523ef53fa75e781:0x2b9ca087d608949f!8m2!3d35.1008676!4d36.1606573\nسوبرماركت مرعي": {
+      "avg": 4.0,
       "count": 1
     }
   }
