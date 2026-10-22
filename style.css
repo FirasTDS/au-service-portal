@@ -1028,6 +1028,19 @@ body {
 .weekly-hours-shift input { display:block; width:100%; min-width:0; min-height:44px; margin-top:.3rem; }
 .weekly-hours-shift button { min-height:44px; min-width:44px; padding:.3rem; }
 .weekly-hours-error { color:var(--color-red); font-size:.8rem; }
+.weekly-hours-modes { gap:.5rem; margin:1rem 0; }
+.weekly-hours-modes label { flex:1 1 auto; justify-content:center; padding:.45rem .65rem; border:1px solid var(--color-slate-200); border-radius:8px; font-weight:600; }
+.weekly-hours-modes label:has(input:checked) { border-color:var(--color-teal); background:var(--color-teal-soft); color:var(--color-teal-dark); }
+.weekly-hours-shifts { gap:1rem; margin-top:.75rem; }
+.weekly-hours-shift { gap:.65rem; }
+.weekly-hours-shift input { padding:.5rem .65rem; border-radius:8px; }
+.weekly-hours-shift button { border-radius:8px; }
+.weekly-hours-pane .weekly-hours-add { display:flex; width:fit-content; min-height:44px; margin-top:1rem; padding:.45rem .8rem; border:1px dashed var(--color-teal); border-radius:8px; background:transparent; color:var(--color-teal-dark); font-size:.8rem; }
+.weekly-hours-pane .weekly-hours-hint { margin:1rem 0; padding:.65rem .8rem; border-inline-start:3px solid var(--color-teal); border-radius:6px; background:var(--color-slate-50); color:var(--color-slate-600); font-size:.75rem; line-height:1.9; white-space:pre-line; }
+.weekly-hours-error:empty { display:none; }
+.weekly-hours-pane .weekly-hours-actions { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.65rem; margin:1rem 0 0; padding-top:1rem; border-top:1px solid var(--color-slate-200); }
+.weekly-hours-actions button { min-height:44px; padding:.6rem .85rem; border-radius:8px; line-height:1.6; white-space:normal; }
+@media (max-width:480px) { .weekly-hours-pane .weekly-hours-actions { grid-template-columns:minmax(0,1fr); } }
 .weekly-hours button:focus-visible { outline:2px solid var(--color-teal); outline-offset:3px; }
 @media (max-width:480px) {
   .weekly-hours-shift { grid-template-columns:minmax(0,1fr) 44px; align-items:center; padding-bottom:.75rem; border-bottom:1px solid var(--color-slate-200); }

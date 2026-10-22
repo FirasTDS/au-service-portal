@@ -45,10 +45,10 @@ function ensureWeeklyHoursEditor(prefix) {
     }
     pane.append(modes);
     const shifts=document.createElement('div'); shifts.className='weekly-hours-shifts'; pane.append(shifts);
-    const add = featureButton('+ إضافة فترة',()=>addSlot({})); pane.append(add);
-    const hint=document.createElement('p'); hint.className='contact-note'; hint.textContent='الفترة الليلية تبدأ في اليوم المحدد وتنتهي في اليوم التالي. تطبيق التعديل يستبدل فترات الأيام المختارة فقط.'; pane.append(hint);
+    const add = featureButton('+ إضافة فترة',()=>addSlot({})); add.classList.add('weekly-hours-add'); pane.append(add);
+    const hint=document.createElement('p'); hint.className='contact-note weekly-hours-hint'; hint.textContent='الدوام الليلي ينتهي في اليوم التالي.\nيُطبَّق التعديل على الأيام المحددة فقط.'; pane.append(hint);
     const error=document.createElement('p'); error.className='weekly-hours-error'; error.setAttribute('role','alert'); pane.append(error);
-    const actions=document.createElement('div'); actions.className='weekly-hours-quick'; pane.append(actions);
+    const actions=document.createElement('div'); actions.className='weekly-hours-quick weekly-hours-actions'; pane.append(actions);
     const state={prefix,root,summary,pane,week:hoursToWeek(null),original:null,dirty:false};
     function syncMode() { const enabled=radios.times.checked; shifts.hidden=add.hidden=!enabled; shifts.querySelectorAll('input').forEach(input=>input.disabled=!enabled); }
     Object.values(radios).forEach(radio=>radio.addEventListener('change',syncMode));
