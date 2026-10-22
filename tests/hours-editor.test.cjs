@@ -41,4 +41,6 @@ test('weekly hours and modal scrollbar assets are available online and offline',
     assert.ok(read('style.css').includes('scrollbar-color:var(--color-slate-400) var(--surface)'));
     assert.ok(read('admin.html').includes('id="submissionHoursDays"'));
     assert.ok(read('admin.html').includes('newItem.hours = validateReportHours(item.editedHours)'));
+    assert.ok(read('style.css').includes('grid-template-columns:repeat(auto-fit,minmax(4rem,1fr))'));
+    assert.ok(read('style.css').includes('.weekly-hours-shift button { grid-column:2; grid-row:1/3; }'));
 });
