@@ -1,8 +1,8 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-10-21T23:51:01+00:00",
-  "total_ratings": 52,
+  "fetched_at": "2026-10-22T23:47:49+00:00",
+  "total_ratings": 60,
   "places": {
     "0933574279\nشاهين": {
       "avg": 5.0,
@@ -129,7 +129,35 @@
       "count": 1
     },
     "https://www.google.com/maps/place/%D8%B3%D9%88%D8%A8%D8%B1%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%85%D8%B1%D8%B9%D9%8A/@35.1008676,36.1606573,14z/data=!4m8!1m2!2m1!1s%D8%B3%D9%88%D8%A8%D8%B1%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%85%D8%B1%D8%B9%D9%8A!3m4!1s0x1523ef53fa75e781:0x2b9ca087d608949f!8m2!3d35.1008676!4d36.1606573\nسوبرماركت مرعي": {
+      "avg": 3.5,
+      "count": 2
+    },
+    "0991974444\nبيت المونة": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "0992336660\nمتجر القدموس(فروج حلال)": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "https://www.google.com/maps/place/%D8%AD%D8%B3%D8%A7%D9%86+%D9%88%D8%B7%D9%81%D9%8A/@35.1026635,36.1623844,14z/data=!4m8!1m2!2m1!1s%D8%AD%D8%B3%D8%A7%D9%86+%D9%88%D8%B7%D9%81%D9%8A!3m4!1s0x1523ef56524875e7:0x9e6c23fc0d59914f!8m2!3d35.1026635!4d36.1623844\nحسان وطفي": {
       "avg": 4.0,
+      "count": 1
+    },
+    "https://www.google.com/maps/place/%D8%AF%D9%83%D8%A7%D9%86+%D8%B1%D8%BA%D8%AF%D8%A7%D8%A1+%D8%AE%D8%B2%D8%A7%D9%85/@35.0961171,36.1882655,14z/data=!4m8!1m2!2m1!1s%D8%AF%D9%83%D8%A7%D9%86+%D8%B1%D8%BA%D8%AF%D8%A7%D8%A1+%D8%AE%D8%B2%D8%A7%D9%85!3m4!1s0x1523ed0016516a59:0x43e5c0823658a052!8m2!3d35.0961171!4d36.1882655\nدكان رغداء خزام": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "0934924715\nMini market italiano الطلياني": {
+      "avg": 3.0,
+      "count": 1
+    },
+    "https://www.google.com/maps/place/%D8%B3%D9%84%D8%A7%D9%85%D8%A9/@35.1000787,36.161031,14z/data=!4m8!1m2!2m1!1s%D8%B3%D9%84%D8%A7%D9%85%D8%A9!3m4!1s0x1523ef766a99093d:0xfeb58a632adf4af2!8m2!3d35.1000787!4d36.161031\nسلامة": {
+      "avg": 2.0,
+      "count": 1
+    },
+    "0930267864\nمرعي": {
+      "avg": 5.0,
       "count": 1
     }
   }
