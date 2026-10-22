@@ -6,7 +6,7 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=71"></script>
+    <script src="shared.js?v=72"></script>
     <script>
         // Defensive login gate: never show dashboard options without authentication.
         document.addEventListener('DOMContentLoaded', function() {
@@ -19,9 +19,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=71">
-    <script src="portal-features.js?v=71"></script>
-    <script src="hours-editor.js?v=71"></script>
+    <link rel="stylesheet" href="style.css?v=72">
+    <script src="portal-features.js?v=72"></script>
+    <script src="hours-editor.js?v=72"></script>
 </head>
 <body>
 
@@ -415,6 +415,7 @@
                     <label class="form-label" for="submissionEditCategory">القسم</label><select id="submissionEditCategory" class="form-select" required></select>
                     <label class="form-label" for="submissionEditCity">المحافظة (للمواصلات)</label><input id="submissionEditCity" class="form-input">
                     <label class="form-label" for="submissionEditNotes">الملاحظات وساعات العمل</label><textarea id="submissionEditNotes" class="form-textarea" rows="5"></textarea>
+                    <fieldset class="submission-hours-group"><legend>أوقات الدوام</legend><div id="submissionHoursDays" hidden></div></fieldset>
                     <p class="contact-note">التعديلات محلية حتى الاعتماد؛ لا تغيّر الرد الأصلي في Google Sheet.</p>
                 </div>
                 <div class="modal-footer">
@@ -1221,6 +1222,11 @@
                     newItem.hours = parsedHours;
                     cleanedNotes = cleanedNotes.split('\n').filter(text => !text.startsWith('ساعات الدوام:')).join('\n').trim();
                 }
+            }
+            if (Object.hasOwn(item,'editedHours')) {
+                if (item.editedHours) newItem.hours = validateReportHours(item.editedHours);
+                else delete newItem.hours;
+                cleanedNotes = cleanedNotes.split('\n').filter(text => !text.startsWith('ساعات الدوام:')).join('\n').trim();
             }
             if (cleanedNotes) newItem.note = cleanedNotes;
             return { cat, newItem, city: canonicalCityName(item.city) };

@@ -32,6 +32,12 @@ test('editing a submission preserves its original review identity until approval
     assert.equal(ctx.saveSubmissionDraft(),item);
     assert.equal(item.name,'Corrected');assert.equal(item.category,'صالات الألعاب');assert.equal(item.reviewKey,'original-response');
     assert.equal(ctx.categoryFromLabel(item.category),'gaming');
+    const hours={open:'08:00',close:'22:00',days:[0,1]};
+    ctx.weeklyHoursEditors=new Map([['submission',{dirty:true}]]);
+    ctx.collectWeeklyHours=()=>hours;
+    ctx.saveSubmissionDraft();assert.equal(item.editedHours,hours);
+    ctx.collectWeeklyHours=()=>{throw new Error('unapplied');};
+    assert.equal(ctx.saveSubmissionDraft(),null,'unapplied hours must block approval');
 });
 test('custom service categories persist safely and form fallback restores their exact category',()=>{
     const ctx=vm.createContext({URL,document:{addEventListener(){}}});vm.runInContext(read('portal-features.js'),ctx);

@@ -39,4 +39,6 @@ test('weekly hours and modal scrollbar assets are available online and offline',
     for(const file of ['admin.html','index.html']) assert.ok(read(file).includes('hours-editor.js?v='));
     assert.ok(read('sw.js').includes("'hours-editor.js'"));
     assert.ok(read('style.css').includes('scrollbar-color:var(--color-slate-400) var(--surface)'));
+    assert.ok(read('admin.html').includes('id="submissionHoursDays"'));
+    assert.ok(read('admin.html').includes('newItem.hours = validateReportHours(item.editedHours)'));
 });

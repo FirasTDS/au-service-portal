@@ -85,7 +85,7 @@ function ensureWeeklyHoursEditor(prefix) {
         } catch(err) {error.textContent=err.message;}
     }); apply.className='btn-primary'; actions.append(apply,featureButton('إلغاء',()=>{pane.hidden=true;summary.querySelector('button')?.focus();}));
     for (const [text,days] of [['تعديل كل الأيام',[0,1,2,3,4,5,6]],['الأحد–الخميس',[0,1,2,3,4]],['الجمعة–السبت',[5,6]]]) quick.append(featureButton(text,()=>state.edit(days)));
-    const clear=featureButton('إزالة ساعات الدوام',()=>fillWeeklyHours(prefix,null)); quick.append(clear);
+    const clear=featureButton('إزالة ساعات الدوام',()=>{fillWeeklyHours(prefix,null);state.cleared=true;}); quick.append(clear);
     root.append(quick,pane); parent.append(root); weeklyHoursEditors.set(prefix,state); renderWeeklyHours(state); return state;
 }
 function renderWeeklyHours(state) {
@@ -101,7 +101,7 @@ function renderWeeklyHours(state) {
 }
 function fillWeeklyHours(prefix,hours) {
     const state=ensureWeeklyHoursEditor(prefix); if (!state) return;
-    state.original=hours?structuredClone(hours):null; state.week=hoursToWeek(hours); state.dirty=false; state.pane.hidden=true; renderWeeklyHours(state);
+    state.original=hours?structuredClone(hours):null; state.week=hoursToWeek(hours); state.dirty=false; state.cleared=false; state.pane.hidden=true; renderWeeklyHours(state);
 }
 function collectWeeklyHours(prefix) {
     const state=weeklyHoursEditors.get(prefix); if (!state) return undefined;

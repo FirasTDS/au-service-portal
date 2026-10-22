@@ -369,6 +369,8 @@ function openSubmissionEdit(id) {
     select.value = categoryFromLabel(item.category);
     document.getElementById('submissionEditId').value = id;
     for (const [field,value] of [['Name',item.name],['Phone',item.phone],['City',item.city],['Notes',cleanSuggestionNotes(item.notes)]]) document.getElementById('submissionEdit'+field).value = value || '';
+    const hoursLine = cleanSuggestionNotes(item.notes).split('\n').find(line => line.startsWith('ساعات الدوام:'));
+    fillWeeklyHours('submission', Object.hasOwn(item,'editedHours') ? item.editedHours : hoursLine ? parseHoursText(hoursLine.slice('ساعات الدوام:'.length)) : null);
     document.getElementById('inboxDetailsModal').classList.remove('modal-open');
     document.getElementById('submissionEditModal').classList.add('modal-open');
 }
@@ -386,6 +388,13 @@ function saveSubmissionDraft() {
     if (key === 'transport' && !city) { showToast('حدد المحافظة للمواصلات.','error'); return null; }
     const category = key === 'transport' ? 'شركات المواصلات سرفيس او بولمان' : SERVICE_LABELS[key];
     if (!category) return null;
+    if (typeof weeklyHoursEditors !== 'undefined' && weeklyHoursEditors.has('submission')) {
+        const state = weeklyHoursEditors.get('submission');
+        let hours;
+        try { hours = collectWeeklyHours('submission'); }
+        catch (error) { showToast(error.message,'error'); return null; }
+        if (state.dirty || state.cleared || Object.hasOwn(item,'editedHours')) item.editedHours = hours;
+    }
     // Keep the original reviewKey: the decision must still identify the original Sheet response.
     Object.assign(item,{name:document.getElementById('submissionEditName').value.trim(),phone:contact.value,category,city,
         notes:document.getElementById('submissionEditNotes').value.trim()});
