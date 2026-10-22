@@ -6,7 +6,7 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=68"></script>
+    <script src="shared.js?v=70"></script>
     <script>
         // Defensive login gate: never show dashboard options without authentication.
         document.addEventListener('DOMContentLoaded', function() {
@@ -19,8 +19,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=68-category-order">
-    <script src="portal-features.js?v=68-category-order"></script>
+    <link rel="stylesheet" href="style.css?v=70">
+    <script src="portal-features.js?v=70"></script>
 </head>
 <body>
 
@@ -403,6 +403,26 @@
             <div id="inboxDetailsActions" class="inbox-action-buttons" aria-label="الإجراءات"></div>
         </div>
     </div>
+    <div id="submissionEditModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="submissionEditTitle">
+        <div class="modal-dialog">
+            <div class="modal-header"><h2 id="submissionEditTitle">تعديل الاقتراح قبل الاعتماد</h2><button type="button" class="modal-close-btn" aria-label="إغلاق" onclick="document.getElementById('submissionEditModal').classList.remove('modal-open')">✕</button></div>
+            <form id="submissionEditForm" onsubmit="approveEditedSubmission(event)">
+                <div class="modal-body">
+                    <input id="submissionEditId" type="hidden">
+                    <label class="form-label" for="submissionEditName">الاسم</label><input id="submissionEditName" class="form-input" required>
+                    <label class="form-label" for="submissionEditPhone">الرقم أو الرابط</label><input id="submissionEditPhone" class="form-input" dir="ltr" required>
+                    <label class="form-label" for="submissionEditCategory">القسم</label><select id="submissionEditCategory" class="form-select" required></select>
+                    <label class="form-label" for="submissionEditCity">المحافظة (للمواصلات)</label><input id="submissionEditCity" class="form-input">
+                    <label class="form-label" for="submissionEditNotes">الملاحظات وساعات العمل</label><textarea id="submissionEditNotes" class="form-textarea" rows="5"></textarea>
+                    <p class="contact-note">التعديلات محلية حتى الاعتماد؛ لا تغيّر الرد الأصلي في Google Sheet.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="saveSubmissionDraft()">حفظ التعديل للمراجعة</button>
+                    <button id="submissionEditApprove" type="submit" class="btn-primary">اعتماد ونشر بعد التعديل</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <script>
         const GITHUB_OWNER = "FirasTDS";
         const GITHUB_REPO = "au-service-portal";
@@ -584,6 +604,7 @@
         };
 
         function renderAdminLists() {
+            syncExtraCategories(adminData, true);
             const container = document.getElementById('adminListsContainer');
             let total = 0;
             let html = '';
@@ -1449,6 +1470,7 @@
                             <td class="inbox-actions" data-label="إجراء" style="padding: 0.65rem 0.75rem; text-align: center;">
                                 <div class="inbox-action-buttons">
                                  <button type="button" class="btn-secondary inbox-toggle" aria-haspopup="dialog" onclick="toggleInboxDetails(this)">تفاصيل</button>
+                                 ${!decision && !isReport && !isRating ? `<button type="button" class="btn-secondary" onclick="openSubmissionEdit(${item.id})">تعديل قبل الاعتماد</button>` : ''}
                                  ${decision === 'ignored' ? '<span class="admin-badge admin-badge-amber">لم يُعتمد / تم التجاهل</span>' : decision === 'approved' ? '<span class="admin-badge admin-badge-teal">تم الاعتماد والنشر ✓</span>' : decision === 'resolved' ? '<span class="admin-badge admin-badge-teal">تم الحل ✓</span>' : isReport ? `
                                     ${item.notes.includes('[تصحيح:') ? `<button type="button" onclick="applyReportCorrection(${item.id})" class="btn-primary">مراجعة التصحيحات وتطبيقها</button>` : ''}
                                     <button type="button" onclick="resolveReport(${item.id})" class="btn-primary" style="font-size: 0.725rem; padding: 0.35rem 0.65rem;">
@@ -1487,7 +1509,7 @@
             const contact = normalizeContactInput(phone);
             if (contact.error) return false;
             const existingContacts = [];
-            for (const cat of ['emergency', 'pharmacies', 'restaurants', 'supermarkets', 'water', 'transfers', 'printing', 'maintenance', 'taxis', 'delivery', 'sweets', 'rental', 'clinics', 'bakeries', 'butchers', 'university']) {
+            for (const cat of Object.keys(adminData.services)) {
                 if (category && categoryFromLabel(category) !== cat) continue;
                 const list = adminData.services[cat] || [];
                 existingContacts.push(...list.map(item => normalizeContactInput(item.phone || item.link)));

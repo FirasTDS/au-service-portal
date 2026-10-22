@@ -22,6 +22,32 @@ function queueSetup(){
     return {ctx,get posts(){return posts;},set offline(value){offline=value;},set confirm(value){confirm=value;},ack(id){sheet+='\n[إرسال:'+id+']';}};
 }
 const form=()=>{const fd=new FormData();fd.set('entry.1549210706','Test');fd.set('entry.40821348','details');return fd;};
+test('editing a submission preserves its original review identity until approval',()=>{
+    const fields={submissionEditId:{value:'4'},submissionEditName:{value:'Corrected'},submissionEditPhone:{value:'0991234567'},
+        submissionEditCategory:{value:'gaming'},submissionEditCity:{value:''},submissionEditNotes:{value:'hours corrected'},submissionEditForm:{reportValidity:()=>true}};
+    const item={id:4,name:'Original',phone:'0991111111',category:'أخرى',notes:'old',reviewKey:'original-response'};
+    const ctx=vm.createContext({URL,document:{addEventListener(){},getElementById:id=>fields[id],querySelector:()=>null},
+        liveSuggestions:[item],SERVICE_LABELS:{gaming:'صالات الألعاب'},normalizeContactInput:value=>({value}),showToast(){}});
+    vm.runInContext(read('portal-features.js'),ctx);
+    assert.equal(ctx.saveSubmissionDraft(),item);
+    assert.equal(item.name,'Corrected');assert.equal(item.category,'صالات الألعاب');assert.equal(item.reviewKey,'original-response');
+    assert.equal(ctx.categoryFromLabel(item.category),'gaming');
+});
+test('custom service categories persist safely and form fallback restores their exact category',()=>{
+    const ctx=vm.createContext({URL,document:{addEventListener(){}}});vm.runInContext(read('portal-features.js'),ctx);
+    const data={services:{restaurants:[]},transport:[]};
+    const key=ctx.createServiceCategory(data,'خدمات جديدة',{restaurants:'المطاعم'});
+    assert.match(key,/^custom_[a-z0-9_]+$/);assert.equal(data.services[key].length,0);
+    ctx.adminData=JSON.parse(JSON.stringify(data));
+    assert.equal(ctx.categoryFromLabel('خدمات جديدة'),key);
+    assert.equal(ctx.categoryFromLabel('صالات الألعاب'),'gaming');
+    assert.equal(ctx.formCategory('صالات الألعاب'),'أخرى');
+    assert.equal(ctx.formCategory('خدمات جديدة'),'أخرى');
+    assert.throws(()=>ctx.createServiceCategory(data,'خدمات جديدة'),/موجود/);
+    assert.throws(()=>ctx.createServiceCategory(data,'[قسم]'),/أدخل/);
+    assert.throws(()=>ctx.createServiceCategory(data,'المطاعم',{restaurants:'المطاعم'}),/موجود/);
+    assert.equal(ctx.extraServiceCategories(data).gaming,'صالات الألعاب');
+});
 test('combined admin page exposes category ordering on actual section headers',()=>{
     const source=read('portal-features.js');
     assert.ok(source.includes("controls.className = 'category-order-controls'"));

@@ -89,9 +89,10 @@ test('rental category is wired in directory, suggestion form, admin and mapping'
     const ctx = vm.createContext({});
     const fnStart = features.indexOf('function categoryFromLabel(');
     const fnEnd = features.indexOf('}', features.indexOf("return 'restaurants'", fnStart)) + 1;
+    loadFn(ctx, features, 'function extraServiceCategories(');
     vm.runInContext(features.slice(fnStart, fnEnd), ctx);
     assert.equal(ctx.categoryFromLabel('مكاتب الإيجار'), 'rental');
-    assert.ok(index.includes("['list-rental', 'list-university'].includes(id)"), 'empty rental and university categories keep their tiles');
+    assert.ok(index.includes("['list-rental', 'list-university', ...Object.keys(extraServiceCategories(portalData))"), 'empty rental, university and extra categories keep their tiles');
     const appVer = index.match(/APP_VERSION = '(v\d+)'/)[1];
     const verNum = appVer.slice(1);
     for (const asset of ['style.css', 'portal-features.js', 'rates.js']) {
@@ -119,6 +120,7 @@ function approvalContext(data) {
     const shared = read('shared.js');
     vm.runInContext(shared.slice(shared.indexOf('function normalizeContactInput('), shared.indexOf('function validatePortalData(')), ctx);
     const features = read('portal-features.js');
+    loadFn(ctx, features, 'function extraServiceCategories(');
     loadFn(ctx, features, 'function categoryFromLabel(');
     loadFn(ctx, features, 'function canonicalCityName(');
     loadFn(ctx, features, 'function cleanSuggestionNotes(');
@@ -200,5 +202,5 @@ test('places without a phone offer a details suggestion with the name prefilled'
         assert.ok(admin.includes(`<option value="${key}">`), 'admin option ' + key);
         assert.ok(admin.includes(`${key}: '${label}'`), 'admin label ' + key);
     }
-    assert.ok(admin.includes("'sweets', 'rental', 'clinics', 'bakeries', 'butchers', 'university'"), 'duplicate-check covers new categories');
+    assert.ok(admin.includes('for (const cat of Object.keys(adminData.services))'), 'duplicate-check covers all categories including custom ones');
 });

@@ -19,15 +19,15 @@
     <meta name="theme-color" content="#0f4c42">
     <link rel="icon" type="image/png" href="Asset%201.png">
     <link rel="apple-touch-icon" href="Asset%201.png">
-    <script src="shared.js?v=68"></script>
+    <script src="shared.js?v=70"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=68">
-    <script src="portal-features.js?v=68"></script>
-    <script src="rates.js?v=68"></script>
-    <script src="ratings.js?v=68"></script>
-    <script src="submissions.js?v=68"></script>
+    <link rel="stylesheet" href="style.css?v=70">
+    <script src="portal-features.js?v=70"></script>
+    <script src="rates.js?v=70"></script>
+    <script src="ratings.js?v=70"></script>
+    <script src="submissions.js?v=70"></script>
 </head>
 <body>
 
@@ -1706,6 +1706,7 @@
 
         renderDutyPharmacy();
         renderDutyUniversity();
+        renderExtraServiceCategories(portalData, sortArray, createContactRow);
         decorateCardHeaders();
         enhancePublicDirectory();
         filterItems();
@@ -1725,7 +1726,7 @@
             const id = list.id;
             const count = list.querySelectorAll('.contact-item').length;
             // New categories (e.g. rental offices) stay visible while awaiting their first contact.
-            if (!count && !['list-rental', 'list-university'].includes(id)) return;
+            if (!count && !['list-rental', 'list-university', ...Object.keys(extraServiceCategories(portalData)).map(key => 'list-' + key)].includes(id)) return;
             const button = document.createElement('button');
             button.type = 'button';
             button.className = 'category-tile';
@@ -2265,7 +2266,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v68';
+    const APP_VERSION = 'v70';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.

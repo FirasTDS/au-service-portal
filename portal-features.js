@@ -1,6 +1,66 @@
 // Shared directory features. Data changes stay in the admin draft until publishing.
 function cityListId(city) { return 'list-city-' + encodeURIComponent(city); }
 
+function extraServiceCategories(data) {
+    const categories = {gaming:'صالات الألعاب'};
+    for (const [key,label] of Object.entries(data?.custom_categories || {})) {
+        if (/^custom_[a-z0-9_]+$/.test(key) && typeof label === 'string' && label.trim()) categories[key] = label.trim();
+    }
+    return categories;
+}
+
+function createServiceCategory(data, label, existingLabels = {}) {
+    label = String(label || '').trim().replace(/\s+/g,' ');
+    if (!label || label.length > 60 || /[\[\]\r\n]/.test(label)) throw new Error('أدخل اسم قسم من 1 إلى 60 حرفاً دون أقواس مربعة.');
+    const canonical = name => String(name).normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640]/g,'').toLocaleLowerCase();
+    if ([...Object.values(existingLabels),...Object.values(extraServiceCategories(data))].some(name => canonical(name) === canonical(label))) throw new Error('هذا القسم موجود بالفعل.');
+    let key = 'custom_' + Date.now().toString(36);
+    while (Object.hasOwn(data.services,key) || Object.hasOwn(data.custom_categories || {},key)) key += '_1';
+    data.custom_categories ||= {};
+    data.custom_categories[key] = label;
+    data.services[key] = [];
+    return key;
+}
+
+function syncExtraCategories(data, admin = false) {
+    const categories = extraServiceCategories(data);
+    if (admin) {
+        for (const key of Object.keys(SERVICE_LABELS)) if (key === 'gaming' || key.startsWith('custom_')) delete SERVICE_LABELS[key];
+        Object.assign(SERVICE_LABELS,categories);
+        for (const key of Object.keys(categories)) data.services[key] ||= [];
+    }
+    const select = document.getElementById(admin ? 'newCategory' : 'sugCategory');
+    if (select) {
+        const previous = select.value;
+        select.querySelectorAll('[data-extra-category]').forEach(option => option.remove());
+        for (const [key,label] of Object.entries(categories)) {
+            const option = document.createElement('option'); option.value = admin ? key : label; option.textContent = label; option.dataset.extraCategory = key; select.append(option);
+        }
+        if ([...select.options].some(option => option.value === previous)) select.value = previous;
+    }
+    return categories;
+}
+
+function renderExtraServiceCategories(data, sortItems, renderRow) {
+    const categories = syncExtraCategories(data);
+    let root = document.getElementById('extraServiceCategories');
+    if (!root) {
+        root = document.createElement('div'); root.id = 'extraServiceCategories'; root.className = 'extra-service-categories';
+        document.getElementById('list-restaurants').closest('.services-grid').append(root);
+    }
+    root.replaceChildren();
+    for (const [key,label] of Object.entries(categories)) {
+        const card = document.createElement('div'); card.className = 'category-card'; card.dataset.section = 'services';
+        const header = document.createElement('div'); header.className = 'category-header';
+        const title = document.createElement('h3'); title.className = 'category-title'; title.textContent = label;
+        const count = document.createElement('span'); count.className = 'category-count'; count.textContent = (data.services[key] || []).length;
+        header.append(title,count);
+        const list = document.createElement('div'); list.className = 'category-items-list'; list.id = 'list-' + key; list.setAttribute('role','list'); list.setAttribute('aria-label',label);
+        list.innerHTML = sortItems(data.services[key] || []).map(item => renderRow(item,label)).join('');
+        card.append(header,list); root.append(card);
+    }
+}
+
 function foodDirectoryItems(services, category = '') {
     return (category ? [category] : ['restaurants','sweets'])
         .filter(key => ['restaurants','sweets'].includes(key))
@@ -296,6 +356,58 @@ function formCategory(label) {
     return choices.includes(label) ? label : 'أخرى';
 }
 
+function openSubmissionEdit(id) {
+    const item = liveSuggestions.find(row => row.id === id);
+    if (!item || item.type.includes('تقييم') || item.notes.includes('[بلاغ')) return;
+    const select = document.getElementById('submissionEditCategory'); select.replaceChildren();
+    for (const [key,label] of [...Object.entries(SERVICE_LABELS),['transport','شركات المواصلات سرفيس او بولمان']]) {
+        const option = document.createElement('option'); option.value = key; option.textContent = label; select.append(option);
+    }
+    select.value = categoryFromLabel(item.category);
+    document.getElementById('submissionEditId').value = id;
+    for (const [field,value] of [['Name',item.name],['Phone',item.phone],['City',item.city],['Notes',cleanSuggestionNotes(item.notes)]]) document.getElementById('submissionEdit'+field).value = value || '';
+    document.getElementById('inboxDetailsModal').classList.remove('modal-open');
+    document.getElementById('submissionEditModal').classList.add('modal-open');
+}
+
+function saveSubmissionDraft() {
+    const form = document.getElementById('submissionEditForm');
+    if (!form.reportValidity()) return null;
+    const item = liveSuggestions.find(row => row.id === Number(document.getElementById('submissionEditId').value));
+    if (!item) return null;
+    if (!document.getElementById('submissionEditName').value.trim()) { showToast('أدخل الاسم.','error'); return null; }
+    const contact = normalizeContactInput(document.getElementById('submissionEditPhone').value);
+    if (contact.error) { showToast(contact.error,'error'); return null; }
+    const key = document.getElementById('submissionEditCategory').value;
+    const city = document.getElementById('submissionEditCity').value.trim();
+    if (key === 'transport' && !city) { showToast('حدد المحافظة للمواصلات.','error'); return null; }
+    const category = key === 'transport' ? 'شركات المواصلات سرفيس او بولمان' : SERVICE_LABELS[key];
+    if (!category) return null;
+    // Keep the original reviewKey: the decision must still identify the original Sheet response.
+    Object.assign(item,{name:document.getElementById('submissionEditName').value.trim(),phone:contact.value,category,city,
+        notes:document.getElementById('submissionEditNotes').value.trim()});
+    const row = document.querySelector(`button[onclick="openSubmissionEdit(${item.id})"]`)?.closest('tr');
+    if (row) {
+        for (const [label,value] of [['الاسم',item.name],['التصنيف',category],['المحافظة',city || 'القدموس'],['ملاحظات / بلاغ',item.notes]]) {
+            const cell = [...row.querySelectorAll('td[data-label]')].find(cell => cell.dataset.label === label);
+            if (cell) cell.textContent = value;
+        }
+        row.querySelector('.inbox-contact').textContent = contact.value;
+    }
+    showToast('حُفظ التعديل محلياً — اعتمد وانشر لتحديث الدليل.');
+    return item;
+}
+
+async function approveEditedSubmission(event) {
+    event.preventDefault();
+    const item = saveSubmissionDraft(); if (!item) return;
+    const button = document.getElementById('submissionEditApprove'); button.disabled = true;
+    try {
+        await approveSuggestion(item.id);
+        if (adminData.suggestion_reviews?.[item.reviewKey] === 'approved') document.getElementById('submissionEditModal').classList.remove('modal-open');
+    } finally { button.disabled = false; }
+}
+
 function ratingReceipt(key) {
     const storageKey = 'portal_rating_receipt:' + key;
     let id = portalStorage.get(storageKey);
@@ -325,6 +437,13 @@ function nextRatingRevision(receipt) {
 }
 
 function categoryFromLabel(label) {
+    if (typeof SERVICE_LABELS !== 'undefined') {
+        const builtin = Object.entries(SERVICE_LABELS).find(([,name]) => name === String(label || '').trim());
+        if (builtin) return builtin[0];
+    }
+    const data = typeof adminData !== 'undefined' ? adminData : typeof portalData !== 'undefined' ? portalData : null;
+    const extra = Object.entries(extraServiceCategories(data)).find(([,name]) => name === String(label || '').trim());
+    if (extra) return extra[0];
     label = String(label || '').normalize('NFKC').replace(/[\u064B-\u065F\u0670\u0640\u200B-\u200F\u202A-\u202E\u2066-\u2069]/g, '');
     if (/[إأآا]يجار|عقارات|rental/i.test(label)) return 'rental';
     if (/جامعة الأندلس/.test(label)) return 'university';
@@ -766,6 +885,21 @@ function initAdminNavigation() {
     const tools = document.getElementById('directoryTools');
     if (tools.parentElement !== records) records.append(tools);
     tools.hidden = false;
+    if (!document.getElementById('createCategoryForm')) {
+        const form = document.createElement('form'); form.id = 'createCategoryForm'; form.className = 'create-category-form';
+        const label = document.createElement('label'); label.htmlFor = 'newCategoryName'; label.textContent = 'إضافة قسم جديد';
+        const input = document.createElement('input'); input.id = 'newCategoryName'; input.className = 'form-input'; input.required = true; input.maxLength = 60; input.placeholder = 'اسم القسم';
+        const button = document.createElement('button'); button.type = 'submit'; button.className = 'btn-primary'; button.textContent = 'إضافة القسم';
+        form.append(label,input,button); records.prepend(form);
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            try {
+                const key = createServiceCategory(adminData,input.value,SERVICE_LABELS);
+                adminOpenGroups.add('service:' + key); input.value = ''; renderAdminLists();
+                showToast('تم إنشاء القسم — أضف جهات أو انقلها إليه ثم احفظ وانشر.');
+            } catch (err) { showToast(err.message,'error'); }
+        });
+    }
     const panels = [
         ['inbox','الوارد',document.getElementById('suggestionsTableBody').closest('.admin-card')],
         ['records','البيانات والترتيب والاستعادة',records],

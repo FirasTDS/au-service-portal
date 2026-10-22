@@ -992,6 +992,13 @@ body {
 .report-shortcut svg { width:14px; height:14px; }
 .drop-target { outline:2px dashed var(--color-teal); outline-offset:2px; }
 .directory-move-select { flex:0 1 12rem; width:12rem; max-width:100%; min-height:44px; font-size:.75rem; }
+.extra-service-categories { display:contents; }
+.create-category-form { display:flex; flex-wrap:wrap; align-items:center; gap:.75rem; margin-bottom:1rem; padding-bottom:1rem; border-bottom:1px solid var(--color-slate-200); }
+.create-category-form input { flex:1 1 12rem; min-width:0; width:auto; }
+.create-category-form label { font-weight:800; }
+#submissionEditModal .modal-body { display:flex; flex-direction:column; gap:.5rem; }
+#submissionEditModal .modal-header { background:var(--surface); color:var(--color-slate-900); border-bottom:1px solid var(--color-slate-200); }
+#submissionEditTitle { font-size:1rem; }
 .category-order-controls { display:inline-flex; gap:.35rem; margin-inline-start:auto; align-items:center; }
 .category-order-controls button { min-width:44px; min-height:44px; }
 #admin-panel-records > #directoryTools { margin-top:1.5rem; padding:1rem 0 0; border:0; border-top:1px solid var(--color-slate-200); border-radius:0; box-shadow:none; }
