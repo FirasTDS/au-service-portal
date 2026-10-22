@@ -6,7 +6,7 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=70"></script>
+    <script src="shared.js?v=71"></script>
     <script>
         // Defensive login gate: never show dashboard options without authentication.
         document.addEventListener('DOMContentLoaded', function() {
@@ -19,8 +19,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=70">
-    <script src="portal-features.js?v=70"></script>
+    <link rel="stylesheet" href="style.css?v=71">
+    <script src="portal-features.js?v=71"></script>
+    <script src="hours-editor.js?v=71"></script>
 </head>
 <body>
 
@@ -957,6 +958,10 @@
         // --- STRUCTURED HOURS FORM HELPERS (prefix: 'new' or 'edit') ---
         // Returns undefined (empty), object (valid), or 'ERROR' (invalid, toast shown).
         function collectHours(prefix) {
+            if (typeof weeklyHoursEditors !== 'undefined' && weeklyHoursEditors.has(prefix)) {
+                try { return collectWeeklyHours(prefix) || undefined; }
+                catch (error) { showToast(error.message,'error'); return 'ERROR'; }
+            }
             const open = document.getElementById(`${prefix}HoursOpen`).value;
             const close = document.getElementById(`${prefix}HoursClose`).value;
             const allday = document.getElementById(`${prefix}HoursAllDay`).checked;
@@ -968,6 +973,7 @@
         }
 
         function fillHours(prefix, hours) {
+            const originalHours = hours;
             fillExtraPeriods(prefix, hours);
             hours = hours?.periods?.[0] || hours;
             document.getElementById(`${prefix}HoursOpen`).value = (hours && hours.open) || '';
@@ -975,6 +981,7 @@
             document.getElementById(`${prefix}HoursAllDay`).checked = Boolean(hours && hours.allday);
             const days = (hours && hours.days) || [0, 1, 2, 3, 4, 5, 6];
             document.querySelectorAll(`#${prefix}HoursDays input`).forEach(el => { el.checked = days.includes(parseInt(el.value, 10)); });
+            fillWeeklyHours(prefix, originalHours);
         }
 
         // --- ADD NEW ITEM ---

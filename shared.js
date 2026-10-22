@@ -80,6 +80,7 @@ function damascusNow() {
 }
 
 function hoursLabel(hours) {
+    if (hours?.closed === true) return 'مغلق طوال الأسبوع';
     if (!hours || typeof hours !== 'object') return '';
     if (Array.isArray(hours.periods)) return hours.periods.slice(0,14).filter(period => period && !period.periods).map(hoursLabel).filter(Boolean).join(' • ');
     const days = Array.isArray(hours.days) && hours.days.length && hours.days.length < 7
@@ -147,6 +148,7 @@ function parseHoursText(text) {
 }
 
 function getOpenStatusBadge(item, now = damascusNow()) {
+    if (item?.hours?.closed === true) return '<span class="status-badge status-badge-closed"><span class="status-dot"></span>مغلق حالياً</span>';
     const hours = item && item.hours;
     if (!hours || typeof hours !== 'object') return '';
     if (Array.isArray(hours.periods)) {

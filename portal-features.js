@@ -198,6 +198,7 @@ function prepareReportCorrections(target) {
     document.querySelectorAll('#reportHoursDays input').forEach(input => { input.checked = days.includes(Number(input.value)); });
     fillExtraPeriods('report', target.original?.hours);
     updateReportHoursUI();
+    if (typeof fillWeeklyHours === 'function') fillWeeklyHours('report', target.original?.hours);
     const update = () => {
         const selected = [...document.querySelectorAll('#reportField input:checked')].map(input => input.value);
         document.querySelectorAll('[data-correction]').forEach(label => { label.hidden = !selected.includes(label.dataset.correction); });
@@ -268,6 +269,7 @@ function selectReportDays(checked) {
     document.querySelectorAll('#reportHoursDays input').forEach(input => { input.checked = checked; });
 }
 function validateReportHours(hours) {
+    if (hours.closed === true) return {closed:true};
     if (Array.isArray(hours.periods)) {
         if (!hours.periods.length || hours.periods.length > 14 || hours.periods.some(period => !period || period.periods)) throw new Error('أدخل من فترة واحدة إلى 14 فترة مستقلة.');
         return {periods:hours.periods.map(validateReportHours)};
@@ -279,6 +281,7 @@ function validateReportHours(hours) {
     return {open:hours.open,close:hours.close,days};
 }
 function collectStructuredReportHours() {
+    if (typeof weeklyHoursEditors !== 'undefined' && weeklyHoursEditors.has('report')) return collectWeeklyHours('report');
     const allday = document.getElementById('reportHoursAllDay').checked;
     const open = document.getElementById('reportHoursOpen').value;
     const close = document.getElementById('reportHoursClose').value;
