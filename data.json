@@ -621,6 +621,14 @@
           "close": "19:00"
         },
         "note": "داخل وخارج القدموس"
+      },
+      {
+        "name": "مجد موتور",
+        "phone": "0932286906",
+        "hours": {
+          "allday": true
+        },
+        "note": "معاملته كويسة واسعاره رحمانية"
       }
     ],
     "sweets": [
@@ -844,7 +852,17 @@
         }
       }
     ],
-    "gaming": []
+    "gaming": [
+      {
+        "name": "STAR CITY",
+        "link": "https://www.facebook.com/share/1DbNR2jGRD/?mibextid=wwXIfr",
+        "hours": {
+          "open": "02:00",
+          "close": "14:00"
+        },
+        "note": "من زميلكم بالجامعة.. [أحمد بركات] مالك صالة [STAR CITY ]. مكان خاص فينا كطلاب لنقضي فيه وقت فراغنا ونغير جو الموقع: جانب دنيا للياقة –شارع دونر. 📞  حجز والاستفسار: 0945201649 0945201581"
+      }
+    ]
   },
   "transport": [
     {
@@ -1317,7 +1335,9 @@
     "9f341b31e925082c4e21fa0248b99e9756fbd50310a02a0929963259f3e80cee": "approved",
     "c51f5e6881c959e0678d0dc9ee956abd93a9a83c77c4945d282f2781ed7764a7": "approved",
     "7f25fe0ca0454d3e3756f12547f580fef1b15a611d79dfdd6fb94fad75305898": "approved",
-    "21540a04922ed9a3ec455cee5441f711b1e4cd8f58d89b2d49d928dd186c74f9": "approved"
+    "21540a04922ed9a3ec455cee5441f711b1e4cd8f58d89b2d49d928dd186c74f9": "approved",
+    "a31263620a3b517d90c8ccd5f0497fdce1fbca625d71582799c93e15df4a5303": "approved",
+    "c260aec34f0ba54e1cb3d139c5c5d82418e9498b52d0c2ebb8bfe17f8b9d3f80": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1483,6 +1503,14 @@
     "63a40cb8-7290-42b1-b4b8-93233fdf7af3": {
       "status": "approved",
       "updated": "2026-10-19"
+    },
+    "586599f3-5607-485b-941d-c421295ed1d5": {
+      "status": "approved",
+      "updated": "2026-10-23"
+    },
+    "417c0197-e561-4c6a-b3fc-c4048da41f5f": {
+      "status": "approved",
+      "updated": "2026-10-23"
     }
   },
   "trash": [
