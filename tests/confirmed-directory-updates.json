@@ -1,0 +1,80 @@
+[
+  {
+    "reason": "Owner confirmed 14:00–02:00",
+    "before": {
+      "name": "STAR CITY",
+      "hours": {
+        "open": "02:00",
+        "close": "14:00"
+      },
+      "note": "من زميلكم بالجامعة.. [أحمد بركات] مالك صالة [STAR CITY ]. مكان خاص فينا كطلاب لنقضي فيه وقت فراغنا ونغير جو",
+      "phone": "0945201649 / 0945201581",
+      "address": "جانب دنيا للياقة –شارع دونر.",
+      "rating_contact": "https://www.facebook.com/share/1DbNR2jGRD/?mibextid=wwXIfr",
+      "website": "https://www.facebook.com/share/1DbNR2jGRD/?mibextid=wwXIfr"
+    },
+    "after": {
+      "name": "STAR CITY",
+      "hours": {
+        "open": "14:00",
+        "close": "02:00"
+      },
+      "note": "من زميلكم بالجامعة.. [أحمد بركات] مالك صالة [STAR CITY ]. مكان خاص فينا كطلاب لنقضي فيه وقت فراغنا ونغير جو",
+      "phone": "0945201649 / 0945201581",
+      "address": "جانب دنيا للياقة –شارع دونر.",
+      "rating_contact": "https://www.facebook.com/share/1DbNR2jGRD/?mibextid=wwXIfr",
+      "website": "https://www.facebook.com/share/1DbNR2jGRD/?mibextid=wwXIfr"
+    }
+  },
+  {
+    "reason": "Owner confirmed duplicate: مرعي / سوبرماركت مرعي",
+    "before": [
+      {
+        "name": "مرعي",
+        "phone": "0930267864"
+      },
+      {
+        "name": "سوبرماركت مرعي",
+        "note": "الرقم غير متوفر — ساهم بإضافته عبر «اقترح رقم»",
+        "rating_contact": "https://www.google.com/maps/place/%D8%B3%D9%88%D8%A8%D8%B1%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%85%D8%B1%D8%B9%D9%8A/@35.1008676,36.1606573,14z/data=!4m8!1m2!2m1!1s%D8%B3%D9%88%D8%A8%D8%B1%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%85%D8%B1%D8%B9%D9%8A!3m4!1s0x1523ef53fa75e781:0x2b9ca087d608949f!8m2!3d35.1008676!4d36.1606573",
+        "map_url": "https://www.google.com/maps/place/%D8%B3%D9%88%D8%A8%D8%B1%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%85%D8%B1%D8%B9%D9%8A/@35.1008676,36.1606573,14z/data=!4m8!1m2!2m1!1s%D8%B3%D9%88%D8%A8%D8%B1%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%85%D8%B1%D8%B9%D9%8A!3m4!1s0x1523ef53fa75e781:0x2b9ca087d608949f!8m2!3d35.1008676!4d36.1606573",
+        "phone": "",
+        "address": "4526+87V, Al Qadmus, Syria"
+      }
+    ],
+    "after": {
+      "name": "مرعي",
+      "phone": "0930267864",
+      "map_url": "https://www.google.com/maps/place/%D8%B3%D9%88%D8%A8%D8%B1%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%85%D8%B1%D8%B9%D9%8A/@35.1008676,36.1606573,14z/data=!4m8!1m2!2m1!1s%D8%B3%D9%88%D8%A8%D8%B1%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%85%D8%B1%D8%B9%D9%8A!3m4!1s0x1523ef53fa75e781:0x2b9ca087d608949f!8m2!3d35.1008676!4d36.1606573",
+      "address": "4526+87V, Al Qadmus, Syria",
+      "rating_key_aliases": [
+        "https://www.google.com/maps/place/%D8%B3%D9%88%D8%A8%D8%B1%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%85%D8%B1%D8%B9%D9%8A/@35.1008676,36.1606573,14z/data=!4m8!1m2!2m1!1s%D8%B3%D9%88%D8%A8%D8%B1%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%85%D8%B1%D8%B9%D9%8A!3m4!1s0x1523ef53fa75e781:0x2b9ca087d608949f!8m2!3d35.1008676!4d36.1606573\nسوبرماركت مرعي"
+      ]
+    }
+  },
+  {
+    "reason": "Damascus warehouse number not verified for local pharmacy",
+    "before": {
+      "name": "Jafra Pharma",
+      "phone": "0113315212",
+      "address": "4526+8GG، شارع الحمرا بقرب القدموس، القدموس, Al Qadmus, Syria"
+    },
+    "after": {
+      "name": "Jafra Pharma",
+      "phone": "",
+      "address": "4526+8GG، شارع الحمرا بقرب القدموس، القدموس, Al Qadmus, Syria",
+      "contact_history": [
+        {
+          "phone": "0113315212",
+          "reason": "الرقم منشور لمستودع جفرا فارما في دمشق؛ لم يثبت أنه للصيدلية المحلية.",
+          "sources": [
+            "https://www.facebook.com/jafrapharma/",
+            "https://shofey.com/directory/jafra-pharma/"
+          ]
+        }
+      ],
+      "rating_contact": "0113315212",
+      "note": "الرقم غير متوفر — هوية هذا الإدخال المحلي بحاجة للتحقق؛ الرقم السابق يخص مستودع جفرا فارما في دمشق."
+    }
+  }
+]

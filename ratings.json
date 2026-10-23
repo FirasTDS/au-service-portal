@@ -1,12 +1,12 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-10-22T23:47:49+00:00",
-  "total_ratings": 60,
+  "fetched_at": "2026-10-23T23:13:01+00:00",
+  "total_ratings": 63,
   "places": {
     "0933574279\nشاهين": {
       "avg": 5.0,
-      "count": 2
+      "count": 3
     },
     "0949071072\nمكتبة الفيصل": {
       "avg": 5.0,
@@ -33,8 +33,8 @@
       "count": 2
     },
     "https://www.google.com/maps/place/MA+Donut+shop/@35.103549,36.162327,14z/data=!4m8!1m2!2m1!1sMA+Donut+shop!3m4!1s0x1523ef003039bd1b:0xdb0b9334ac978873!8m2!3d35.103549!4d36.162327\nMA Donut shop": {
-      "avg": 3.33,
-      "count": 3
+      "avg": 3.75,
+      "count": 4
     },
     "0944866328\nمكتب الحسن للإعمار": {
       "avg": 5.0,
@@ -128,9 +128,9 @@
       "avg": 5.0,
       "count": 1
     },
-    "https://www.google.com/maps/place/%D8%B3%D9%88%D8%A8%D8%B1%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%85%D8%B1%D8%B9%D9%8A/@35.1008676,36.1606573,14z/data=!4m8!1m2!2m1!1s%D8%B3%D9%88%D8%A8%D8%B1%D9%85%D8%A7%D8%B1%D9%83%D8%AA+%D9%85%D8%B1%D8%B9%D9%8A!3m4!1s0x1523ef53fa75e781:0x2b9ca087d608949f!8m2!3d35.1008676!4d36.1606573\nسوبرماركت مرعي": {
-      "avg": 3.5,
-      "count": 2
+    "0930267864\nمرعي": {
+      "avg": 4.0,
+      "count": 3
     },
     "0991974444\nبيت المونة": {
       "avg": 5.0,
@@ -156,7 +156,7 @@
       "avg": 2.0,
       "count": 1
     },
-    "0930267864\nمرعي": {
+    "0437553099\nصيدلية ميليا برهوم": {
       "avg": 5.0,
       "count": 1
     }

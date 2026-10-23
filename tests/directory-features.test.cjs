@@ -297,7 +297,7 @@ test('pharmacies directory lists every duty pharmacy once with address and phone
     for (const item of pharmacies) {
         assert.ok(item.address && item.address.trim(), item.name);
         if (item.phone) assert.equal(ctx.normalizeContactInput(item.phone).error, '', item.phone);
-        else assert.ok(/^https?:\/\//i.test(item.link || item.map_url || item.website || ''), item.name + ' needs contact or location information');
+        else assert.ok(/^https?:\/\//i.test(item.link || item.map_url || item.website || '') || (item.note || '').includes('الرقم غير متوفر'), item.name + ' needs contact or an explicit unavailable-number notice');
     }
     for (const name of names) {
         assert.ok(pharmacies.some(item => item.name === name), name);

@@ -124,6 +124,10 @@ def rating_alias_map(data):
         canonical = item.get('rating_contact') or contact
         for alias in [contact] + item.get('rating_aliases', []):
             aliases[alias.strip() + '\n' + name] = canonical.strip() + '\n' + name
+        # Full keys preserve votes when confirmed duplicates have different names.
+        for alias_key in item.get('rating_key_aliases', []):
+            if isinstance(alias_key, str) and '\n' in alias_key:
+                aliases[alias_key.strip()] = canonical.strip() + '\n' + name
     return aliases
 
 
@@ -141,6 +145,8 @@ def build_snapshot(rows, aliases=None):
 def selftest():
     aliases = rating_alias_map({'services': {'taxis': [{'name':'A','phone':'0991111111 / 0992222222','rating_contact':'0991111111','rating_aliases':['0992222222']}]}})
     assert aliases['0992222222\nA'] == '0991111111\nA'
+    renamed = rating_alias_map({'services': {'supermarkets': [{'name':'Market','phone':'0991111111','rating_key_aliases':['https://example.com\nOld Market']}]}})
+    assert renamed['https://example.com\nOld Market'] == '0991111111\nMarket'
     def vote(receipt, stars, notes=''):
         return {'type': 'تقييم خدمة موجودة حالياً', 'phone': '0990000000', 'rating': str(stars),
                 'notes': f'[تقييم:{receipt}]' + notes}

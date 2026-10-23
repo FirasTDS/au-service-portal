@@ -15,6 +15,8 @@ This checks field placement and syntax, not whether businesses still operate or 
 
 ## Needs owner confirmation — not changed
 
+Follow-up: STAR CITY and the مرعي duplicate have since been confirmed and corrected; the Jafra number was moved to history after research. See `tests/DIRECTORY-RESEARCH.md` for current status. The list below records the original audit findings.
+
 - STAR CITY: saved 02:00–14:00; confirm whether this actually means 14:00–02:00.
 - Sugar bar: saved 08:00–12:00; noon vs midnight is not established by the data.
 - كراج الحفة: `0900000000` resembles a placeholder; 07:00–06:00 is also ambiguous.

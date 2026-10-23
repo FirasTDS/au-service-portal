@@ -61,3 +61,17 @@ test('directory audit is idempotent and leaves every number intact except extrac
 test('category tile totals include transport subgroups',()=>{
     assert.ok(read('index.html').includes("const count = card.querySelectorAll('.contact-item').length"));
 });
+test('confirmed hours and duplicate merge preserve contacts, ratings and undo data',()=>{
+    const data=JSON.parse(read('data.json')),ctx=context();
+    const star=data.services.gaming.find(item=>item.name==='STAR CITY');
+    assert.equal(star.hours.open,'14:00');assert.equal(star.hours.close,'02:00');
+    assert.ok(ctx.getOpenStatusBadge(star,{day:0,minutes:60}).includes('status-badge-open'));
+    assert.ok(ctx.getOpenStatusBadge(star,{day:0,minutes:600}).includes('status-badge-closed'));
+    assert.equal(data.services.supermarkets.filter(item=>['مرعي','سوبرماركت مرعي'].includes(item.name)).length,1);
+    const merged=data.services.supermarkets.find(item=>item.name==='مرعي');
+    assert.equal(merged.phone,'0930267864');assert.ok(merged.map_url);assert.ok(merged.rating_key_aliases[0].endsWith('\nسوبرماركت مرعي'));
+    const undo=data.trash.find(record=>record.item.name==='سوبرماركت مرعي');
+    assert.equal(undo.merge.after,JSON.stringify(merged));
+    const jafra=data.services.pharmacies.find(item=>item.name==='Jafra Pharma');
+    assert.equal(jafra.phone,'');assert.equal(jafra.contact_history.at(-1).phone,'0113315212');
+});
