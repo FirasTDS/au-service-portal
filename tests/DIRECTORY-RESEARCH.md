@@ -20,6 +20,8 @@ Research references:
 
 ## Descriptive names needing a real name or optional cleanup
 
+Subsequent owner confirmation: renamed **مكتب الكاسر العقاري** and moved **خلف المخفر تحت مطعم مروان** to its address. Renamed the taxi **تكسي الطالب احمد الهبال**, retaining its service notes. Both original rating keys are preserved as aliases. The other descriptive names remain unchanged.
+
 Not renamed automatically:
 - محلات جوالات بالسوق بعد طنجور ب ١٠٠ متر - صيانة -  بيع - شراء
 - مكتب الكاسر العقاري خلف المخفر تحت مطعم مروان

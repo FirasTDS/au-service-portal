@@ -75,3 +75,12 @@ test('confirmed hours and duplicate merge preserve contacts, ratings and undo da
     const jafra=data.services.pharmacies.find(item=>item.name==='Jafra Pharma');
     assert.equal(jafra.phone,'');assert.equal(jafra.contact_history.at(-1).phone,'0113315212');
 });
+test('owner-confirmed names separate location text and preserve previous rating keys',()=>{
+    const data=JSON.parse(read('data.json'));
+    const office=data.services.rental.find(item=>item.name==='مكتب الكاسر العقاري');
+    assert.equal(office.address,'خلف المخفر تحت مطعم مروان');
+    assert.equal(office.phone,'0933995541');assert.ok(office.rating_key_aliases[0].includes('\nمكتب الكاسر العقاري خلف'));
+    const taxi=data.services.taxis.find(item=>item.phone==='0995443327');
+    assert.equal(taxi.name,'تكسي الطالب احمد الهبال');assert.ok(taxi.rating_key_aliases[0].includes('(لخدمة الطلاب )'));
+    assert.equal(taxi.hours.allday,true);
+});
