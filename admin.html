@@ -6,7 +6,7 @@
     <title>لوحة تحكم المشرف | نافذة الاتحاد الخدمية</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="Asset%201.png">
-    <script src="shared.js?v=73"></script>
+    <script src="shared.js?v=74"></script>
     <script>
         // Defensive login gate: never show dashboard options without authentication.
         document.addEventListener('DOMContentLoaded', function() {
@@ -19,9 +19,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=73">
-    <script src="portal-features.js?v=73"></script>
-    <script src="hours-editor.js?v=73"></script>
+    <link rel="stylesheet" href="style.css?v=74">
+    <script src="portal-features.js?v=74"></script>
+    <script src="hours-editor.js?v=74"></script>
 </head>
 <body>
 
@@ -264,8 +264,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="newPhone" class="form-label">رقم الهاتف أو رابط الصفحة *</label>
-                        <input type="text" id="newPhone" class="form-input" placeholder="09xxxxxxxx أو https://..." dir="ltr" required>
+                        <label for="newPhone" class="form-label">رقم الهاتف (اختياري إذا لم يتوفر)</label>
+                        <input type="text" id="newPhone" class="form-input" placeholder="09xxxxxxxx" dir="ltr">
                     </div>
 
                     <div class="form-group">
@@ -357,8 +357,8 @@
                         <input type="text" id="editName" class="form-input" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="editPhone">رقم الهاتف أو الرابط *</label>
-                        <input type="text" id="editPhone" class="form-input" dir="ltr" required>
+                        <label class="form-label" for="editPhone">رقم الهاتف (اتركه فارغاً إذا لم يتوفر)</label>
+                        <input type="text" id="editPhone" class="form-input" dir="ltr">
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="editNote">ملاحظة إضافية / ساعات ومواعيد العمل</label>
@@ -411,7 +411,10 @@
                 <div class="modal-body">
                     <input id="submissionEditId" type="hidden">
                     <label class="form-label" for="submissionEditName">الاسم</label><input id="submissionEditName" class="form-input" required>
-                    <label class="form-label" for="submissionEditPhone">الرقم أو الرابط</label><input id="submissionEditPhone" class="form-input" dir="ltr" required>
+                    <label class="form-label" for="submissionEditPhone">رقم الهاتف</label><input id="submissionEditPhone" class="form-input" dir="ltr">
+                    <label class="form-label" for="submissionEditWebsite">رابط الصفحة أو الموقع</label><input id="submissionEditWebsite" class="form-input" type="url" dir="ltr">
+                    <label class="form-label" for="submissionEditMap">رابط Google Maps</label><input id="submissionEditMap" class="form-input" type="url" dir="ltr">
+                    <label class="form-label" for="submissionEditAddress">العنوان</label><input id="submissionEditAddress" class="form-input">
                     <label class="form-label" for="submissionEditCategory">القسم</label><select id="submissionEditCategory" class="form-select" required></select>
                     <label class="form-label" for="submissionEditCity">المحافظة (للمواصلات)</label><input id="submissionEditCity" class="form-input">
                     <label class="form-label" for="submissionEditNotes">الملاحظات وساعات العمل</label><textarea id="submissionEditNotes" class="form-textarea" rows="5"></textarea>
@@ -635,7 +638,8 @@
                                                 <span style="color: var(--color-slate-500); font-family: monospace; margin-right: 0.35rem;" dir="ltr">${escapeHtml(val)}</span>
                                                 ${isLink ? '<span class="admin-badge admin-badge-amber">رابط صفحة</span>' : ''}
                                             </div>
-                                            ${item.note ? `<div style="font-size: 0.75rem; color: var(--color-slate-500); margin-top: 0.2rem;">🕒 ${escapeHtml(item.note)}</div>` : ''}
+                                             ${item.note ? `<div style="font-size: 0.75rem; color: var(--color-slate-500); margin-top: 0.2rem;">🕒 ${escapeHtml(item.note)}</div>` : ''}
+                                             ${item.address ? `<div class="contact-note">📍 ${escapeHtml(item.address)}</div>` : ''}
                                             ${item.hours ? `<div style="font-size: 0.75rem; color: var(--color-slate-500); margin-top: 0.2rem;">⏰ ${escapeHtml(hoursLabel(item.hours))}</div>` : ''}
                                         </div>
                                         <div style="display:flex; align-items:center; gap:0.25rem;">
@@ -841,7 +845,7 @@
                 editCat.value = cat;
                 editGIdx.value = idx;
                 editName.value = item.name || '';
-                editPhone.value = item.phone || item.link || '';
+                editPhone.value = splitExistingContact(item).phone;
                 editNote.value = item.note || '';
                 fillHours('edit', item.hours);
                 editScheduleGroup.style.display = 'none';
@@ -855,7 +859,7 @@
                 editGIdx.value = gIdx;
                 editIIdx.value = iIdx;
                 editName.value = item.name || '';
-                editPhone.value = item.phone || item.link || '';
+                editPhone.value = splitExistingContact(item).phone;
                 editNote.value = item.note || '';
                 fillHours('edit', item.hours);
                 editScheduleGroup.style.display = 'block';
@@ -876,15 +880,16 @@
             e.preventDefault();
             const type = document.getElementById('editType').value;
             const name = document.getElementById('editName').value.trim();
-            const contact = normalizeContactInput(document.getElementById('editPhone').value);
-            if (contact.error) return showToast(contact.error, 'error');
-            const val = contact.value;
+            let separated;
+            try { separated = readContactFields('edit'); }
+            catch (error) { return showToast(error.message,'error'); }
+            const val = separated.phone;
             const note = document.getElementById('editNote').value.trim();
             const schedule = document.getElementById('editSchedule').value.trim();
             const hours = collectHours('edit');
             if (hours === 'ERROR') return;
 
-            if (!name || !val) {
+            if (!name) {
                 alert('يرجى ملء الاسم والرقم/الرابط.');
                 return;
             }
@@ -896,6 +901,7 @@
                 const idx = parseInt(document.getElementById('editGIdx').value, 10);
                 const target = adminData.services[cat][idx];
                 if (target) {
+                    applySeparatedContact(target,separated);
                     applyExtraFields('edit', target);
                     if (['restaurants','sweets'].includes(cat)) {
                         moveFoodEntry(adminData.services, cat, document.getElementById('editFoodCategory').value, idx);
@@ -924,6 +930,7 @@
                 const iIdx = parseInt(document.getElementById('editIIdx').value, 10);
                 const target = adminData.transport[gIdx].items[iIdx];
                 if (target) {
+                    applySeparatedContact(target,separated);
                     applyExtraFields('edit', target);
                     target.name = name;
                     if (isUrl) {
@@ -991,21 +998,23 @@
             const cat = document.getElementById('newCategory').value;
             const city = canonicalCityName(document.getElementById('newCity').value);
             const name = document.getElementById('newName').value.trim();
-            const contact = normalizeContactInput(document.getElementById('newPhone').value);
-            if (contact.error) return showToast(contact.error, 'error');
-            const val = contact.value;
+            let separated;
+            try { separated = readContactFields('new'); }
+            catch (error) { return showToast(error.message,'error'); }
+            const val = separated.phone;
             const noteInput = document.getElementById('newNote');
             const schedInput = document.getElementById('newSchedule');
             const note = noteInput ? noteInput.value.trim() : '';
             const schedule = schedInput ? schedInput.value.trim() : '';
 
-            if (!name || !val) {
+            if (!name) {
                 alert('يرجى كتابة الاسم والرقم أو الرابط.');
                 return;
             }
 
             const isUrl = /^https?:\/\//i.test(val);
             const newItem = isUrl ? { name, link: val } : { name, phone: val };
+            applySeparatedContact(newItem,separated);
             applyExtraFields('new', newItem);
             if (note) newItem.note = note;
             const hours = collectHours('new');
@@ -1228,6 +1237,9 @@
                 else delete newItem.hours;
                 cleanedNotes = cleanedNotes.split('\n').filter(text => !text.startsWith('ساعات الدوام:')).join('\n').trim();
             }
+            try { applySeparatedContact(newItem,item.editedContact || suggestionContactFields(item)); }
+            catch (error) { showToast(error.message,'error'); return null; }
+            cleanedNotes = cleanedNotes.split('\n').filter(text => !['رابط الصفحة:','رابط الخريطة:','العنوان:'].some(label=>text.startsWith(label))).join('\n').trim();
             if (cleanedNotes) newItem.note = cleanedNotes;
             return { cat, newItem, city: canonicalCityName(item.city) };
         }
@@ -1525,11 +1537,11 @@
             for (const cat of Object.keys(adminData.services)) {
                 if (category && categoryFromLabel(category) !== cat) continue;
                 const list = adminData.services[cat] || [];
-                existingContacts.push(...list.map(item => normalizeContactInput(item.phone || item.link)));
+                existingContacts.push(...list.flatMap(item => [item.phone,item.link,item.website,item.map_url].filter(Boolean).map(normalizeContactInput)));
             }
             for (const group of (adminData.transport || [])) {
                 if (category && categoryFromLabel(category) !== 'transport') continue;
-                existingContacts.push(...group.items.map(item => normalizeContactInput(item.phone || item.link)));
+                existingContacts.push(...group.items.flatMap(item => [item.phone,item.link,item.website,item.map_url].filter(Boolean).map(normalizeContactInput)));
             }
             if (contact.link) return existingContacts.some(existing => existing.link === contact.link);
             // A shared first number must not discard a suggestion's new second number.

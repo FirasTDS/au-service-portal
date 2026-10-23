@@ -369,6 +369,10 @@ function openSubmissionEdit(id) {
     select.value = categoryFromLabel(item.category);
     document.getElementById('submissionEditId').value = id;
     for (const [field,value] of [['Name',item.name],['Phone',item.phone],['City',item.city],['Notes',cleanSuggestionNotes(item.notes)]]) document.getElementById('submissionEdit'+field).value = value || '';
+    let fields;
+    try { fields = item.editedContact || suggestionContactFields(item); }
+    catch { fields = splitExistingContact({phone:item.phone}); }
+    for (const [field,value] of [['Phone',fields.phone],['Website',fields.website],['Map',fields.map_url],['Address',fields.address]]) document.getElementById('submissionEdit'+field).value = value || '';
     const hoursLine = cleanSuggestionNotes(item.notes).split('\n').find(line => line.startsWith('ساعات الدوام:'));
     fillWeeklyHours('submission', Object.hasOwn(item,'editedHours') ? item.editedHours : hoursLine ? parseHoursText(hoursLine.slice('ساعات الدوام:'.length)) : null);
     document.getElementById('inboxDetailsModal').classList.remove('modal-open');
@@ -381,8 +385,12 @@ function saveSubmissionDraft() {
     const item = liveSuggestions.find(row => row.id === Number(document.getElementById('submissionEditId').value));
     if (!item) return null;
     if (!document.getElementById('submissionEditName').value.trim()) { showToast('أدخل الاسم.','error'); return null; }
-    const contact = normalizeContactInput(document.getElementById('submissionEditPhone').value);
-    if (contact.error) { showToast(contact.error,'error'); return null; }
+    let fields;
+    try { fields = readContactFields('submissionEdit'); }
+    catch (error) { showToast(error.message,'error'); return null; }
+    const contact = {value:fields.phone || fields.website || fields.map_url};
+    if (!contact.value) { showToast('أدخل رقماً أو رابط صفحة أو خريطة.','error'); return null; }
+    fields.address = document.getElementById('submissionEditAddress')?.value.trim() || '';
     const key = document.getElementById('submissionEditCategory').value;
     const city = document.getElementById('submissionEditCity').value.trim();
     if (key === 'transport' && !city) { showToast('حدد المحافظة للمواصلات.','error'); return null; }
@@ -397,7 +405,7 @@ function saveSubmissionDraft() {
     }
     // Keep the original reviewKey: the decision must still identify the original Sheet response.
     Object.assign(item,{name:document.getElementById('submissionEditName').value.trim(),phone:contact.value,category,city,
-        notes:document.getElementById('submissionEditNotes').value.trim()});
+        editedContact:fields,notes:document.getElementById('submissionEditNotes').value.trim()});
     const row = document.querySelector(`button[onclick="openSubmissionEdit(${item.id})"]`)?.closest('tr');
     if (row) {
         for (const [label,value] of [['الاسم',item.name],['التصنيف',category],['المحافظة',city || 'القدموس'],['ملاحظات / بلاغ',item.notes]]) {
@@ -500,6 +508,55 @@ function contactDetailsHtml(item) {
         .filter(Boolean).map(text => `<div class="contact-note">${escapeHtml(text)}</div>`).join('');
 }
 
+function separateContactFields(phoneText = '', websiteText = '', mapText = '') {
+    const rawPhone = String(phoneText || '').trim();
+    const parsed = rawPhone ? normalizeContactInput(rawPhone) : {value:'',phones:[],link:'',error:''};
+    if (parsed.error) throw new Error(parsed.error);
+    if (parsed.link) throw new Error('ضع الرابط في حقل رابط الصفحة أو الخريطة، وليس رقم الهاتف.');
+    let website = '';
+    if (String(websiteText || '').trim()) {
+        const url = new URL(String(websiteText).trim());
+        if (url.protocol !== 'https:' || !url.hostname.includes('.') || url.username || url.password) throw new Error('أدخل رابط صفحة صالحاً يبدأ بـ https://');
+        website = url.href;
+        if (placeMapUrl({map_url:website})) throw new Error('ضع رابط الخريطة في حقل Google Maps.');
+    }
+    const map = String(mapText || '').trim();
+    const map_url = map ? placeMapUrl({map_url:map}) : '';
+    if (map && !map_url) throw new Error('أدخل رابط Google Maps صالحاً يبدأ بـ https://');
+    return {phone:parsed.value,website,map_url};
+}
+
+function readContactFields(prefix) {
+    return separateContactFields(document.getElementById(prefix+'Phone')?.value,
+        document.getElementById(prefix+'Website')?.value,document.getElementById(prefix+'Map')?.value);
+}
+
+function splitExistingContact(item) {
+    const legacy = item.link || (/^https?:/i.test(item.phone || '') ? item.phone : '');
+    const map = placeMapUrl({map_url:legacy});
+    return {phone:/^https?:/i.test(item.phone || '') ? '' : item.phone || '',website:item.website || (!map ? legacy : ''),map_url:item.map_url || map || '',address:item.address || ''};
+}
+
+function suggestionContactFields(item) {
+    const fields = splitExistingContact({phone:item.phone});
+    for (const [key,label] of [['website','رابط الصفحة'],['map_url','رابط الخريطة'],['address','العنوان']]) {
+        const line = cleanSuggestionNotes(item.notes).split('\n').find(text=>text.startsWith(label+':'));
+        if (line) fields[key] = line.slice(label.length+1).trim();
+    }
+    const validated = separateContactFields(fields.phone,fields.website,fields.map_url);
+    return {...validated,address:fields.address || ''};
+}
+
+function applySeparatedContact(item, fields) {
+    const previous = item.phone || item.link || item.name;
+    const next = fields.phone || item.name;
+    if (previous !== next && !item.rating_contact) item.rating_contact = previous;
+    item.phone = fields.phone || ''; delete item.link;
+    for (const key of ['website','map_url','address']) {
+        if (fields[key]) item[key] = fields[key]; else if (Object.hasOwn(fields,key)) delete item[key];
+    }
+}
+
 function featureButton(text, onClick) {
     const button = document.createElement('button');
     button.type = 'button'; button.className = 'btn-secondary'; button.textContent = text; button.onclick = onClick;
@@ -511,11 +568,12 @@ function extraFields(prefix, anchor, includeDate = true) {
     const box = document.createElement('fieldset'); box.id = prefix + 'Extras'; box.className = 'extra-fields';
     const legend = document.createElement('legend'); legend.textContent = includeDate ? 'التحقق وتفاصيل التوصيل (اختياري)' : 'تفاصيل التوصيل (اختياري)'; box.append(legend);
     const fields = [['Areas','مناطق التوصيل'], ['Fee','أجرة التوصيل (مثال: حسب المسافة)'], ['Kind','نوع الطلبات (أكل / مشاوير / كلاهما)'], ['Specialty','الاختصاص (للأطباء والعيادات فقط)']];
-    if (includeDate) fields.unshift(['Verified','تاريخ آخر تحقق فعلي من الرقم'], ['Map','رابط Google Maps المؤكد (اختياري)']);
+    if (includeDate) fields.unshift(['Address','العنوان'], ['Website','رابط الصفحة أو الموقع (اختياري)'], ['Verified','تاريخ آخر تحقق فعلي من الرقم'], ['Map','رابط Google Maps المؤكد (اختياري)']);
     fields.forEach(([key, text]) => {
         const label = document.createElement('label'); label.className = 'form-label'; label.textContent = text;
         const input = document.createElement('input'); input.id = prefix + key; input.className = 'form-input'; input.type = key === 'Verified' ? 'date' : 'text';
         if (key === 'Map') { input.type = 'url'; input.oninput = () => input.setCustomValidity(!input.value || placeMapUrl({map_url:input.value}) ? '' : 'أدخل رابط Google Maps صالحاً يبدأ بـ https'); }
+        if (key === 'Website') { input.type = 'url'; input.dir = 'ltr'; }
         if (key === 'Verified') input.max = new Date().toISOString().slice(0,10);
         label.append(input); box.append(label);
     });
@@ -523,8 +581,9 @@ function extraFields(prefix, anchor, includeDate = true) {
 }
 
 function fillExtraFields(prefix, item) {
-    const values = {Map:item.map_url || '', Verified:item.last_verified || '', Areas:item.delivery?.areas || '', Fee:item.delivery?.fee || '', Kind:item.delivery?.kind || '', Specialty:item.specialty || ''};
-    Object.entries(values).forEach(([key, value]) => { const el = document.getElementById(prefix + key); if (el) el.value = value; });
+    const separated = splitExistingContact(item);
+    const values = {Address:item.address || '',Website:separated.website,Map:separated.map_url, Verified:item.last_verified || '', Areas:item.delivery?.areas || '', Fee:item.delivery?.fee || '', Kind:item.delivery?.kind || '', Specialty:item.specialty || ''};
+    Object.entries(values).forEach(([key, value]) => { const el = document.getElementById(prefix + key); if (el) { el.value = value; el.setCustomValidity(''); } });
 }
 
 function applyExtraFields(prefix, item) {
@@ -534,6 +593,8 @@ function applyExtraFields(prefix, item) {
     const delivery = {areas:value('Areas'), fee:value('Fee'), kind:value('Kind')};
     if (Object.values(delivery).some(Boolean)) item.delivery = delivery; else delete item.delivery;
     if (value('Specialty')) item.specialty = value('Specialty'); else delete item.specialty;
+    if (value('Website')) item.website = value('Website'); else delete item.website;
+    if (value('Address')) item.address = value('Address'); else delete item.address;
 }
 
 function suggestionDeliveryNotes() {
@@ -756,8 +817,9 @@ function reorderControls(row, group, index, move, transfer) {
         if (target?.dataset.reorderGroup === group) move(index, Number(target.dataset.reorderIndex));
         else if (transfer) {
             const zone = hit?.closest('[data-directory-group]');
-            const destination = target?.dataset.reorderGroup || zone?.dataset.directoryGroup;
-            if (destination?.startsWith(group.split(':')[0] + ':')) transfer(destination, target ? Number(target.dataset.reorderIndex) : undefined);
+            const compatibleRow = target?.dataset.reorderGroup.startsWith(group.split(':')[0] + ':');
+            const destination = compatibleRow ? target.dataset.reorderGroup : zone?.dataset.directoryGroup;
+            if (destination?.startsWith(group.split(':')[0] + ':')) transfer(destination, compatibleRow ? Number(target.dataset.reorderIndex) : undefined);
         }
     };
     handle.onpointerup = finish; handle.onpointercancel = finish; row.prepend(handle);

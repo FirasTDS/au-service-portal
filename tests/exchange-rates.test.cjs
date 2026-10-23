@@ -124,6 +124,7 @@ function approvalContext(data) {
     loadFn(ctx, features, 'function categoryFromLabel(');
     loadFn(ctx, features, 'function canonicalCityName(');
     loadFn(ctx, features, 'function cleanSuggestionNotes(');
+    for (const name of ['placeMapUrl','separateContactFields','splitExistingContact','suggestionContactFields','applySeparatedContact']) loadFn(ctx,features,'function '+name+'(');
     const admin = read('admin.html');
     loadFn(ctx, admin, 'function checkItemExists(');
     const buildStart = admin.indexOf('function buildApprovedItem(item) {');
@@ -176,9 +177,9 @@ test('new categories are wired in directory, forms, admin and duplicate checks',
     // The admin may move an entry between categories or clean its note; look it up
     // wherever it lives now and only assert on merged addresses that are still present.
     const find = name => Object.values(data.services).flat().find(x => x.name === name);
-    assert.ok(find('فطاير محمود').note.includes('4525+RQ3'), 'skipped-row address merged into فطاير محمود');
-    assert.ok(find('ستوب اند شوب').note.includes('4537+J3P'), 'skipped-row address merged into ستوب اند شوب');
-    assert.ok(find('مشفى القدموس الوطني').note.includes('445X+2Q2'), 'skipped-row address merged into hospital');
+    assert.ok(find('فطاير محمود').address.includes('4525+RQ3'), 'address retained in the address field');
+    assert.ok(find('ستوب اند شوب').address.includes('4537+J3P'), 'address retained in the address field');
+    assert.ok(find('مشفى القدموس الوطني').address.includes('445X+2Q2'), 'hospital address retained');
 
 test('places without a phone offer a details suggestion with the name prefilled', () => {
     const index = read('index.html');

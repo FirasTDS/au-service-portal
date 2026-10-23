@@ -19,16 +19,16 @@
     <meta name="theme-color" content="#0f4c42">
     <link rel="icon" type="image/png" href="Asset%201.png">
     <link rel="apple-touch-icon" href="Asset%201.png">
-    <script src="shared.js?v=73"></script>
+    <script src="shared.js?v=74"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=73">
-    <script src="portal-features.js?v=73"></script>
-    <script src="hours-editor.js?v=73"></script>
-    <script src="rates.js?v=73"></script>
-    <script src="ratings.js?v=73"></script>
-    <script src="submissions.js?v=73"></script>
+    <link rel="stylesheet" href="style.css?v=74">
+    <script src="portal-features.js?v=74"></script>
+    <script src="hours-editor.js?v=74"></script>
+    <script src="rates.js?v=74"></script>
+    <script src="ratings.js?v=74"></script>
+    <script src="submissions.js?v=74"></script>
 </head>
 <body>
 
@@ -602,10 +602,13 @@
           <input type="text" id="sugName" class="form-input" placeholder="مثال: مطعم الشام" required>
         </div>
         <div class="form-group">
-          <label class="form-label" for="sugPhone">رقم الهاتف أو رابط الصفحة *</label>
-            <input type="text" id="sugPhone" class="form-input" placeholder="09xxxxxxxx / 09xxxxxxxx" dir="ltr" aria-describedby="sugPhoneHint" required>
-            <small id="sugPhoneHint" class="contact-note">يمكن إدخال أكثر من رقم مفصول بمسافة أو /، أو رابط صفحة. تُقبل الصيغة الدولية +963.</small>
+          <label class="form-label" for="sugPhone">رقم الهاتف</label>
+            <input type="text" id="sugPhone" class="form-input" placeholder="09xxxxxxxx / 09xxxxxxxx" dir="ltr" aria-describedby="sugPhoneHint">
+            <small id="sugPhoneHint" class="contact-note">افصل الأرقام بمسافة أو /. أدخل رقماً أو رابطاً واحداً على الأقل في الحقول المخصصة.</small>
         </div>
+        <div class="form-group"><label class="form-label" for="sugWebsite">رابط الصفحة أو الموقع</label><input id="sugWebsite" class="form-input" type="url" dir="ltr" placeholder="https://..."></div>
+        <div class="form-group"><label class="form-label" for="sugMap">رابط Google Maps</label><input id="sugMap" class="form-input" type="url" dir="ltr" placeholder="https://maps.google.com/..."></div>
+        <div class="form-group"><label class="form-label" for="sugAddress">العنوان</label><input id="sugAddress" class="form-input"></div>
         <div class="form-group">
           <label class="form-label" for="sugNotes">ملاحظات إضافية (اختياري)</label>
           <input type="text" id="sugNotes" class="form-input" placeholder="مثال: يوصل للسكن / يطلع الخميس...">
@@ -756,8 +759,8 @@
     const FALLBACK_DATA = {
         services: {
             emergency: [
-                { name: "مشفى القدموس الوطني", phone: "0437553700", note: "إسعاف وطوارئ 24 ساعة - مدخل المشفى" },
-                { name: "مستوصف القدموس الصحي", phone: "0437553917", note: "رعاية صحية أولية ولقاحات - غرب المستوصف" },
+                { name: "مشفى القدموس الوطني", phone: "", hours: {allday:true}, note: "إسعاف وطوارئ 24 ساعة - مدخل المشفى · الرقم غير متوفر" },
+                { name: "مستوصف القدموس الصحي", phone: "", note: "رعاية صحية أولية ولقاحات - غرب المستوصف · الرقم غير متوفر" },
                 { name: "منظومة الإسعاف السريع (الهلال الأحمر)", phone: "133", note: "طوارئ وإسعاف مجاني ومباشر" }
             ],
             pharmacies: [
@@ -1725,7 +1728,7 @@
             if (!header || !list) return;
             if (!list.id) list.id = `list-auto-${ci}`;
             const id = list.id;
-            const count = list.querySelectorAll('.contact-item').length;
+            const count = card.querySelectorAll('.contact-item').length;
             // New categories (e.g. rental offices) stay visible while awaiting their first contact.
             if (!count && !['list-rental', 'list-university', ...Object.keys(extraServiceCategories(portalData)).map(key => 'list-' + key)].includes(id)) return;
             const button = document.createElement('button');
@@ -2120,9 +2123,12 @@
         const category = document.getElementById('sugCategory').value;
         const city = document.getElementById('sugCity').value.trim();
         const name = document.getElementById('sugName').value.trim();
-        const contact = normalizeContactInput(document.getElementById('sugPhone').value);
+        let contact, separated;
+        try { separated = readContactFields('sug'); contact = {value:separated.phone || separated.website || separated.map_url,error:''}; }
+        catch (error) { contact = {value:'',error:error.message}; }
         const phone = contact.value;
-        const notes = document.getElementById('sugNotes').value.trim() + suggestionDeliveryNotes() + suggestionHoursNotes();
+        const contactNotes = separated ? [['رابط الصفحة',separated.website],['رابط الخريطة',separated.map_url],['العنوان',document.getElementById('sugAddress').value.trim()]].filter(([,value])=>value).map(([label,value])=>'\n'+label+': '+value).join('') : '';
+        const notes = document.getElementById('sugNotes').value.trim() + suggestionDeliveryNotes() + suggestionHoursNotes() + contactNotes;
         const errEl = document.getElementById('suggestError');
         const successEl = document.getElementById('suggestSuccess');
         const btn = document.getElementById('btnSubmitSug');
@@ -2138,7 +2144,7 @@
             return;
         }
         if (!name || !phone) {
-            errEl.textContent = 'يرجى إدخال اسم المكان ورقم الهاتف.';
+            errEl.textContent = 'يرجى إدخال اسم المكان ورقم هاتف أو رابط.';
             errEl.classList.add('form-error-show');
             return;
         }
@@ -2176,6 +2182,7 @@
             successEl.textContent = delivery.confirmed ? 'تم تأكيد استلام اقتراحك. شكراً!' : 'طلبك محفوظ وبانتظار تأكيد الاستلام — راجع صندوق الإرسال.';
             document.getElementById('sugName').value = '';
             document.getElementById('sugPhone').value = '';
+            for (const id of ['sugWebsite','sugMap','sugAddress']) document.getElementById(id).value = '';
             document.getElementById('sugNotes').value = '';
             document.getElementById('sugCity').value = '';
             document.getElementById('sugHours').value = '';
@@ -2267,7 +2274,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v73';
+    const APP_VERSION = 'v74';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.
