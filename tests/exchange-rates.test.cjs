@@ -44,6 +44,36 @@ test('shipped rates.js accepts fresh snapshots and rejects wrong source or city'
     assert.equal(context.validRates({...good, rates:{}}), false);
 });
 
+test('rate checks align to clock minutes and require a new snapshot after the hour changes',()=>{
+    const {context}=ratesContext();
+    const before=Date.parse('2026-10-24T08:59:45Z'),after=Date.parse('2026-10-24T09:00:00Z');
+    assert.equal(context.nextRateCheckDelay(before),15000);
+    assert.equal(context.nextRateCheckDelay(after),60000);
+    context.acceptRates({source:'sp-today.com',city:'دمشق',unit:'SYP_NEW',fetched_at:'2026-10-24T08:58:00Z',rates:{USD:{buy:140,sell:141}}});
+    vm.runInContext('lastRateCheckAt = '+before,context);
+    assert.equal(context.rateSnapshotDue(before),false);
+    assert.equal(context.rateSnapshotDue(after),true);
+    context.acceptRates({source:'sp-today.com',city:'دمشق',unit:'SYP_NEW',fetched_at:'2026-10-24T09:00:30Z',rates:{USD:{buy:140,sell:141}}});
+    vm.runInContext('lastRateCheckAt = '+(after+30000),context);
+    assert.equal(context.rateSnapshotDue(after+60000),false);
+    assert.equal(context.rateSnapshotDue(after+16*60000),true);
+    assert.ok(read('.github/workflows/update-rates.yml').includes("cron: '0 * * * *'"));
+    assert.ok(read('rates.js').includes("document.addEventListener('visibilitychange', resume)"));
+});
+
+test('rate refresh resumes immediately on tab return and reconnect, without polling hidden tabs',()=>{
+    const {context,listeners}=ratesContext();
+    let requests=0, tick;
+    context.refreshExchangeRates=()=>{requests++;};
+    context.setTimeout=(callback,delay)=>{assert.ok(delay>0&&delay<=60000);tick=callback;};
+    context.addEventListener=(type,callback)=>listeners[type]=callback;
+    listeners.DOMContentLoaded();assert.equal(requests,1);
+    context.document.hidden=true;tick();listeners.visibilitychange();assert.equal(requests,1);
+    context.document.hidden=false;listeners.visibilitychange();assert.equal(requests,2);
+    listeners.online();assert.equal(requests,3);
+    tick();assert.equal(requests,4);
+});
+
 test('shipped style.css has balanced braces outside comments', () => {
     const css = read('style.css').replace(/\/\*[\s\S]*?\*\//g, '');
     let depth = 0, min = 0;

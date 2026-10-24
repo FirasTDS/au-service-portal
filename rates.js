@@ -4,6 +4,7 @@ const RATE_URL = 'https://raw.githubusercontent.com/FirasTDS/au-service-portal/m
 const RATE_CACHE = 'portal_exchange_rates_v1';
 let displayedRates = null;
 let fetchingRates = false;
+let lastRateCheckAt = 0;
 
 function validRates(data, now = Date.now()) {
     if (!data || data.source !== 'sp-today.com' || data.city !== 'دمشق' || data.unit !== 'SYP_NEW') return false;
@@ -37,7 +38,7 @@ function renderExchangeRates(cached = false) {
     const date = new Date(displayedRates.fetched_at);
     const stale = Date.now() - date.getTime() > 6 * 3600000;
     const when = new Intl.DateTimeFormat('ar-SY', {dateStyle:'short',timeStyle:'short',timeZone:'Asia/Damascus'}).format(date);
-    status.textContent = `${cached ? 'محفوظة · ' : ''}${stale ? 'قديم — ' : ''}آخر جلب ${when} · تحديث كل ساعة.`;
+    status.textContent = `${cached ? 'محفوظة · ' : ''}${stale ? 'قديم — ' : ''}آخر جلب ${when} · مجدول عند بداية كل ساعة؛ قد يتأخر التحديث.`;
     status.classList.toggle('exchange-stale',stale || cached);
 }
 
@@ -72,7 +73,27 @@ async function refreshExchangeRates() {
     } finally {
         button.disabled = false;
         fetchingRates = false;
+        lastRateCheckAt = Date.now();
     }
+}
+
+function nextRateCheckDelay(now = Date.now()) {
+    return 60000 - (now % 60000);
+}
+
+function rateSnapshotDue(now = Date.now()) {
+    const hourStart = Math.floor(now / 3600000) * 3600000;
+    return !displayedRates || Date.parse(displayedRates.fetched_at) < hourStart
+        || now - lastRateCheckAt >= 15 * 60000;
+}
+
+function scheduleExchangeRateCheck() {
+    // Align to wall-clock minutes, including :00, rather than time since page load.
+    // While waiting for this hour's job, look for its published result each minute.
+    setTimeout(() => {
+        if (!document.hidden && rateSnapshotDue()) refreshExchangeRates();
+        scheduleExchangeRateCheck();
+    }, nextRateCheckDelay());
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -82,5 +103,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch {}
     document.getElementById('refreshExchangeRates').addEventListener('click',refreshExchangeRates);
     refreshExchangeRates();
-    setInterval(() => { if (!document.hidden) refreshExchangeRates(); },15 * 60000);
+    scheduleExchangeRateCheck();
+    const resume = () => { if (!document.hidden) refreshExchangeRates(); };
+    document.addEventListener('visibilitychange', resume);
+    globalThis.addEventListener?.('online', resume);
 });
