@@ -1,8 +1,8 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-10-25T22:57:34+00:00",
-  "total_ratings": 67,
+  "fetched_at": "2026-10-27T00:08:56+00:00",
+  "total_ratings": 71,
   "places": {
     "0933574279\nشاهين": {
       "avg": 5.0,
@@ -29,12 +29,12 @@
       "count": 2
     },
     "0996538589\nمطعم الأحمد": {
-      "avg": 4.5,
-      "count": 2
+      "avg": 3.33,
+      "count": 3
     },
     "https://www.google.com/maps/place/MA+Donut+shop/@35.103549,36.162327,14z/data=!4m8!1m2!2m1!1sMA+Donut+shop!3m4!1s0x1523ef003039bd1b:0xdb0b9334ac978873!8m2!3d35.103549!4d36.162327\nMA Donut shop": {
-      "avg": 3.75,
-      "count": 4
+      "avg": 4.0,
+      "count": 5
     },
     "0944866328\nمكتب الحسن للإعمار": {
       "avg": 5.0,
@@ -82,7 +82,7 @@
     },
     "0956595857\nمطعم الفوانيس": {
       "avg": 4.0,
-      "count": 2
+      "count": 3
     },
     "0988929432\nمجموعة طنجور للعقارات": {
       "avg": 5.0,
@@ -97,8 +97,8 @@
       "count": 1
     },
     "0952532316\nمطعم. gan food": {
-      "avg": 2.5,
-      "count": 2
+      "avg": 3.33,
+      "count": 3
     },
     "0993979581\nمطعم شهد العسل": {
       "avg": 3.0,
