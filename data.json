@@ -295,6 +295,11 @@
       {
         "name": "مطعم ومعجنات الوسام_دخلة مكتبة الفيصل القديمة",
         "phone": "0988358707"
+      },
+      {
+        "name": "مطعم العنقاء",
+        "phone": "0936518687",
+        "note": "الموقع : مقابل البريد جنب معهد الغد"
       }
     ],
     "supermarkets": [
@@ -627,6 +632,11 @@
           "open": "11:00",
           "close": "02:00"
         }
+      },
+      {
+        "name": "احمد",
+        "phone": "0933090289",
+        "note": "سريع وأمين"
       }
     ],
     "taxis": [
@@ -1520,7 +1530,9 @@
     "c260aec34f0ba54e1cb3d139c5c5d82418e9498b52d0c2ebb8bfe17f8b9d3f80": "approved",
     "32b58828e2245a5de1ab98fb6e31f1c602238078b87c0e2729fa448d8918e0ac": "approved",
     "400905ee21bea9ddf042b9b9d486364a44c900487977670ca117f4f41cf476c3": "approved",
-    "12993f34d2afc7f9188e58c5110a1b374d92c2c36f66788243962a9ee83d7742": "approved"
+    "12993f34d2afc7f9188e58c5110a1b374d92c2c36f66788243962a9ee83d7742": "approved",
+    "cbf99f7d09176878074a543e1d6b3e3c322e01560a9f48749725c44f3bf11038": "approved",
+    "325ef4b3fcc4e2cbe5695e75b51ab9f9f5e18045c2732aee09a998677200b153": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1698,6 +1710,14 @@
     "7ccf080c-49a4-4f37-b042-eca0a05663c2": {
       "status": "approved",
       "updated": "2026-10-25"
+    },
+    "73254239-ec85-46ac-8e8e-406718ace721": {
+      "status": "approved",
+      "updated": "2026-10-28"
+    },
+    "97672877-f465-4c75-8548-ad88275daf2a": {
+      "status": "approved",
+      "updated": "2026-10-28"
     }
   },
   "trash": [
