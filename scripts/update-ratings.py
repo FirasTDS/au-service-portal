@@ -128,6 +128,11 @@ def rating_alias_map(data):
         for alias_key in item.get('rating_key_aliases', []):
             if isinstance(alias_key, str) and '\n' in alias_key:
                 aliases[alias_key.strip()] = canonical.strip() + '\n' + name
+    for item in data.get('services', {}).get('pharmacies', []):
+        name = item['name'].strip()
+        contact = item.get('phone') or item.get('link') or name
+        canonical = item.get('rating_contact') or contact
+        aliases[contact.strip() + '\n' + name + ' (مناوبة اليوم 🌙)'] = canonical.strip() + '\n' + name
     return aliases
 
 
@@ -143,6 +148,8 @@ def build_snapshot(rows, aliases=None):
 
 
 def selftest():
+    pharmacy_aliases = rating_alias_map({'services': {'pharmacies': [{'name':'Pharmacy','phone':'0991111111'}]}})
+    assert pharmacy_aliases['0991111111\nPharmacy (مناوبة اليوم 🌙)'] == '0991111111\nPharmacy'
     aliases = rating_alias_map({'services': {'taxis': [{'name':'A','phone':'0991111111 / 0992222222','rating_contact':'0991111111','rating_aliases':['0992222222']}]}})
     assert aliases['0992222222\nA'] == '0991111111\nA'
     renamed = rating_alias_map({'services': {'supermarkets': [{'name':'Market','phone':'0991111111','rating_key_aliases':['https://example.com\nOld Market']}]}})

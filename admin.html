@@ -19,8 +19,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=76">
-    <script src="portal-features.js?v=76"></script>
+    <link rel="stylesheet" href="style.css?v=77">
+    <script src="portal-features.js?v=77"></script>
     <script src="hours-editor.js?v=75"></script>
     <script src="reviews.js?v=76"></script>
 </head>
@@ -417,7 +417,8 @@
                     <label class="form-label" for="submissionEditWebsite">رابط الصفحة أو الموقع</label><input id="submissionEditWebsite" class="form-input" type="url" dir="ltr">
                     <label class="form-label" for="submissionEditMap">رابط Google Maps</label><input id="submissionEditMap" class="form-input" type="url" dir="ltr">
                     <label class="form-label" for="submissionEditAddress">العنوان</label><input id="submissionEditAddress" class="form-input">
-                    <label class="form-label" for="submissionEditCategory">القسم</label><select id="submissionEditCategory" class="form-select" required></select>
+                    <label class="form-label" for="submissionEditCategory">القسم</label><select id="submissionEditCategory" class="form-select" required onchange="updateSubmissionFeeField()"></select>
+                    <div id="submissionEditFeeGroup" hidden><label class="form-label" for="submissionEditFee">أجرة التوصيل / المشوار (اختياري)</label><input id="submissionEditFee" class="form-input" maxlength="200" placeholder="المبلغ والعملة، أو حسب المسافة"></div>
                     <label class="form-label" for="submissionEditCity">المحافظة (للمواصلات)</label><input id="submissionEditCity" class="form-input">
                     <label class="form-label" for="submissionEditNotes">الملاحظات وساعات العمل</label><textarea id="submissionEditNotes" class="form-textarea" rows="5"></textarea>
                     <fieldset class="submission-hours-group"><legend>أوقات الدوام</legend><div id="submissionHoursDays" hidden></div></fieldset>
@@ -1214,13 +1215,15 @@
             const val = contact.value;
             const newItem = /^https?:\/\//i.test(val) ? { name: item.name.trim(), link: val } : { name: item.name.trim(), phone: val };
             let cleanedNotes = cleanSuggestionNotes(item.notes);
-            if (cat === 'delivery') {
+            if (cat === 'delivery' || cat === 'taxis') {
                 const delivery = {};
-                for (const [key, label] of [['areas','مناطق التوصيل'],['fee','أجرة التوصيل'],['kind','نوع الطلبات']]) {
+                for (const [key, label] of (cat === 'taxis' ? [['fee','أجرة المشوار']] : [['areas','مناطق التوصيل'],['fee','أجرة التوصيل'],['kind','نوع الطلبات']])) {
                     const line = cleanedNotes.split('\n').find(text => text.startsWith(label + ':'));
                     if (line) delivery[key] = line.slice(label.length + 1).trim();
                 }
+                if (Object.hasOwn(item,'editedFee')) delivery.fee = item.editedFee;
                 if (Object.keys(delivery).length) newItem.delivery = delivery;
+                cleanedNotes = cleanedNotes.split('\n').filter(text => !['أجرة التوصيل:','أجرة المشوار:'].some(label => text.startsWith(label))).join('\n').trim();
             }
             if (cat === 'clinics' || cat === 'university') {
                 const line = cleanedNotes.split('\n').find(text => text.startsWith('الاختصاص:'));

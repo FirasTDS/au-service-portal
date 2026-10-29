@@ -23,10 +23,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=76">
-    <script src="portal-features.js?v=76"></script>
+    <link rel="stylesheet" href="style.css?v=77">
+    <script src="portal-features.js?v=77"></script>
     <script src="hours-editor.js?v=75"></script>
-    <script src="rates.js?v=76"></script>
+    <script src="rates.js?v=77"></script>
     <script src="ratings.js?v=75"></script>
     <script src="reviews.js?v=76"></script>
     <script src="submissions.js?v=75"></script>
@@ -1116,10 +1116,15 @@
     }
 
     function createStarsHtml(item) {
+        // Duty cards use a display-only name; votes belong to the directory entry.
+        if (Object.hasOwn(item, 'review_item')) {
+            if (!item.review_item) return '';
+            item = item.review_item;
+        }
         const contact = item.phone || item.link || item.name;
         const key = placeRatingKey(item.rating_contact || contact, item.name);
         const userRatings = getLocalUserRatings();
-        const userStars = userRatings[key];
+        const userStars = userRatings[key] || userRatings[key + ' (مناوبة اليوم 🌙)'];
         const place = typeof visitorRatingFor === 'function' ? visitorRatingFor(key) : null;
         const averageHtml = place
             ? `<span class="rating-average" title="متوسط تقييمات الزوار — يُحدَّث يومياً">⭐ ${typeof formatVisitorRating === 'function' ? formatVisitorRating(place) : place.avg.toFixed(1)}</span>`
@@ -2191,6 +2196,10 @@
             document.getElementById('sugNotes').value = '';
             document.getElementById('sugCity').value = '';
             document.getElementById('sugHours').value = '';
+            for (const id of ['sugAreas','sugFee','sugKind','sugSpecialty']) {
+                const field = document.getElementById(id);
+                if (field) field.value = '';
+            }
 
             setTimeout(() => {
                 successEl.style.display = 'none';
@@ -2279,7 +2288,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v76';
+    const APP_VERSION = 'v77';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.

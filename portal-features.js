@@ -361,6 +361,10 @@ function formCategory(label) {
     return choices.includes(label) ? label : 'أخرى';
 }
 
+function updateSubmissionFeeField() {
+    document.getElementById('submissionEditFeeGroup').hidden = !['delivery','taxis'].includes(document.getElementById('submissionEditCategory').value);
+}
+
 function openSubmissionEdit(id) {
     const item = liveSuggestions.find(row => row.id === id);
     if (!item || item.type.includes('تقييم') || item.notes.includes('[بلاغ')) return;
@@ -369,6 +373,9 @@ function openSubmissionEdit(id) {
         const option = document.createElement('option'); option.value = key; option.textContent = label; select.append(option);
     }
     select.value = categoryFromLabel(item.category);
+    const feeLine = cleanSuggestionNotes(item.notes).split('\n').find(line => line.startsWith(select.value === 'taxis' ? 'أجرة المشوار:' : 'أجرة التوصيل:'));
+    document.getElementById('submissionEditFee').value = Object.hasOwn(item,'editedFee') ? item.editedFee : (feeLine ? feeLine.slice(feeLine.indexOf(':') + 1).trim() : '');
+    updateSubmissionFeeField();
     document.getElementById('submissionEditId').value = id;
     for (const [field,value] of [['Name',item.name],['Phone',item.phone],['City',item.city],['Notes',cleanSuggestionNotes(item.notes)]]) document.getElementById('submissionEdit'+field).value = value || '';
     let fields;
@@ -398,6 +405,8 @@ function saveSubmissionDraft() {
     if (key === 'transport' && !city) { showToast('حدد المحافظة للمواصلات.','error'); return null; }
     const category = key === 'transport' ? 'شركات المواصلات سرفيس او بولمان' : SERVICE_LABELS[key];
     if (!category) return null;
+    if (['delivery','taxis'].includes(key)) item.editedFee = document.getElementById('submissionEditFee').value.trim();
+    else delete item.editedFee;
     if (typeof weeklyHoursEditors !== 'undefined' && weeklyHoursEditors.has('submission')) {
         const state = weeklyHoursEditors.get('submission');
         let hours;
@@ -437,7 +446,8 @@ function ratingReceipt(key) {
     // The aggregator also scopes receipts by place, so sharing a legacy receipt
     // does not merge two businesses.
     if (!id && key.includes('\n')) {
-        const legacy = portalStorage.get('portal_rating_receipt:' + key.split('\n')[0]);
+        const legacy = portalStorage.get('portal_rating_receipt:' + key + ' (مناوبة اليوم 🌙)')
+            || portalStorage.get('portal_rating_receipt:' + key.split('\n')[0]);
         if (/^[a-f0-9-]{36}$/.test(legacy || '')) {
             if (!portalStorage.set(storageKey, legacy)) throw new Error('تعذر حفظ معرّف التقييم');
             id = legacy;
@@ -506,7 +516,7 @@ function contactDetailsHtml(item) {
     try { const url = new URL(item.website); if (url.protocol === 'https:') website = url.href; } catch {}
     return (website ? `<a class="btn-secondary map-link" href="${escapeHtml(website)}" target="_blank" rel="noopener noreferrer">صفحة المكان ↗</a>` : '') + (map ? `<a class="btn-secondary map-link" href="${escapeHtml(map)}" target="_blank" rel="noopener noreferrer">الموقع على الخريطة ↗</a>` : '') + `<div class="contact-note">${item.last_verified ? `آخر تحقق: ${escapeHtml(item.last_verified)}` : 'لم يُسجّل تاريخ تحقق بعد'}</div>` +
         [item.specialty && `الاختصاص: ${item.specialty}`,
-         d.areas && `مناطق التوصيل: ${d.areas}`, d.fee && `أجرة التوصيل: ${d.fee}`, d.kind && `نوع الطلبات: ${d.kind}`]
+         d.areas && `مناطق التوصيل: ${d.areas}`, d.fee && `الأجرة: ${d.fee}`, d.kind && `نوع الطلبات: ${d.kind}`]
         .filter(Boolean).map(text => `<div class="contact-note">${escapeHtml(text)}</div>`).join('');
 }
 
@@ -568,8 +578,8 @@ function featureButton(text, onClick) {
 function extraFields(prefix, anchor, includeDate = true) {
     if (!anchor || document.getElementById(prefix + 'Extras')) return;
     const box = document.createElement('fieldset'); box.id = prefix + 'Extras'; box.className = 'extra-fields';
-    const legend = document.createElement('legend'); legend.textContent = includeDate ? 'التحقق وتفاصيل التوصيل (اختياري)' : 'تفاصيل التوصيل (اختياري)'; box.append(legend);
-    const fields = [['Areas','مناطق التوصيل'], ['Fee','أجرة التوصيل (مثال: حسب المسافة)'], ['Kind','نوع الطلبات (أكل / مشاوير / كلاهما)'], ['Specialty','الاختصاص (للأطباء والعيادات فقط)']];
+    const legend = document.createElement('legend'); legend.textContent = includeDate ? 'التحقق وتفاصيل الخدمة (اختياري)' : 'الأجرة وتفاصيل الخدمة (اختياري)'; box.append(legend);
+    const fields = [['Areas','مناطق التوصيل'], ['Fee','أجرة التوصيل / المشوار (المبلغ والعملة أو حسب المسافة)'], ['Kind','نوع الطلبات (أكل / مشاوير / كلاهما)'], ['Specialty','الاختصاص (للأطباء والعيادات فقط)']];
     if (includeDate) fields.unshift(['Address','العنوان'], ['Website','رابط الصفحة أو الموقع (اختياري)'], ['Verified','تاريخ آخر تحقق فعلي من الرقم'], ['Map','رابط Google Maps المؤكد (اختياري)']);
     fields.forEach(([key, text]) => {
         const label = document.createElement('label'); label.className = 'form-label'; label.textContent = text;
@@ -601,8 +611,9 @@ function applyExtraFields(prefix, item) {
 
 function suggestionDeliveryNotes() {
     const cat = document.getElementById('sugCategory').value;
-    if (cat !== 'ديليفري وتوصيل طلبات' && cat !== 'الأطباء والعيادات' && cat !== 'عيادات جامعة الأندلس') return '';
-    const rows = [['Areas','مناطق التوصيل'],['Fee','أجرة التوصيل'],['Kind','نوع الطلبات'],['Specialty','الاختصاص']];
+    const rows = cat === 'ديليفري وتوصيل طلبات' ? [['Areas','مناطق التوصيل'],['Fee','أجرة التوصيل'],['Kind','نوع الطلبات']]
+        : cat === 'تكاسي وموتورات داخل القدموس' ? [['Fee','أجرة المشوار']]
+        : ['الأطباء والعيادات','عيادات جامعة الأندلس'].includes(cat) ? [['Specialty','الاختصاص']] : [];
     return rows.map(([key,label]) => {
         const value = document.getElementById('sug' + key)?.value.trim(); return value ? `\n${label}: ${value}` : '';
     }).join('');
@@ -776,6 +787,10 @@ function mergeDuplicateEntries(keep, remove) {
     if (!confirm('دمج بيانات الإدخال الثاني في الأول؟ سيُنقل الأصل إلى سلة المحذوفات ويمكن استعادته.')) return;
     const get = e => e.type === 'service' ? adminData.services[e.cat][e.idx] : adminData.transport[e.gIdx].items[e.iIdx];
     const target = get(keep), source = get(remove), before = structuredClone(target);
+    if (Array.isArray(source.approved_comments)) {
+        const comments = [...(target.approved_comments || []), ...source.approved_comments];
+        target.approved_comments = comments.filter((comment, index) => comments.findIndex(other => other.id === comment.id) === index).map(comment => structuredClone(comment));
+    }
     const x = normalizeContactInput(target.phone || target.link), y = normalizeContactInput(source.phone || source.link);
     if (!x.link && !y.link) target.phone = [...new Set([...x.phones,...y.phones])].join(' / ');
     const notes = [target.note, source.note, source.name !== target.name ? `اسم إضافي: ${source.name}` : ''].filter(Boolean);
@@ -1018,14 +1033,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const update = () => {
             const cat = document.getElementById('sugCategory').value;
             const isDelivery = cat === 'ديليفري وتوصيل طلبات';
+            const isTaxi = cat === 'تكاسي وموتورات داخل القدموس';
             const isClinic = cat === 'الأطباء والعيادات' || cat === 'عيادات جامعة الأندلس';
-            document.getElementById('sugExtras').hidden = !isDelivery && !isClinic;
+            document.getElementById('sugExtras').hidden = !isDelivery && !isTaxi && !isClinic;
             for (const key of ['Areas', 'Fee', 'Kind']) {
                 const input = document.getElementById('sug' + key);
-                if (input) input.closest('label').style.display = isDelivery ? '' : 'none';
+                if (input) input.closest('label').style.display = isDelivery || (isTaxi && key === 'Fee') ? '' : 'none';
             }
             const spec = document.getElementById('sugSpecialty');
-            if (spec) spec.closest('label').style.display = isDelivery || isClinic ? '' : 'none';
+            if (spec) spec.closest('label').style.display = isClinic ? '' : 'none';
         };
         document.getElementById('sugCategory').addEventListener('change',update); update();
         window.addEventListener('popstate', readCategoryLink);
