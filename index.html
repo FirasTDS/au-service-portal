@@ -23,11 +23,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=75">
-    <script src="portal-features.js?v=75"></script>
+    <link rel="stylesheet" href="style.css?v=76">
+    <script src="portal-features.js?v=76"></script>
     <script src="hours-editor.js?v=75"></script>
-    <script src="rates.js?v=75"></script>
+    <script src="rates.js?v=76"></script>
     <script src="ratings.js?v=75"></script>
+    <script src="reviews.js?v=76"></script>
     <script src="submissions.js?v=75"></script>
 </head>
 <body>
@@ -1143,6 +1144,7 @@
                     <span class="rating-score">تقييمك: ${userStars}/5</span>
                     ${averageHtml ? `${averageHtml}<span class="rating-unrated">— اضغط نجمة للتعديل</span>` : '<span class="rating-unrated">اضغط نجمة أخرى للتعديل</span>'}
                 </div>
+                ${reviewCommentsHtml(item)}
             `;
         }
 
@@ -1151,6 +1153,7 @@
                 <div class="stars-list">${starsBtns}</div>
                 ${averageHtml || '<span class="rating-unrated">قيّم الخدمة</span>'}
             </div>
+            ${reviewCommentsHtml(item)}
         `;
     }
 
@@ -1361,6 +1364,7 @@
             const emergencyItems = [
                 {
                     name: `${todayDuty.pharmacy} (مناوبة اليوم 🌙)`,
+                    review_item: (portalData.services.pharmacies || []).find(item => item.name === todayDuty.pharmacy && item.phone === todayDuty.phone) || null,
                     phone: todayDuty.phone,
                     note: `العنوان: ${todayDuty.address}`
                 },
@@ -2275,7 +2279,7 @@
     }
 
     // --- ASYNC DATA LOADING WITH SCHEMA VALIDATION ---
-    const APP_VERSION = 'v75';
+    const APP_VERSION = 'v76';
     async function loadData() {
         try {
             // Cache-busting query defeats GitHub Pages / CDN stale data.json after approval.

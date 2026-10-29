@@ -74,7 +74,7 @@ def aggregate(rows, aliases=None):
     for item in rows:
         if 'تقييم' not in (item.get('type') or ''):
             continue
-        if '[بلاغ' in (item.get('notes') or ''):
+        if '[بلاغ' in (item.get('notes') or '') or '[تعليق:' in (item.get('notes') or ''):
             continue
         stars = rating_value(item.get('rating'))
         if not stars:
@@ -156,6 +156,7 @@ def selftest():
     assert aggregate([vote(a, 5), vote(b, 5), vote(a, 2), vote(a, 2)]) == {
         '0990000000': {'avg': 3.5, 'count': 2}}
     assert aggregate([vote(a, 5, '[بلاغ خطأ]')]) == {}
+    assert aggregate([vote(a, 5, '[تعليق:pending]')]) == {}
     assert aggregate([dict(vote(a, 5), name='A'), dict(vote(a, 1), name='B')]) == {
         '0990000000\nA': {'avg': 5.0, 'count': 1},
         '0990000000\nB': {'avg': 1.0, 'count': 1}}

@@ -81,6 +81,7 @@ function canonicalCityName(city) {
 }
 
 function inboxKind(item) {
+    if (String(item.notes || '').includes('[تعليق:')) return 'comment';
     if (String(item.notes || '').includes('[بلاغ')) return String(item.notes).includes('[تصحيح:') ? 'correction' : 'report';
     return String(item.type || '').includes('تقييم') ? 'rating' : 'suggestion';
 }
@@ -343,6 +344,7 @@ function planReportCorrection(data, report) {
 }
 
 function reportNotesSummary(notes) {
+    if (String(notes || '').includes('[تعليق:')) return typeof parseReviewComment === 'function' ? (parseReviewComment(notes) || 'تعليق غير صالح') : 'تعليق للمراجعة';
     const displayNotes = String(notes || '').replace(/\[(?:طلب|تقييم|إرسال):[a-f0-9-]{36}\]/g, '').replace(/\[نسخة تقييم:\d+\]/g, '').replace(/\[القسم: [^\]\n]+\]/g, '').trim();
     try {
         const patch = parseReportCorrection(notes);

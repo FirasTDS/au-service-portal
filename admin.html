@@ -19,9 +19,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=75">
-    <script src="portal-features.js?v=75"></script>
+    <link rel="stylesheet" href="style.css?v=76">
+    <script src="portal-features.js?v=76"></script>
     <script src="hours-editor.js?v=75"></script>
+    <script src="reviews.js?v=76"></script>
 </head>
 <body>
 
@@ -160,6 +161,7 @@
                             <button type="button" class="btn-secondary" data-filter="inboxKind" data-value="correction" aria-pressed="false" onclick="setInboxFilter(this)">تصحيحات</button>
                             <button type="button" class="btn-secondary" data-filter="inboxKind" data-value="report" aria-pressed="false" onclick="setInboxFilter(this)">بلاغات</button>
                             <button type="button" class="btn-secondary" data-filter="inboxKind" data-value="rating" aria-pressed="false" onclick="setInboxFilter(this)">تقييمات</button>
+                            <button type="button" class="btn-secondary" data-filter="inboxKind" data-value="comment" aria-pressed="false" onclick="setInboxFilter(this)">تعليقات</button>
                         </div></fieldset>
                         <fieldset class="inbox-filter-group"><legend>الحالة</legend><input type="hidden" id="inboxStatus" value=""><div class="inbox-filter-buttons">
                             <button type="button" class="btn-secondary" data-filter="inboxStatus" data-value="" aria-pressed="true" onclick="setInboxFilter(this)">الكل</button>
@@ -1459,7 +1461,8 @@
                     const isReport = item.category.includes('إبلاغ') || item.notes.includes('[بلاغ');
                     const isRating = !isReport && item.type.includes('تقييم');
                     const badgeClass = isReport ? 'admin-badge-red' : 'admin-badge-teal';
-                    const badgeText = isReport ? (inboxKind(item) === 'correction' ? 'تصحيح' : 'بلاغ مشكلة') : isRating ? 'تقييم' : 'اقتراح جديد';
+                    const isComment = inboxKind(item) === 'comment';
+                    const badgeText = isComment ? 'تعليق' : isReport ? (inboxKind(item) === 'correction' ? 'تصحيح' : 'بلاغ مشكلة') : isRating ? 'تقييم' : 'اقتراح جديد';
 
                     // Check if already in adminData
                     const alreadyExists = checkItemExists(item.name, item.phone, item.category);
@@ -1493,7 +1496,8 @@
                                 ${escapeHtml(reportNotesSummary(item.notes || '—'))}
                             </td>
                             <td class="inbox-actions" data-label="إجراء" style="padding: 0.65rem 0.75rem; text-align: center;">
-                                <div class="inbox-action-buttons">
+                                 <div class="inbox-action-buttons">
+                                 ${isComment && decision === 'approved' ? `<button type="button" class="btn-secondary" onclick="removeReviewComment(${item.id})">إزالة التعليق</button>` : ''}
                                  <button type="button" class="btn-secondary inbox-toggle" aria-haspopup="dialog" onclick="toggleInboxDetails(this)">تفاصيل</button>
                                  ${!decision && !isReport && !isRating ? `<button type="button" class="btn-secondary" onclick="openSubmissionEdit(${item.id})">تعديل قبل الاعتماد</button>` : ''}
                                  ${decision === 'ignored' ? '<span class="admin-badge admin-badge-amber">لم يُعتمد / تم التجاهل</span>' : decision === 'approved' ? '<span class="admin-badge admin-badge-teal">تم الاعتماد والنشر ✓</span>' : decision === 'resolved' ? '<span class="admin-badge admin-badge-teal">تم الحل ✓</span>' : isReport ? `
@@ -1503,7 +1507,7 @@
                                         <span>تم الحل</span>
                                     </button>
                                     <button type="button" onclick="deleteReportedEntry(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem; color:var(--color-red);">حذف الرقم من الدليل</button>
-                                ` : isRating ? '<span class="admin-badge admin-badge-teal">يُحتسب تلقائياً — لا يحتاج اعتماداً</span>' : alreadyExists ? `
+                                 ` : isComment ? `<button type="button" class="btn-primary" onclick="approveReviewComment(${item.id})">اعتماد التعليق ونشره</button>` : isRating ? '<span class="admin-badge admin-badge-teal">يُحتسب تلقائياً — لا يحتاج اعتماداً</span>' : alreadyExists ? `
                                     <span class="admin-badge admin-badge-teal" style="font-size: 0.7rem;">موجود بالفعل ✓</span>
                                 ` : `
                                     <button type="button" onclick="approveSuggestion(${item.id})" class="btn-primary" style="font-size: 0.725rem; padding: 0.35rem 0.65rem;" ${contact.error ? 'disabled' : ''}>
@@ -1512,7 +1516,7 @@
                                     </button>
                                 `}
                                 ${decision === 'resolved' ? `<button type="button" onclick="reopenReport(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">إعادة فتح</button>` : decision === 'ignored' ? `<button type="button" onclick="ignoreSuggestion(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">إعادة للمراجعة</button>` : !decision ? `<button type="button" onclick="ignoreSuggestion(${item.id})" class="btn-secondary" style="font-size:0.725rem; padding:0.35rem 0.65rem; margin-top:0.35rem;">${isReport || isRating ? 'تجاهل' : 'رفض الاقتراح'}</button>` : ''}
-                                </div>
+                                 </div>
                             </td>
                         </tr>
                     `;
