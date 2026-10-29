@@ -1,8 +1,8 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-10-29T00:32:42+00:00",
-  "total_ratings": 120,
+  "fetched_at": "2026-10-29T17:53:17+00:00",
+  "total_ratings": 131,
   "places": {
     "0933574279\nشاهين": {
       "avg": 4.75,
@@ -49,16 +49,16 @@
       "count": 1
     },
     "0992571491\nأحمد موتور توصيل": {
-      "avg": 5.0,
-      "count": 3
-    },
-    "0982899566\nشيكن هاوس": {
-      "avg": 3.0,
+      "avg": 4.0,
       "count": 4
     },
+    "0982899566\nشيكن هاوس": {
+      "avg": 3.2,
+      "count": 5
+    },
     "0940447761\nمطعم الملك": {
-      "avg": 3.17,
-      "count": 6
+      "avg": 3.25,
+      "count": 8
     },
     "0983162723\nFriends  cafe": {
       "avg": 4.33,
@@ -82,7 +82,7 @@
     },
     "0956595857\nمطعم الفوانيس": {
       "avg": 4.0,
-      "count": 5
+      "count": 6
     },
     "0988929432\nمجموعة طنجور للعقارات": {
       "avg": 5.0,
@@ -93,8 +93,8 @@
       "count": 2
     },
     "0951339026\nفطاير محمود": {
-      "avg": 4.6,
-      "count": 5
+      "avg": 4.5,
+      "count": 6
     },
     "0952532316\nمطعم. gan food": {
       "avg": 4.0,
@@ -105,8 +105,8 @@
       "count": 4
     },
     "https://www.google.com/maps/search/?api=1&query=%D9%83%D8%A7%D9%81%D9%8A%D8%A9%20%D8%A7%D9%84%D8%B3%D8%AA%20%D9%84%D9%85%D9%8A%D8%A7&query_place_id=ChIJrz6KXwDtIxURg7dMkNh0l58\nكافية الست لميا": {
-      "avg": 4.33,
-      "count": 3
+      "avg": 3.5,
+      "count": 4
     },
     "https://www.google.com/maps/place/%D9%86%D9%8A%D8%B3%D8%A7%D9%86+caf%C3%A9/@35.101242,36.159911,14z/data=!4m8!1m2!2m1!1s%D9%86%D9%8A%D8%B3%D8%A7%D9%86+caf%C3%A9!3m4!1s0x1523ef00679968bf:0xb5719422aff4db12!8m2!3d35.101242!4d36.159911\nنيسان café": {
       "avg": 4.75,
@@ -174,7 +174,7 @@
     },
     "0934596402\nمطعم عشتار": {
       "avg": 4.0,
-      "count": 1
+      "count": 2
     },
     "0939968007\nمطعم سنمار برغر": {
       "avg": 4.0,
@@ -186,7 +186,7 @@
     },
     "0983153230\nكافيه شهلا": {
       "avg": 5.0,
-      "count": 2
+      "count": 3
     },
     "0988358707\nمطعم ومعجنات الوسام_دخلة مكتبة الفيصل القديمة": {
       "avg": 4.0,
@@ -205,6 +205,10 @@
       "count": 1
     },
     "https://www.instagram.com/m7_cafe_1?psln=Mzk3MnN5NTN6a25o\nM7": {
+      "avg": 3.0,
+      "count": 2
+    },
+    "https://www.instagram.com/shahla_cafe?vrfl=MTNxcjl1bHl3NnNoNw==\nكافيه شهلا": {
       "avg": 5.0,
       "count": 1
     }
