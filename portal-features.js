@@ -362,7 +362,13 @@ function formCategory(label) {
 }
 
 function updateSubmissionFeeField() {
-    document.getElementById('submissionEditFeeGroup').hidden = !['delivery','taxis'].includes(document.getElementById('submissionEditCategory').value);
+    const label = servicePriceLabel(document.getElementById('submissionEditCategory').value);
+    document.getElementById('submissionEditFeeGroup').hidden = !label;
+    document.querySelector('label[for="submissionEditFee"]').textContent = (label || 'الأجرة / السعر') + ' (اختياري — المبلغ والعملة)';
+}
+
+function servicePriceLabel(category) {
+    return {delivery:'أجرة التوصيل',taxis:'أجرة المشوار',transport:'أجرة الخط',water:'سعر المياه'}[category] || '';
 }
 
 function openSubmissionEdit(id) {
@@ -373,7 +379,7 @@ function openSubmissionEdit(id) {
         const option = document.createElement('option'); option.value = key; option.textContent = label; select.append(option);
     }
     select.value = categoryFromLabel(item.category);
-    const feeLine = cleanSuggestionNotes(item.notes).split('\n').find(line => line.startsWith(select.value === 'taxis' ? 'أجرة المشوار:' : 'أجرة التوصيل:'));
+    const feeLine = cleanSuggestionNotes(item.notes).split('\n').find(line => line.startsWith(servicePriceLabel(select.value) + ':'));
     document.getElementById('submissionEditFee').value = Object.hasOwn(item,'editedFee') ? item.editedFee : (feeLine ? feeLine.slice(feeLine.indexOf(':') + 1).trim() : '');
     updateSubmissionFeeField();
     document.getElementById('submissionEditId').value = id;
@@ -405,7 +411,7 @@ function saveSubmissionDraft() {
     if (key === 'transport' && !city) { showToast('حدد المحافظة للمواصلات.','error'); return null; }
     const category = key === 'transport' ? 'شركات المواصلات سرفيس او بولمان' : SERVICE_LABELS[key];
     if (!category) return null;
-    if (['delivery','taxis'].includes(key)) item.editedFee = document.getElementById('submissionEditFee').value.trim();
+    if (servicePriceLabel(key)) item.editedFee = document.getElementById('submissionEditFee').value.trim();
     else delete item.editedFee;
     if (typeof weeklyHoursEditors !== 'undefined' && weeklyHoursEditors.has('submission')) {
         const state = weeklyHoursEditors.get('submission');
@@ -516,7 +522,7 @@ function contactDetailsHtml(item) {
     try { const url = new URL(item.website); if (url.protocol === 'https:') website = url.href; } catch {}
     return (website ? `<a class="btn-secondary map-link" href="${escapeHtml(website)}" target="_blank" rel="noopener noreferrer">صفحة المكان ↗</a>` : '') + (map ? `<a class="btn-secondary map-link" href="${escapeHtml(map)}" target="_blank" rel="noopener noreferrer">الموقع على الخريطة ↗</a>` : '') + `<div class="contact-note">${item.last_verified ? `آخر تحقق: ${escapeHtml(item.last_verified)}` : 'لم يُسجّل تاريخ تحقق بعد'}</div>` +
         [item.specialty && `الاختصاص: ${item.specialty}`,
-         d.areas && `مناطق التوصيل: ${d.areas}`, d.fee && `الأجرة: ${d.fee}`, d.kind && `نوع الطلبات: ${d.kind}`]
+         d.areas && `مناطق التوصيل: ${d.areas}`, d.fee && `الأجرة / السعر: ${d.fee}`, d.kind && `نوع الطلبات: ${d.kind}`]
         .filter(Boolean).map(text => `<div class="contact-note">${escapeHtml(text)}</div>`).join('');
 }
 
@@ -579,7 +585,7 @@ function extraFields(prefix, anchor, includeDate = true) {
     if (!anchor || document.getElementById(prefix + 'Extras')) return;
     const box = document.createElement('fieldset'); box.id = prefix + 'Extras'; box.className = 'extra-fields';
     const legend = document.createElement('legend'); legend.textContent = includeDate ? 'التحقق وتفاصيل الخدمة (اختياري)' : 'الأجرة وتفاصيل الخدمة (اختياري)'; box.append(legend);
-    const fields = [['Areas','مناطق التوصيل'], ['Fee','أجرة التوصيل / المشوار (المبلغ والعملة أو حسب المسافة)'], ['Kind','نوع الطلبات (أكل / مشاوير / كلاهما)'], ['Specialty','الاختصاص (للأطباء والعيادات فقط)']];
+    const fields = [['Areas','مناطق التوصيل'], ['Fee','الأجرة / السعر (المبلغ والعملة، وللنقل أجرة هذا الخط)'], ['Kind','نوع الطلبات (أكل / مشاوير / كلاهما)'], ['Specialty','الاختصاص (للأطباء والعيادات فقط)']];
     if (includeDate) fields.unshift(['Address','العنوان'], ['Website','رابط الصفحة أو الموقع (اختياري)'], ['Verified','تاريخ آخر تحقق فعلي من الرقم'], ['Map','رابط Google Maps المؤكد (اختياري)']);
     fields.forEach(([key, text]) => {
         const label = document.createElement('label'); label.className = 'form-label'; label.textContent = text;
@@ -613,6 +619,8 @@ function suggestionDeliveryNotes() {
     const cat = document.getElementById('sugCategory').value;
     const rows = cat === 'ديليفري وتوصيل طلبات' ? [['Areas','مناطق التوصيل'],['Fee','أجرة التوصيل'],['Kind','نوع الطلبات']]
         : cat === 'تكاسي وموتورات داخل القدموس' ? [['Fee','أجرة المشوار']]
+        : cat === 'شركات المواصلات سرفيس او بولمان' ? [['Fee','أجرة الخط']]
+        : cat === 'صهاريج وتعبئة مياه' ? [['Fee','سعر المياه']]
         : ['الأطباء والعيادات','عيادات جامعة الأندلس'].includes(cat) ? [['Specialty','الاختصاص']] : [];
     return rows.map(([key,label]) => {
         const value = document.getElementById('sug' + key)?.value.trim(); return value ? `\n${label}: ${value}` : '';
@@ -1033,13 +1041,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const update = () => {
             const cat = document.getElementById('sugCategory').value;
             const isDelivery = cat === 'ديليفري وتوصيل طلبات';
-            const isTaxi = cat === 'تكاسي وموتورات داخل القدموس';
+            const hasPrice = !!servicePriceLabel(categoryFromLabel(cat));
             const isClinic = cat === 'الأطباء والعيادات' || cat === 'عيادات جامعة الأندلس';
-            document.getElementById('sugExtras').hidden = !isDelivery && !isTaxi && !isClinic;
+            document.getElementById('sugExtras').hidden = !hasPrice && !isClinic;
             for (const key of ['Areas', 'Fee', 'Kind']) {
                 const input = document.getElementById('sug' + key);
-                if (input) input.closest('label').style.display = isDelivery || (isTaxi && key === 'Fee') ? '' : 'none';
+                if (input) input.closest('label').style.display = isDelivery || (hasPrice && key === 'Fee') ? '' : 'none';
             }
+            const fee = document.getElementById('sugFee');
+            if (fee) fee.closest('label').firstChild.textContent = (servicePriceLabel(categoryFromLabel(cat)) || 'الأجرة / السعر') + ' (اختياري — المبلغ والعملة)';
             const spec = document.getElementById('sugSpecialty');
             if (spec) spec.closest('label').style.display = isClinic ? '' : 'none';
         };

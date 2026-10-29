@@ -154,6 +154,7 @@ function approvalContext(data) {
     loadFn(ctx, features, 'function categoryFromLabel(');
     loadFn(ctx, features, 'function canonicalCityName(');
     loadFn(ctx, features, 'function cleanSuggestionNotes(');
+    loadFn(ctx, features, 'function servicePriceLabel(');
     for (const name of ['placeMapUrl','separateContactFields','splitExistingContact','suggestionContactFields','applySeparatedContact']) loadFn(ctx,features,'function '+name+'(');
     const admin = read('admin.html');
     loadFn(ctx, admin, 'function checkItemExists(');

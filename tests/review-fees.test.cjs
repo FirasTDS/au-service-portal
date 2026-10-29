@@ -51,4 +51,14 @@ test('suggestion fee is category-specific and survives approval and editing',()=
     built=ctx.buildApprovedItem({...suggestion,editedFee:'200 ل.س جديدة'});
     assert.equal(built.newItem.delivery.fee,'200 ل.س جديدة');assert.ok(!built.newItem.note?.includes('حسب المسافة'));
     built=ctx.buildApprovedItem({...suggestion,editedFee:''});assert.equal(built.newItem.delivery.fee,'');
+    for (const [category,key,label] of [['شركات المواصلات سرفيس او بولمان','transport','أجرة الخط'],['صهاريج وتعبئة مياه','water','سعر المياه']]) {
+        fields.sugCategory.value=category;
+        fields.sugFee.value='250 ل.س جديدة';
+        const notes=ctx.suggestionDeliveryNotes();
+        assert.equal(notes,`\n${label}: 250 ل.س جديدة`);
+        const approved=ctx.buildApprovedItem({...suggestion,category,notes,city:'طرطوس'});
+        assert.equal(approved.cat,key);assert.equal(approved.newItem.delivery.fee,'250 ل.س جديدة');
+        assert.equal(approved.newItem.delivery.areas,undefined);assert.equal(approved.city,'طرطوس');
+        assert.equal(ctx.buildApprovedItem({...suggestion,category,notes,editedFee:'300 ل.س جديدة'}).newItem.delivery.fee,'300 ل.س جديدة');
+    }
 });

@@ -19,8 +19,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=77">
-    <script src="portal-features.js?v=77"></script>
+    <link rel="stylesheet" href="style.css?v=78">
+    <script src="portal-features.js?v=78"></script>
     <script src="hours-editor.js?v=75"></script>
     <script src="reviews.js?v=76"></script>
 </head>
@@ -1215,15 +1215,15 @@
             const val = contact.value;
             const newItem = /^https?:\/\//i.test(val) ? { name: item.name.trim(), link: val } : { name: item.name.trim(), phone: val };
             let cleanedNotes = cleanSuggestionNotes(item.notes);
-            if (cat === 'delivery' || cat === 'taxis') {
+            if (servicePriceLabel(cat)) {
                 const delivery = {};
-                for (const [key, label] of (cat === 'taxis' ? [['fee','أجرة المشوار']] : [['areas','مناطق التوصيل'],['fee','أجرة التوصيل'],['kind','نوع الطلبات']])) {
+                for (const [key, label] of (cat !== 'delivery' ? [['fee',servicePriceLabel(cat)]] : [['areas','مناطق التوصيل'],['fee','أجرة التوصيل'],['kind','نوع الطلبات']])) {
                     const line = cleanedNotes.split('\n').find(text => text.startsWith(label + ':'));
                     if (line) delivery[key] = line.slice(label.length + 1).trim();
                 }
                 if (Object.hasOwn(item,'editedFee')) delivery.fee = item.editedFee;
                 if (Object.keys(delivery).length) newItem.delivery = delivery;
-                cleanedNotes = cleanedNotes.split('\n').filter(text => !['أجرة التوصيل:','أجرة المشوار:'].some(label => text.startsWith(label))).join('\n').trim();
+                cleanedNotes = cleanedNotes.split('\n').filter(text => !['أجرة التوصيل:','أجرة المشوار:','أجرة الخط:','سعر المياه:'].some(label => text.startsWith(label))).join('\n').trim();
             }
             if (cat === 'clinics' || cat === 'university') {
                 const line = cleanedNotes.split('\n').find(text => text.startsWith('الاختصاص:'));
