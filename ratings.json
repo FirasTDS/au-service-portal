@@ -1,8 +1,8 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-10-31T00:16:57+00:00",
-  "total_ratings": 137,
+  "fetched_at": "2026-10-31T23:52:45+00:00",
+  "total_ratings": 139,
   "places": {
     "0933574279\nشاهين": {
       "avg": 4.75,
@@ -37,8 +37,8 @@
       "count": 7
     },
     "0944866328\nمكتب الحسن للإعمار": {
-      "avg": 5.0,
-      "count": 1
+      "avg": 3.0,
+      "count": 2
     },
     "0940698958\nSugar bar": {
       "avg": 4.43,
@@ -161,8 +161,8 @@
       "count": 1
     },
     "https://www.google.com/maps/place/%D9%83%D8%A7%D8%B2%D9%8A%D8%A9+%D8%A7%D9%84%D9%82%D9%87%D9%88%D8%A9/@35.1006789,36.1621491,14z/data=!4m8!1m2!2m1!1s%D9%83%D8%A7%D8%B2%D9%8A%D8%A9+%D8%A7%D9%84%D9%82%D9%87%D9%88%D8%A9!3m4!1s0x1523ef0051129839:0x2fe259a3e234dbd6!8m2!3d35.1006789!4d36.1621491\nكازية القهوة": {
-      "avg": 5.0,
-      "count": 1
+      "avg": 4.0,
+      "count": 2
     },
     "0945987118\nمطعم عبدو": {
       "avg": 4.0,
