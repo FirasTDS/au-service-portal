@@ -1,8 +1,8 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-10-30T00:31:18+00:00",
-  "total_ratings": 131,
+  "fetched_at": "2026-10-31T00:16:57+00:00",
+  "total_ratings": 137,
   "places": {
     "0933574279\nشاهين": {
       "avg": 4.75,
@@ -13,8 +13,8 @@
       "count": 4
     },
     "0952532845\nستوب اند شوب": {
-      "avg": 4.67,
-      "count": 3
+      "avg": 4.75,
+      "count": 4
     },
     "0994207644\nموتور التوصيل ابراهيم": {
       "avg": 4.5,
@@ -33,16 +33,16 @@
       "count": 5
     },
     "https://www.google.com/maps/place/MA+Donut+shop/@35.103549,36.162327,14z/data=!4m8!1m2!2m1!1sMA+Donut+shop!3m4!1s0x1523ef003039bd1b:0xdb0b9334ac978873!8m2!3d35.103549!4d36.162327\nMA Donut shop": {
-      "avg": 4.0,
-      "count": 6
+      "avg": 4.14,
+      "count": 7
     },
     "0944866328\nمكتب الحسن للإعمار": {
       "avg": 5.0,
       "count": 1
     },
     "0940698958\nSugar bar": {
-      "avg": 4.33,
-      "count": 6
+      "avg": 4.43,
+      "count": 7
     },
     "0933135318\nتكسي لؤي": {
       "avg": 1.0,
@@ -130,7 +130,7 @@
     },
     "0930267864\nمرعي": {
       "avg": 4.0,
-      "count": 3
+      "count": 4
     },
     "0991974444\nبيت المونة": {
       "avg": 5.0,
@@ -141,8 +141,8 @@
       "count": 2
     },
     "https://www.google.com/maps/place/%D8%AD%D8%B3%D8%A7%D9%86+%D9%88%D8%B7%D9%81%D9%8A/@35.1026635,36.1623844,14z/data=!4m8!1m2!2m1!1s%D8%AD%D8%B3%D8%A7%D9%86+%D9%88%D8%B7%D9%81%D9%8A!3m4!1s0x1523ef56524875e7:0x9e6c23fc0d59914f!8m2!3d35.1026635!4d36.1623844\nحسان وطفي": {
-      "avg": 4.0,
-      "count": 1
+      "avg": 4.5,
+      "count": 2
     },
     "https://www.google.com/maps/place/%D8%AF%D9%83%D8%A7%D9%86+%D8%B1%D8%BA%D8%AF%D8%A7%D8%A1+%D8%AE%D8%B2%D8%A7%D9%85/@35.0961171,36.1882655,14z/data=!4m8!1m2!2m1!1s%D8%AF%D9%83%D8%A7%D9%86+%D8%B1%D8%BA%D8%AF%D8%A7%D8%A1+%D8%AE%D8%B2%D8%A7%D9%85!3m4!1s0x1523ed0016516a59:0x43e5c0823658a052!8m2!3d35.0961171!4d36.1882655\nدكان رغداء خزام": {
       "avg": 5.0,
@@ -209,6 +209,10 @@
       "count": 2
     },
     "https://www.instagram.com/shahla_cafe?vrfl=MTNxcjl1bHl3NnNoNw==\nكافيه شهلا": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "0932908124\nكنافة السلطان": {
       "avg": 5.0,
       "count": 1
     }
