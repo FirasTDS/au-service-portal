@@ -309,6 +309,14 @@
           "close": "21:00"
         },
         "note": "مطعم فلافل وفته اسعاره رمزيه مكانه مقابل عبارة سولو"
+      },
+      {
+        "name": "سيلينا كافيه (أبو حاتم سابقاً)",
+        "rating_contact": "https://www.instagram.com/selena.cafe2026/",
+        "phone": "",
+        "website": "https://www.instagram.com/selena.cafe2026/",
+        "map_url": "https://maps.app.goo.gl/Uyzc2z7CR7dSCNWD9",
+        "address": "مقابل الباب الجنوبي لجامعة الأندلس"
       }
     ],
     "supermarkets": [
@@ -588,6 +596,10 @@
         "name": "قاعة مطالعة برايت هوب (study zone)",
         "phone": "0991824958",
         "note": "Bright Hub جانب مطعم  الخليل"
+      },
+      {
+        "name": "الذهبي للطباعه_جنب مكتبة الجامعة",
+        "phone": "0988314600"
       }
     ],
     "maintenance": [
@@ -775,6 +787,10 @@
         },
         "address": "القدموس",
         "note": "لتوصيل للطلاب\nللسكن ولجميع مناطق القدموس"
+      },
+      {
+        "name": "موتور حيدر",
+        "phone": "0996181438"
       }
     ],
     "sweets": [
@@ -1001,6 +1017,17 @@
         "map_url": "https://www.google.com/maps/search/?api=1&query=%D8%B9%D9%8A%D8%A7%D8%AF%D8%A9%20%D8%A7%D9%84%D8%AF%D9%83%D8%AA%D9%88%D8%B1%D8%A9%20%D9%88%D8%B5%D8%A7%D9%84%20%D8%B4%D8%AD%D9%88%D8%AF&query_place_id=ChIJDXsDdiDvIxUR2xRG-OoXZA8",
         "phone": "",
         "address": "4526+99M, Al Qadmus, Syria"
+      },
+      {
+        "name": "عيادةالدكتورةنور مصطفى ،اشعة تشخيصية",
+        "specialty": "اشعة",
+        "hours": {
+          "allday": true
+        },
+        "rating_contact": "https://www.facebook.com/profile.php?id=61581297935815",
+        "phone": "",
+        "website": "https://www.facebook.com/profile.php?id=61581297935815",
+        "note": "جوال 0951868702\nالاختصاص: اشعة"
       }
     ],
     "bakeries": [
@@ -1571,7 +1598,11 @@
     "cbf99f7d09176878074a543e1d6b3e3c322e01560a9f48749725c44f3bf11038": "approved",
     "325ef4b3fcc4e2cbe5695e75b51ab9f9f5e18045c2732aee09a998677200b153": "approved",
     "34e991f326c5633400c9f533ca5b097e030533808b3c0406895e05d464445739": "approved",
-    "d90995ae1e17595cd90dfc7cf76a9da170836ce36e6a0ad289dce66fe583b43b": "approved"
+    "d90995ae1e17595cd90dfc7cf76a9da170836ce36e6a0ad289dce66fe583b43b": "approved",
+    "7940bd4c5aa0f1b5ea4f187a6d1dd4fcb4ae4025dbcfb03c9c78f1734f90ff60": "approved",
+    "1014f9d6fd9c4e1c1ae790bd439da61d4969dfe3def7d4c7d745df4f8cf9cce4": "approved",
+    "f6dd72746d1081e30322ad4a235de603addc987e782c91de935b29a9e27f767a": "approved",
+    "48f272e400e39fda145ae639ee8b3c66bef022b640cd075c32116b4ab7746de7": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1765,6 +1796,18 @@
     "e7db8c29-3531-477a-ac0f-23b43af8f311": {
       "status": "approved",
       "updated": "2026-11-01"
+    },
+    "a6f0b69c-7364-4853-920e-f4e5d2f4e4d1": {
+      "status": "approved",
+      "updated": "2026-11-02"
+    },
+    "4f9880bb-b9e2-48df-b956-df4077aabcc9": {
+      "status": "approved",
+      "updated": "2026-11-02"
+    },
+    "a12930c2-d1ba-4710-9202-b7946f33e1c8": {
+      "status": "approved",
+      "updated": "2026-11-02"
     }
   },
   "trash": [
