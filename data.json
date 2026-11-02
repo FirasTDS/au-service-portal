@@ -287,6 +287,36 @@
       {
         "name": "مطعم البستان(فلافل)",
         "phone": "0958313131"
+      },
+      {
+        "name": "مطعم العم",
+        "phone": "0939746944",
+        "hours": {
+          "open": "07:00",
+          "close": "21:00"
+        },
+        "note": "مطعم فلافل وفته اسعاره رمزيه مكانه مقابل عبارة سولو"
+      },
+      {
+        "name": "سيلينا كافيه (أبو حاتم سابقاً)",
+        "rating_contact": "https://www.instagram.com/selena.cafe2026/",
+        "phone": "",
+        "website": "https://www.instagram.com/selena.cafe2026/",
+        "map_url": "https://maps.app.goo.gl/Uyzc2z7CR7dSCNWD9",
+        "address": "مقابل الباب الجنوبي لجامعة الأندلس"
+      },
+      {
+        "name": "مطعم العنقاء",
+        "phone": "0936518687",
+        "note": "الموقع : مقابل البريد جنب معهد الغد"
+      },
+      {
+        "name": "مطعم ومعجنات الوسام_دخلة مكتبة الفيصل القديمة",
+        "phone": "0988358707"
+      },
+      {
+        "name": "كافيه شهلا",
+        "phone": "0983153230"
       }
     ],
     "supermarkets": [
@@ -566,6 +596,10 @@
         "name": "قاعة مطالعة برايت هوب (study zone)",
         "phone": "0991824958",
         "note": "Bright Hub جانب مطعم  الخليل"
+      },
+      {
+        "name": "الذهبي للطباعه_جنب مكتبة الجامعة",
+        "phone": "0988314600"
       }
     ],
     "maintenance": [
@@ -619,6 +653,11 @@
           "open": "11:00",
           "close": "02:00"
         }
+      },
+      {
+        "name": "احمد",
+        "phone": "0933090289",
+        "note": "سريع وأمين"
       }
     ],
     "taxis": [
@@ -720,6 +759,24 @@
           "allday": true
         },
         "note": "معاملته كويسة واسعاره رحمانية"
+      },
+      {
+        "name": "ابو يوسف",
+        "phone": "0988700352"
+      },
+      {
+        "name": "موتور حيدر",
+        "phone": "0996181438"
+      },
+      {
+        "name": "توصيل للطلاب",
+        "phone": "0941716754",
+        "hours": {
+          "open": "08:00",
+          "close": "04:00"
+        },
+        "address": "القدموس",
+        "note": "للسكن ولجميع مناطق القدموس"
       }
     ],
     "sweets": [
@@ -946,6 +1003,17 @@
         "map_url": "https://www.google.com/maps/search/?api=1&query=%D8%B9%D9%8A%D8%A7%D8%AF%D8%A9%20%D8%A7%D9%84%D8%AF%D9%83%D8%AA%D9%88%D8%B1%D8%A9%20%D9%88%D8%B5%D8%A7%D9%84%20%D8%B4%D8%AD%D9%88%D8%AF&query_place_id=ChIJDXsDdiDvIxUR2xRG-OoXZA8",
         "phone": "",
         "address": "4526+99M, Al Qadmus, Syria"
+      },
+      {
+        "name": "عيادةالدكتورةنور مصطفى ،اشعة تشخيصية",
+        "specialty": "اشعة",
+        "hours": {
+          "allday": true
+        },
+        "rating_contact": "https://www.facebook.com/profile.php?id=61581297935815",
+        "phone": "",
+        "website": "https://www.facebook.com/profile.php?id=61581297935815",
+        "note": "جوال 0951868702\nالاختصاص: اشعة"
       }
     ],
     "bakeries": [
@@ -1183,6 +1251,16 @@
             "close": "06:00"
           },
           "note": "نقل من منطقة الحفة الى القدموس دون التوقف في اللاذقية"
+        }
+      ]
+    },
+    {
+      "city": "دمشق - القدموس",
+      "items": [
+        {
+          "name": "فان H1",
+          "phone": "0982959879",
+          "note": "يطلع الثلاثاء بعد الظهر 3.30"
         }
       ]
     }
@@ -1491,7 +1569,19 @@
     "7f25fe0ca0454d3e3756f12547f580fef1b15a611d79dfdd6fb94fad75305898": "approved",
     "21540a04922ed9a3ec455cee5441f711b1e4cd8f58d89b2d49d928dd186c74f9": "approved",
     "a31263620a3b517d90c8ccd5f0497fdce1fbca625d71582799c93e15df4a5303": "approved",
-    "c260aec34f0ba54e1cb3d139c5c5d82418e9498b52d0c2ebb8bfe17f8b9d3f80": "approved"
+    "c260aec34f0ba54e1cb3d139c5c5d82418e9498b52d0c2ebb8bfe17f8b9d3f80": "approved",
+    "34e991f326c5633400c9f533ca5b097e030533808b3c0406895e05d464445739": "approved",
+    "d90995ae1e17595cd90dfc7cf76a9da170836ce36e6a0ad289dce66fe583b43b": "approved",
+    "d69202e1958947e367550af2266f12767b2f66320c77923e08e7f0351b4fdc08": "approved",
+    "7940bd4c5aa0f1b5ea4f187a6d1dd4fcb4ae4025dbcfb03c9c78f1734f90ff60": "approved",
+    "1014f9d6fd9c4e1c1ae790bd439da61d4969dfe3def7d4c7d745df4f8cf9cce4": "approved",
+    "f6dd72746d1081e30322ad4a235de603addc987e782c91de935b29a9e27f767a": "approved",
+    "48f272e400e39fda145ae639ee8b3c66bef022b640cd075c32116b4ab7746de7": "approved",
+    "cbf99f7d09176878074a543e1d6b3e3c322e01560a9f48749725c44f3bf11038": "approved",
+    "325ef4b3fcc4e2cbe5695e75b51ab9f9f5e18045c2732aee09a998677200b153": "approved",
+    "12993f34d2afc7f9188e58c5110a1b374d92c2c36f66788243962a9ee83d7742": "approved",
+    "400905ee21bea9ddf042b9b9d486364a44c900487977670ca117f4f41cf476c3": "approved",
+    "32b58828e2245a5de1ab98fb6e31f1c602238078b87c0e2729fa448d8918e0ac": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1665,6 +1755,42 @@
     "417c0197-e561-4c6a-b3fc-c4048da41f5f": {
       "status": "approved",
       "updated": "2026-10-23"
+    },
+    "7ccf080c-49a4-4f37-b042-eca0a05663c2": {
+      "status": "approved",
+      "updated": "2026-11-02"
+    },
+    "3a5434be-820e-4099-8a83-300c1e507383": {
+      "status": "approved",
+      "updated": "2026-11-02"
+    },
+    "73254239-ec85-46ac-8e8e-406718ace721": {
+      "status": "approved",
+      "updated": "2026-11-02"
+    },
+    "97672877-f465-4c75-8548-ad88275daf2a": {
+      "status": "approved",
+      "updated": "2026-11-02"
+    },
+    "a6f0b69c-7364-4853-920e-f4e5d2f4e4d1": {
+      "status": "approved",
+      "updated": "2026-11-02"
+    },
+    "4f9880bb-b9e2-48df-b956-df4077aabcc9": {
+      "status": "approved",
+      "updated": "2026-11-02"
+    },
+    "a12930c2-d1ba-4710-9202-b7946f33e1c8": {
+      "status": "approved",
+      "updated": "2026-11-02"
+    },
+    "28263308-857c-4b5f-aca6-45ffd87904ee": {
+      "status": "approved",
+      "updated": "2026-11-02"
+    },
+    "e7db8c29-3531-477a-ac0f-23b43af8f311": {
+      "status": "approved",
+      "updated": "2026-11-02"
     }
   },
   "trash": [
