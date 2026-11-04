@@ -1,8 +1,8 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-11-03T02:43:49+00:00",
-  "total_ratings": 176,
+  "fetched_at": "2026-11-04T00:58:48+00:00",
+  "total_ratings": 178,
   "places": {
     "0933574279\nشاهين": {
       "avg": 4.33,
@@ -77,12 +77,12 @@
       "count": 1
     },
     "0982501082\nالمجد": {
-      "avg": 2.5,
-      "count": 2
+      "avg": 2.0,
+      "count": 3
     },
     "0956595857\nمطعم الفوانيس": {
-      "avg": 3.5,
-      "count": 8
+      "avg": 3.67,
+      "count": 9
     },
     "0988929432\nمجموعة طنجور للعقارات": {
       "avg": 5.0,
