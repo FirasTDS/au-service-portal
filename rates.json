@@ -1,12 +1,12 @@
 {
-  "fetched_at": "2026-11-07T07:55:56Z",
+  "fetched_at": "2026-11-07T14:31:26Z",
   "source": "sp-today.com",
   "city": "دمشق",
   "unit": "SYP_NEW",
   "rates": {
     "USD": {
-      "buy": 144.0,
-      "sell": 144.75
+      "buy": 144.5,
+      "sell": 145.25
     }
   }
 }
