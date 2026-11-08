@@ -1142,6 +1142,11 @@
           "name": "نقليات السمير",
           "phone": "0939455534",
           "note": "الخط: دمشق- القدموس فان"
+        },
+        {
+          "name": "فان H1",
+          "phone": "0982959879",
+          "note": "يطلع الثلاثاء بعد الظهر 3.30"
         }
       ]
     },
@@ -1264,13 +1269,7 @@
     },
     {
       "city": "دمشق - القدموس",
-      "items": [
-        {
-          "name": "فان H1",
-          "phone": "0982959879",
-          "note": "يطلع الثلاثاء بعد الظهر 3.30"
-        }
-      ]
+      "items": []
     }
   ],
   "pharmacies_duty": {
@@ -2042,6 +2041,7 @@
     "list-bakeries",
     "list-butchers",
     "list-university",
+    "list-gaming",
     "list-city-%D8%B7%D8%B1%D8%B7%D9%88%D8%B3",
     "list-city-%D8%A7%D9%84%D9%84%D8%A7%D8%B0%D9%82%D9%8A%D8%A9",
     "list-city-%D8%AF%D9%85%D8%B4%D9%82",
@@ -2050,6 +2050,7 @@
     "list-city-%D8%AD%D9%85%D8%B5",
     "list-city-%D8%A7%D9%84%D8%AD%D8%B3%D9%83%D8%A9%20%2F%20%D9%82%D8%A7%D9%85%D8%B4%D9%84%D9%8A",
     "list-city-%D8%A7%D9%84%D8%B1%D9%82%D8%A9",
-    "list-city-%D8%B1%D9%8A%D9%81%20%D8%A7%D9%84%D9%84%D8%A7%D8%B0%D9%82%D9%8A%D8%A9%20(%D8%A7%D9%84%D8%AD%D9%81%D8%A9)"
+    "list-city-%D8%B1%D9%8A%D9%81%20%D8%A7%D9%84%D9%84%D8%A7%D8%B0%D9%82%D9%8A%D8%A9%20(%D8%A7%D9%84%D8%AD%D9%81%D8%A9)",
+    "list-city-%D8%AF%D9%85%D8%B4%D9%82%20-%20%D8%A7%D9%84%D9%82%D8%AF%D9%85%D9%88%D8%B3"
   ]
 }
