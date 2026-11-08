@@ -65,7 +65,13 @@
 <!-- HERO -->
 <header class="compact-heading container">
   <h1>نافذة خدمية — القدموس</h1>
-  <button type="button" class="btn-secondary" onclick="toggleSuggestionTracker()">متابعة اقتراحاتي</button>
+  <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+    <button type="button" class="btn-secondary" onclick="toggleSuggestionTracker()">متابعة اقتراحاتي</button>
+    <button type="button" class="btn-secondary" onclick="openModal('teamLinksModal')" aria-haspopup="dialog" aria-label="روابط الفريق التطوعي">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-inline-end:4px; vertical-align:-2px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <span>روابط الفريق التطوعي</span>
+    </button>
+  </div>
 </header>
 
 <!-- MAIN -->
@@ -558,6 +564,74 @@
   <div id="toast" class="toast" role="status">
     <svg id="toastIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
     <span id="toastMsg">تمت العملية</span>
+  </div>
+</div>
+
+<!-- TEAM LINKS MODAL -->
+<div id="teamLinksModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="teamLinksModalTitle">
+  <div class="modal-dialog" style="max-width: 520px;">
+    <div class="modal-header">
+      <div class="modal-header-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        <h2 id="teamLinksModalTitle">روابط ومنصات الفريق التطوعي</h2>
+      </div>
+      <button class="modal-close-btn" onclick="closeModal('teamLinksModal')" aria-label="إغلاق النافذة">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="padding: 1.25rem; display: flex; flex-direction: column; gap: 0.85rem;">
+      <p style="font-size: 0.825rem; color: var(--color-slate-600); margin: 0; line-height: 1.6;">
+        المنصات الرسمية واستمارات التواصل التابعة للفريق التطوعي — جامعة الأندلس الخاصة للعلوم الطبية:
+      </p>
+
+      <!-- Link 1: Complaints & Suggestions Form -->
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSeXuinzBd9mKVbfxOkBlhzW-HCokuyhSxsvvzKmiQCaLfSnwA/viewform?usp=header" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: flex-start; gap: 0.85rem; padding: 0.9rem 1rem; border-radius: 12px; border: 1px solid var(--color-teal-border); background: var(--color-teal-soft); text-decoration: none; color: inherit; transition: transform 0.15s ease, box-shadow 0.15s ease;">
+        <div style="background: var(--color-teal); color: white; width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <div style="flex-grow: 1;">
+          <div style="font-weight: 800; font-size: 0.925rem; color: var(--color-teal-dark); margin-bottom: 0.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px;">
+            <span>استمارة الشكاوى والاقتراحات</span>
+            <span style="font-size: 0.725rem; font-weight: 700; color: var(--color-teal); background: rgba(13,148,136,0.12); padding: 2px 7px; border-radius: 6px;">Google Form ↗</span>
+          </div>
+          <div style="font-size: 0.785rem; color: var(--color-slate-600); line-height: 1.5;">
+            لتقديم الملاحظات، الشكاوى، والاقتراحات المباشرة للفريق التطوعي ومتابعتها.
+          </div>
+        </div>
+      </a>
+
+      <!-- Link 2: Linktree with VPN Alert -->
+      <a href="https://linktr.ee/AU_VT" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: flex-start; gap: 0.85rem; padding: 0.9rem 1rem; border-radius: 12px; border: 1px solid var(--color-slate-200); background: var(--surface); text-decoration: none; color: inherit; transition: transform 0.15s ease, box-shadow 0.15s ease;">
+        <div style="background: #1f2937; color: white; width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </div>
+        <div style="flex-grow: 1;">
+          <div style="font-weight: 800; font-size: 0.925rem; color: var(--color-slate-900); margin-bottom: 0.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px;">
+            <span>شجرة روابط الفريق (Linktree)</span>
+            <span style="font-size: 0.7rem; font-weight: 700; color: #b45309; background: #fef3c7; border: 1px solid #fde68a; padding: 2px 7px; border-radius: 6px;">⚠️ يحتاج VPN داخل سوريا</span>
+          </div>
+          <div style="font-size: 0.785rem; color: var(--color-slate-600); line-height: 1.5;">
+            تضم كافة حسابات وقنوات ومصادر الفريق التطوعي على منصة Linktree.
+          </div>
+        </div>
+      </a>
+
+      <!-- Link 3: Telegram Official Channel -->
+      <a href="https://t.me/studentandalus" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: flex-start; gap: 0.85rem; padding: 0.9rem 1rem; border-radius: 12px; border: 1px solid var(--color-slate-200); background: var(--surface); text-decoration: none; color: inherit; transition: transform 0.15s ease, box-shadow 0.15s ease;">
+        <div style="background: #0284c7; color: white; width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </div>
+        <div style="flex-grow: 1;">
+          <div style="font-weight: 800; font-size: 0.925rem; color: var(--color-slate-900); margin-bottom: 0.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px;">
+            <span>قناة التلغرام الرسمية</span>
+            <span style="font-size: 0.7rem; font-weight: 700; color: #0284c7; background: rgba(2,132,199,0.1); padding: 2px 7px; border-radius: 6px;">مباشر (بدون VPN) ↗</span>
+          </div>
+          <div style="font-size: 0.785rem; color: var(--color-slate-600); line-height: 1.5;">
+            لمتابعة الإعلانات، الأخبار والقرارات الطلابية فور صدورها.
+          </div>
+        </div>
+      </a>
+    </div>
   </div>
 </div>
 
@@ -2111,6 +2185,9 @@
         if (e.key === 'Escape') {
             closeModal('suggestModal');
             closeModal('reportModal');
+            closeModal('pharmacyModal');
+            closeModal('universityModal');
+            closeModal('teamLinksModal');
         }
     });
 
