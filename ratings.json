@@ -1,8 +1,8 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-11-09T00:23:54+00:00",
-  "total_ratings": 186,
+  "fetched_at": "2026-11-10T03:05:30+00:00",
+  "total_ratings": 187,
   "places": {
     "0933574279\nشاهين": {
       "avg": 4.33,
@@ -25,8 +25,8 @@
       "count": 2
     },
     "0947785541\nمطعم برايم فود": {
-      "avg": 4.67,
-      "count": 3
+      "avg": 3.75,
+      "count": 4
     },
     "0996538589\nمطعم الأحمد": {
       "avg": 3.6,
