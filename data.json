@@ -534,6 +534,18 @@
         "name": "صهريج مياه وتعبئة خزانات (سكنات طلابية)",
         "phone": "0988968328",
         "note": "توصيل وتعبئة خزانات وبيدونات مياه نقية بالقدموس"
+      },
+      {
+        "name": "محمد مياه شرب",
+        "phone": "0997696894",
+        "delivery": {
+          "fee": "70 ليرة جديدة (تعبئة البيدون)"
+        },
+        "address": "يوصل للبيت"
+      },
+      {
+        "name": "غياث صهريج مي القدموس",
+        "phone": "0992381472"
       }
     ],
     "transfers": [
@@ -636,6 +648,14 @@
       {
         "name": "مندوب غاز",
         "phone": "0982125096"
+      },
+      {
+        "name": "خدمات هجرة وجوازات",
+        "phone": "0980062355",
+        "hours": {
+          "allday": true
+        },
+        "note": "خدمة حجز جوازات سفر خارجي وداخلي"
       }
     ],
     "delivery": [
@@ -925,6 +945,11 @@
         "name": "مكتب vip",
         "phone": "0934193080",
         "note": "تعامل مريح"
+      },
+      {
+        "name": "مكتب الهدى للعقارات",
+        "phone": "0980513773",
+        "note": "المكتب لطالب مثله مثل اي طالب اخر يفهم وضعك ويقدر ظروفك ويساعدك"
       }
     ],
     "clinics": [
@@ -1022,6 +1047,17 @@
         "phone": "",
         "website": "https://www.facebook.com/profile.php?id=61581297935815",
         "note": "جوال 0951868702\nالاختصاص: اشعة"
+      },
+      {
+        "name": "الدكتور محمد ابو عجيب",
+        "phone": "0951680693",
+        "specialty": "أخصائي في طب الأسنان وجراحتها",
+        "hours": {
+          "open": "09:00",
+          "close": "15:00"
+        },
+        "address": "دخلة الصعب للمفاتيح الطابق الثاني",
+        "note": "الاختصاص: أخصائي في طب الأسنان وجراحتها"
       }
     ],
     "bakeries": [
@@ -1590,7 +1626,12 @@
     "400905ee21bea9ddf042b9b9d486364a44c900487977670ca117f4f41cf476c3": "approved",
     "32b58828e2245a5de1ab98fb6e31f1c602238078b87c0e2729fa448d8918e0ac": "approved",
     "baaedcb8d915711b36aadeaef87dda30daa2a06ac834cdf4be527124bf116a14": "approved",
-    "5005213d466d763fdb6e7216d435be0ea059fc0033d5bd0726f7c71f7aafe50f": "approved"
+    "5005213d466d763fdb6e7216d435be0ea059fc0033d5bd0726f7c71f7aafe50f": "approved",
+    "34ccd9c5297c529a9dda3227b7f33e821d2d7dd98050fc778a8089d436e6162c": "approved",
+    "d7368655d1742117a82e7e76c06a3004238ac8054d8530c3c9a8365eba31c6b6": "approved",
+    "e04a76faf7be7d9f724cc24db47a744c5da1b9045c5e89504949f480527d1bbc": "approved",
+    "5568d18113c48718eff216c50bf7c039fbf516c37ea52d5794772f77c82c9461": "approved",
+    "429733db09909622033c40e3a10cdfebd242017bde3feeb098c30bc5a3a04703": "approved"
   },
   "suggestion_status": {
     "4950b03e-1621-4ab6-8e59-2a60574289b7": {
@@ -1800,6 +1841,26 @@
     "e7db8c29-3531-477a-ac0f-23b43af8f311": {
       "status": "approved",
       "updated": "2026-11-02"
+    },
+    "ab3ad279-e529-496f-abef-8759733e75e9": {
+      "status": "approved",
+      "updated": "2026-11-15"
+    },
+    "7613e4e8-fea8-4aec-8a07-739b0d383e22": {
+      "status": "approved",
+      "updated": "2026-11-15"
+    },
+    "11145109-944e-4d55-a98d-0f6c16674a1e": {
+      "status": "approved",
+      "updated": "2026-11-15"
+    },
+    "f50877fc-6102-4930-9f7b-23305c279169": {
+      "status": "approved",
+      "updated": "2026-11-15"
+    },
+    "31f6d6b9-b5db-419e-8899-5bbc8260820a": {
+      "status": "approved",
+      "updated": "2026-11-15"
     }
   },
   "trash": [
