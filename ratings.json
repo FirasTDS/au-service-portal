@@ -1,8 +1,8 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-11-14T01:09:35+00:00",
-  "total_ratings": 190,
+  "fetched_at": "2026-11-15T00:35:15+00:00",
+  "total_ratings": 194,
   "places": {
     "0933574279\nشاهين": {
       "avg": 4.33,
@@ -41,8 +41,8 @@
       "count": 3
     },
     "0940698958\nSugar bar": {
-      "avg": 4.5,
-      "count": 8
+      "avg": 4.64,
+      "count": 11
     },
     "0933135318\nتكسي لؤي": {
       "avg": 1.0,
@@ -233,6 +233,10 @@
       "count": 1
     },
     "0985289612\nصيدلية مريم": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "0936518687\nمطعم العنقاء": {
       "avg": 5.0,
       "count": 1
     }
