@@ -1,8 +1,8 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-11-16T00:35:02+00:00",
-  "total_ratings": 198,
+  "fetched_at": "2026-11-17T03:19:30+00:00",
+  "total_ratings": 200,
   "places": {
     "0933574279\nشاهين": {
       "avg": 4.33,
@@ -238,6 +238,14 @@
     },
     "0936518687\nمطعم العنقاء": {
       "avg": 5.0,
+      "count": 1
+    },
+    "0934193080\nمكتب vip": {
+      "avg": 1.0,
+      "count": 1
+    },
+    "0933995541\nمكتب الكاسر العقاري": {
+      "avg": 1.0,
       "count": 1
     }
   }
