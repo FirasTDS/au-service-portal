@@ -1,8 +1,8 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-11-17T03:19:30+00:00",
-  "total_ratings": 200,
+  "fetched_at": "2026-11-18T02:40:43+00:00",
+  "total_ratings": 201,
   "places": {
     "0933574279\nشاهين": {
       "avg": 4.33,
@@ -173,8 +173,8 @@
       "count": 2
     },
     "0934596402\nمطعم عشتار": {
-      "avg": 4.0,
-      "count": 2
+      "avg": 4.33,
+      "count": 3
     },
     "0939968007\nمطعم سنمار برغر": {
       "avg": 3.33,
