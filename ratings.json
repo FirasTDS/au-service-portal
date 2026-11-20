@@ -1,8 +1,8 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-11-19T02:09:45+00:00",
-  "total_ratings": 201,
+  "fetched_at": "2026-11-20T01:58:13+00:00",
+  "total_ratings": 204,
   "places": {
     "0933574279\nشاهين": {
       "avg": 4.33,
@@ -97,8 +97,8 @@
       "count": 9
     },
     "0952532316\nمطعم. gan food": {
-      "avg": 4.0,
-      "count": 10
+      "avg": 3.73,
+      "count": 11
     },
     "0993979581\nمطعم شهد العسل": {
       "avg": 3.5,
@@ -242,10 +242,14 @@
     },
     "0934193080\nمكتب vip": {
       "avg": 1.0,
-      "count": 1
+      "count": 2
     },
     "0933995541\nمكتب الكاسر العقاري": {
       "avg": 1.0,
+      "count": 1
+    },
+    "0980513773\nمكتب الهدى للعقارات": {
+      "avg": 2.0,
       "count": 1
     }
   }
