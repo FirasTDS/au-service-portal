@@ -1,8 +1,8 @@
 {
   "source": "google-sheet",
   "sheet_id": "1owergoyNbXTjGCDw6Va0EWXCAIEw15K7lEeZl63CFiI",
-  "fetched_at": "2026-11-22T00:49:40+00:00",
-  "total_ratings": 207,
+  "fetched_at": "2026-11-23T01:17:13+00:00",
+  "total_ratings": 209,
   "places": {
     "0933574279\nشاهين": {
       "avg": 4.33,
@@ -253,6 +253,14 @@
       "count": 1
     },
     "0932659464\nصدام": {
+      "avg": 1.0,
+      "count": 1
+    },
+    "0997696894\nمحمد مياه شرب": {
+      "avg": 5.0,
+      "count": 1
+    },
+    "0992381472\nغياث صهريج مي القدموس": {
       "avg": 1.0,
       "count": 1
     }
